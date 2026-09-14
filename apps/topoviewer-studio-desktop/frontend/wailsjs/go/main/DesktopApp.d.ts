@@ -8,6 +8,8 @@ export function CommitFiles(arg1:main.CommitFilesRequest):Promise<main.RevisionR
 
 export function CopyText(arg1:string):Promise<main.EmptyResponse>;
 
+export function DiscardRecovery(arg1:string):Promise<main.EmptyResponse>;
+
 export function ExportArtifact(arg1:main.ArtifactRequest):Promise<main.EmptyResponse>;
 
 export function ForgetRecentProject(arg1:string):Promise<main.EmptyResponse>;

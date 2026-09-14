@@ -66,6 +66,11 @@ class MemoryDirectoryPort implements StudioDirectoryPort {
     return Promise.resolve();
   }
 
+  discardRecovery(): Promise<void> {
+    this.recovery = undefined;
+    return Promise.resolve();
+  }
+
   exportArtifact(request: StudioExportRequest): Promise<void> {
     this.exported.push(request);
     return Promise.resolve();
@@ -297,6 +302,33 @@ describe('DirectoryStudioHost', () => {
     expect(withoutStaleRecovery.ok).toBe(true);
     if (!withoutStaleRecovery.ok) return;
     expect(withoutStaleRecovery.value).not.toHaveProperty('recovery');
+  });
+
+  it('discards persisted recovery when canonical source is explicitly requested', async () => {
+    const { host, port } = fixture();
+    const loaded = await host.loadProject();
+    expect(loaded.ok).toBe(true);
+    if (!loaded.ok) return;
+
+    const recovery: StudioRecoverySnapshot = {
+      capturedAt: '2026-07-29T09:00:00.000Z',
+      project: { ...structuredClone(loaded.value.project), name: 'Recovered draft' },
+      reason: 'autosave',
+      sourceRevision: loaded.value.project.revision
+    };
+    expect(await host.saveRecovery(recovery)).toEqual({ ok: true, value: undefined });
+
+    const canonical = await host.loadProject({
+      id: loaded.value.project.id,
+      recovery: 'discard'
+    });
+    expect(canonical).toMatchObject({
+      ok: true,
+      value: { project: { name: 'Desktop project' } }
+    });
+    if (!canonical.ok) return;
+    expect(canonical.value).not.toHaveProperty('recovery');
+    expect(port.recovery).toBeUndefined();
   });
 
   it('suppresses self-write notifications and emits later external changes', async () => {

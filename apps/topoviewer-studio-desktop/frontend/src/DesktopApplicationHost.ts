@@ -188,6 +188,10 @@ export class DesktopApplicationHost implements StudioHost {
       return loaded;
     }
     try {
+      if (reference?.recovery === 'discard') {
+        await this.systemPort().discardRecovery();
+        return ok({ project: structuredClone(this.project) });
+      }
       const recovery = await this.systemPort().readRecovery();
       return ok({
         project: structuredClone(this.project),

@@ -81,6 +81,11 @@ export class TestDesktopClient implements DesktopNativeLifecycleClient {
     return navigator.clipboard.writeText(text).then(() => ({}));
   }
 
+  DiscardRecovery(token: string): Promise<unknown> {
+    this.recoveries.delete(token);
+    return Promise.resolve({});
+  }
+
   ExportArtifact(value: unknown): Promise<unknown> {
     const request = asExportRequest(value);
     const binary = atob(request.artifact.bytesBase64);

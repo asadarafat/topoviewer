@@ -32,6 +32,7 @@ export interface DesktopNativeClient {
   ChooseAssets(request: unknown): Promise<unknown>;
   CommitFiles(request: unknown): Promise<unknown>;
   CopyText(text: string): Promise<unknown>;
+  DiscardRecovery(token: string): Promise<unknown>;
   ExportArtifact(request: unknown): Promise<unknown>;
   ListFiles(token: string): Promise<unknown>;
   ReadFile(token: string, path: string): Promise<unknown>;
@@ -220,6 +221,10 @@ export class DesktopDirectoryPort implements StudioDirectoryPort {
 
   async copyText(text: string): Promise<void> {
     await callNative(() => this.client.CopyText(text));
+  }
+
+  async discardRecovery(): Promise<void> {
+    await callNative(() => this.client.DiscardRecovery(this.id));
   }
 
   async exportArtifact(request: StudioExportRequest): Promise<void> {

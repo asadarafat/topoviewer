@@ -41,6 +41,11 @@ class FakeNativeClient implements DesktopNativeClient {
     return Promise.resolve({});
   }
 
+  DiscardRecovery(): Promise<unknown> {
+    this.recovery = undefined;
+    return Promise.resolve({});
+  }
+
   ExportArtifact(request: unknown): Promise<unknown> {
     this.exported.push(request);
     return Promise.resolve({});

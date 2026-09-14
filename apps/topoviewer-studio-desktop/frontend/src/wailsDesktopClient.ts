@@ -2,6 +2,7 @@ import {
   ChooseAssets,
   CommitFiles,
   CopyText,
+  DiscardRecovery,
   ExportArtifact,
   ForgetRecentProject,
   ListFiles,
@@ -94,6 +95,11 @@ export class WailsDesktopClient implements DesktopNativeLifecycleClient {
 
   async CopyText(text: string): Promise<unknown> {
     unwrap(await CopyText(text));
+    return {};
+  }
+
+  async DiscardRecovery(token: string): Promise<unknown> {
+    unwrap(await DiscardRecovery(token));
     return {};
   }
 

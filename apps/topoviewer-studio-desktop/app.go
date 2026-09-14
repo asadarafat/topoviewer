@@ -324,6 +324,13 @@ func (a *DesktopApp) ReadRecovery(token string) ValueResponse {
 	return ValueResponse{Found: true, ValueJSON: string(value)}
 }
 
+func (a *DesktopApp) DiscardRecovery(token string) EmptyResponse {
+	if err := a.service.DiscardRecovery(token); err != nil {
+		return EmptyResponse{Error: serviceError(err)}
+	}
+	return EmptyResponse{}
+}
+
 func (a *DesktopApp) WriteRecovery(token, valueJSON string) EmptyResponse {
 	if err := a.service.WriteRecovery(token, []byte(valueJSON)); err != nil {
 		return EmptyResponse{Error: serviceError(err)}

@@ -50,6 +50,7 @@ export interface StudioDirectoryPort {
   readonly trusted: boolean;
   chooseAssets?(request: StudioAssetRequest): Promise<StudioAssetContent[]>;
   copyText(text: string): Promise<void>;
+  discardRecovery(): Promise<void>;
   exportArtifact(request: StudioExportRequest): Promise<void>;
   listFiles(): Promise<StudioDirectoryFileEntry[]>;
   readFile(path: string): Promise<Uint8Array>;
@@ -335,6 +336,10 @@ export class DirectoryStudioHost implements StudioHost {
       if (reference?.path && canonicalRelativePath(reference.path) !== this.topologyPath) {
         throw new DirectoryStudioHostError('not-found', `Directory project "${reference.path}" is not open.`);
       }
+      if (reference?.recovery === 'discard') {
+        await this.port.discardRecovery();
+        return this.loadFromDisk(false);
+      }
       return this.loadFromDisk();
     });
   }
@@ -474,7 +479,7 @@ export class DirectoryStudioHost implements StudioHost {
     return entries;
   }
 
-  private async loadFromDisk(): Promise<StudioLoadResult> {
+  private async loadFromDisk(includeRecovery = true): Promise<StudioLoadResult> {
     const entries = await this.validatedEntries();
     const byPath = new Map(entries.map((entry) => [entry.path, entry]));
     if (!byPath.has(this.topologyPath) || !byPath.has(this.stylesheetPath)) {
@@ -525,7 +530,7 @@ export class DirectoryStudioHost implements StudioHost {
       ? await this.port.readRevision()
       : revisionFor(project);
     validateStudioProjectEnvelope(project, assetContent);
-    const recovery = await this.port.readRecovery();
+    const recovery = includeRecovery ? await this.port.readRecovery() : undefined;
     return {
       project,
       ...(recovery && recovery.project.id === project.id && recovery.capturedAt > project.metadata.updatedAt

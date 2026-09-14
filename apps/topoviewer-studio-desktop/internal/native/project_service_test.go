@@ -664,6 +664,13 @@ func TestPreferencesAndRecoveryStayInPrivateStateDirectory(t *testing.T) {
 	if err != nil || !bytes.Equal(gotRecovery, recovery) {
 		t.Fatalf("ReadRecovery() = %s, %v", gotRecovery, err)
 	}
+	if err := service.DiscardRecovery(reference.Token); err != nil {
+		t.Fatalf("DiscardRecovery() error = %v", err)
+	}
+	gotRecovery, err = service.ReadRecovery(reference.Token)
+	if err != nil || len(gotRecovery) != 0 {
+		t.Fatalf("ReadRecovery() after discard = %s, %v", gotRecovery, err)
+	}
 	if _, err := os.Stat(filepath.Join(root, "preferences.json")); !errors.Is(err, os.ErrNotExist) {
 		t.Fatalf("preference leaked into project root: %v", err)
 	}

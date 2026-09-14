@@ -24,6 +24,7 @@ class FakeLifecycleClient implements DesktopNativeLifecycleClient {
   openReference?: NativeProjectReference;
   promotions: string[] = [];
   releases: string[] = [];
+  recovery?: unknown;
   revision = 'sha256-empty';
   startupReference?: NativeProjectReference;
 
@@ -72,6 +73,11 @@ class FakeLifecycleClient implements DesktopNativeLifecycleClient {
   }
 
   CopyText(): Promise<unknown> {
+    return Promise.resolve({});
+  }
+
+  DiscardRecovery(): Promise<unknown> {
+    this.recovery = undefined;
     return Promise.resolve({});
   }
 
@@ -124,7 +130,10 @@ class FakeLifecycleClient implements DesktopNativeLifecycleClient {
   }
 
   ReadRecovery(): Promise<unknown> {
-    return Promise.resolve({ found: false });
+    return Promise.resolve({
+      found: this.recovery !== undefined,
+      value: structuredClone(this.recovery)
+    });
   }
 
   Revision(): Promise<unknown> {
@@ -149,7 +158,8 @@ class FakeLifecycleClient implements DesktopNativeLifecycleClient {
     return Promise.resolve({});
   }
 
-  WriteRecovery(): Promise<unknown> {
+  WriteRecovery(_token: string, value: unknown): Promise<unknown> {
+    this.recovery = structuredClone(value);
     return Promise.resolve({});
   }
 }
@@ -162,6 +172,27 @@ async function loadProject(host: DesktopApplicationHost): Promise<StudioProject>
 }
 
 describe('DesktopApplicationHost', () => {
+  it('discards an untitled recovery snapshot when canonical source is requested', async () => {
+    const client = new FakeLifecycleClient();
+    const host = await DesktopApplicationHost.create(client);
+    const project = await loadProject(host);
+    await host.saveRecovery({
+      capturedAt: '2026-07-29T09:00:00.000Z',
+      project: { ...structuredClone(project), name: 'Recovered draft' },
+      reason: 'autosave',
+      sourceRevision: project.revision
+    });
+
+    const canonical = await host.loadProject({ id: project.id, recovery: 'discard' });
+    expect(canonical).toMatchObject({
+      ok: true,
+      value: { project: { name: 'Untitled topology' } }
+    });
+    if (!canonical.ok) return;
+    expect(canonical.value).not.toHaveProperty('recovery');
+    expect(client.recovery).toBeUndefined();
+  });
+
   it('keeps one opaque project identity through first save and later saves', async () => {
     const client = new FakeLifecycleClient();
     const host = await DesktopApplicationHost.create(client);

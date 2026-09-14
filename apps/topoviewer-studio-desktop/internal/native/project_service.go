@@ -895,6 +895,17 @@ func (s *ProjectService) ReadRecovery(token string) ([]byte, error) {
 	return s.readPrivateFile("recovery", privateName(key), s.limits.MaxRecoveryBytes)
 }
 
+func (s *ProjectService) DiscardRecovery(token string) error {
+	key, err := s.recoveryStorageKey(token)
+	if err != nil {
+		return err
+	}
+	if err := os.Remove(filepath.Join(s.stateDir, "recovery", privateName(key))); err != nil && !errors.Is(err, os.ErrNotExist) {
+		return NewServiceError(ErrorPermissionDenied, "Studio cannot discard private recovery state.", true, nil)
+	}
+	return nil
+}
+
 func (s *ProjectService) DetectExternalChange(token string) (*ProjectChange, error) {
 	revision, err := s.Revision(token)
 	if err != nil {

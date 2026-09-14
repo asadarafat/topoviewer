@@ -14,6 +14,10 @@ export function CopyText(arg1) {
   return window['go']['main']['DesktopApp']['CopyText'](arg1);
 }
 
+export function DiscardRecovery(arg1) {
+  return window['go']['main']['DesktopApp']['DiscardRecovery'](arg1);
+}
+
 export function ExportArtifact(arg1) {
   return window['go']['main']['DesktopApp']['ExportArtifact'](arg1);
 }

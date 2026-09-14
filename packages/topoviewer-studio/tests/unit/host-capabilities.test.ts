@@ -11,6 +11,7 @@ describe('Studio host presentation capabilities', () => {
       hostKind: 'desktop',
       port: {
         copyText: () => Promise.resolve(),
+        discardRecovery: () => Promise.resolve(),
         exportArtifact: () => Promise.resolve(),
         id: 'desktop-token',
         listFiles: () => Promise.resolve([]),
