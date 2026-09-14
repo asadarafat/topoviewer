@@ -1,6 +1,6 @@
 module github.com/asadarafat/topoviewer/apps/topoviewer-studio-desktop
 
-go 1.25.0
+go 1.25.13
 
 require github.com/wailsapp/wails/v2 v2.13.0
 
