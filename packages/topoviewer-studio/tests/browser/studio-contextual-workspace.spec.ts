@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { openStudioWorkspace } from '../support/workbench';
+import { openStudioWorkspace, waitForStudioCanvasGeometry } from '../support/workbench';
 
 test('uses persistent source navigation and one preview-local contextual workspace', async ({ page }) => {
   await page.goto('/?__studio-test-state=starter');
@@ -14,8 +14,8 @@ test('uses persistent source navigation and one preview-local contextual workspa
 test('opens object and canvas Properties while keeping Mapper selection sticky', async ({ page }) => {
   await page.goto('/?__studio-test-state=mapper-coverage');
   const leaf1 = page.locator('.react-flow__node[data-id="leaf1"]');
-  await leaf1.focus();
-  await page.keyboard.press('Enter');
+  await waitForStudioCanvasGeometry(page);
+  await leaf1.press('Enter');
   await expect(leaf1).toBeFocused();
   await expect(page.locator('.studio-visually-hidden[aria-live="polite"]')).toContainText(/selected/i);
   let properties = await openStudioWorkspace(page, 'Properties');

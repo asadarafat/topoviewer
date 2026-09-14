@@ -23,6 +23,13 @@ async function dragBy(page: Page, object: Locator, delta: { x: number; y: number
   await page.mouse.up();
 }
 
+async function renderedObjectPosition(object: Locator): Promise<{ x: number; y: number }> {
+  return object.evaluate((element) => {
+    const matrix = new DOMMatrixReadOnly((element as HTMLElement).style.transform || 'none');
+    return { x: matrix.e, y: matrix.f };
+  });
+}
+
 async function openSource(page: Page) {
   return openPropertiesCodeDocument(page, 'topology');
 }
@@ -90,15 +97,13 @@ test('persists a member-derived region drag into topology source', async ({ page
   await page.goto('/?__studio-test-state=region-move');
   const region = page.locator('.react-flow__node[data-id="region:tactical"]');
   const client = page.locator('.react-flow__node[data-id="client"]');
-  const regionBefore = await region.boundingBox();
-  const clientBefore = await client.boundingBox();
-  if (!regionBefore || !clientBefore) throw new Error('Region move fixture is not measurable.');
+  const regionBefore = await renderedObjectPosition(region);
+  const clientBefore = await renderedObjectPosition(client);
 
   await dragBy(page, region, { x: 120, y: 90 }, { x: 0.08, y: 0.84 });
 
-  const regionAfter = await region.boundingBox();
-  const clientAfter = await client.boundingBox();
-  if (!regionAfter || !clientAfter) throw new Error('Region move fixture disappeared after drag.');
+  const regionAfter = await renderedObjectPosition(region);
+  const clientAfter = await renderedObjectPosition(client);
   expect(regionAfter.x - regionBefore.x).toBeGreaterThan(100);
   expect(regionAfter.y - regionBefore.y).toBeGreaterThan(70);
   expect(clientAfter.x - clientBefore.x).toBeGreaterThan(100);
