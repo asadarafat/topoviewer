@@ -19,11 +19,55 @@ updates:
       prefix: chore
       include: scope
     groups:
+      npm-ui-runtime:
+        applies-to: version-updates
+        patterns:
+          - "@mui/*"
+          - "@xyflow/react"
+        update-types:
+          - minor
+          - patch
+      npm-build-tooling:
+        applies-to: version-updates
+        dependency-type: development
+        patterns:
+          - vite
+          - "@vitejs/plugin-react"
+          - rollup
+          - rollup-plugin-dts
+        update-types:
+          - minor
+          - patch
+      npm-browser-testing:
+        applies-to: version-updates
+        dependency-type: development
+        patterns:
+          - "@playwright/test"
+          - "@axe-core/playwright"
+        update-types:
+          - minor
+          - patch
+      npm-grafana-tooling:
+        applies-to: version-updates
+        dependency-type: development
+        patterns:
+          - "@grafana/*"
+          - "@swc/core"
+          - css-loader
+          - style-loader
+          - swc-loader
+          - webpack
+          - webpack-cli
+        update-types:
+          - minor
+          - patch
       npm-runtime:
         applies-to: version-updates
         dependency-type: production
         exclude-patterns:
           - monaco-editor
+          - "@mui/*"
+          - "@xyflow/react"
         update-types:
           - minor
           - patch
@@ -32,6 +76,21 @@ updates:
         dependency-type: development
         exclude-patterns:
           - monaco-editor
+          - "@mui/*"
+          - "@xyflow/react"
+          - vite
+          - "@vitejs/plugin-react"
+          - rollup
+          - rollup-plugin-dts
+          - "@playwright/test"
+          - "@axe-core/playwright"
+          - "@grafana/*"
+          - "@swc/core"
+          - css-loader
+          - style-loader
+          - swc-loader
+          - webpack
+          - webpack-cli
         update-types:
           - minor
           - patch

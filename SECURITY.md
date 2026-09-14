@@ -105,6 +105,10 @@ warning system:
   `security-health-report` artifact. The report records the run timestamp,
   repository ref, scanner job results, current open findings, owner, and triage
   state so maintainers have a durable review object even when one scanner fails.
+- Third-party image findings that cannot be remediated in this repository stay
+  visible as failed scheduled scans and must have a linked tracking issue. Do
+  not make those scans green with broad severity downgrades or unbounded ignore
+  rules.
 
 Automation does not replace review. Maintainers should triage each generated
 PR or finding as one of:

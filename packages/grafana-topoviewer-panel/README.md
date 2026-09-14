@@ -30,7 +30,7 @@ Current experimental compatibility:
 
 | Item | Current validation |
 |---|---|
-| Grafana packages | `13.1.0` SDK packages in this workspace; `13.0.1` in the checked-in Containerlab runtime. |
+| Grafana packages | `13.1.1` SDK packages in this workspace; `13.2.1` in the checked-in Containerlab runtime. |
 | Node.js | Node.js 24 LTS for build and tests. |
 | React runtime | React 18 through the plugin build dependencies. |
 | TopoViewer runtime | Same workspace `topoviewer` package version as the panel build. |

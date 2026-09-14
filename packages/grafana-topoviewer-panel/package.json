@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@xyflow/react": "^12.11.2",
-    "js-yaml": "^4.3.0",
+    "js-yaml": "^4.3.2",
     "topoviewer": "0.5.0"
   },
   "devDependencies": {
@@ -32,7 +32,7 @@
     "style-loader": "^4.0.0",
     "swc-loader": "^0.2.0",
     "typescript": "^5.9.3",
-    "vitest": "^4.1.10",
+    "vitest": "^4.1.11",
     "webpack": "^5.109.2",
     "webpack-cli": "^7.2.2"
   },

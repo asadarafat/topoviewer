@@ -25,13 +25,6 @@ const acceptedTemporaryDevRisks = new Map([
     }
   ],
   [
-    'dompurify',
-    {
-      reason: 'Nested under @grafana/data. The direct TopoViewer package copy is upgraded and production audit is clean.',
-      nodes: ['node_modules/@grafana/data/node_modules/dompurify']
-    }
-  ],
-  [
     'js-cookie',
     {
       reason: 'Transitive through Grafana packages via react-use.',
