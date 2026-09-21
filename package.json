@@ -164,9 +164,9 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",
-    "dependency-cruiser": "^18.2.0",
-    "jscpd": "^5.2.0",
-    "oxlint": "^1.82.0",
+    "dependency-cruiser": "^18.3.1",
+    "jscpd": "^5.2.1",
+    "oxlint": "^1.83.0",
     "postcss": "^8.5.28",
     "publint": "^0.3.24",
     "rollup": "^4.62.3",
