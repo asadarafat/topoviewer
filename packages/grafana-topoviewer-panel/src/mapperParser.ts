@@ -1,4 +1,4 @@
-import yaml from 'js-yaml';
+import * as yaml from 'js-yaml';
 import type { StyleDeclaration } from 'topoviewer';
 import type { GrafanaPanelDiagnostic } from './types';
 import type {

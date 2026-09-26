@@ -3,7 +3,7 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import Ajv from 'ajv';
-import yaml from 'js-yaml';
+import * as yaml from 'js-yaml';
 import { sourceFileFor } from '../../../scripts/lib/content-examples.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));

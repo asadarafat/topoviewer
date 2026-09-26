@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import yaml from 'js-yaml';
+import * as yaml from 'js-yaml';
 import { compileTopoGraph, lintTopoDocument, type TopoDocument } from '../../src';
 import { sanitizeSvg, isSafeImageReference, materializeSvgColorTokens } from '../../src/core/security';
 import { markdownToHtml } from '../../src/core/style';
