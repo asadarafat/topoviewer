@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
-import yaml from 'js-yaml';
+import * as yaml from 'js-yaml';
 import { createDocsStaticServer, pagesBasePath } from './lib/docs-static-server.mjs';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');

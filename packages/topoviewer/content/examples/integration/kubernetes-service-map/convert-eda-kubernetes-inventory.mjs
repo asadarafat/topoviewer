@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
-import yaml from 'js-yaml';
+import * as yaml from 'js-yaml';
 
 const [inventoryDir = 'eda-kubernetes-inventory', outputFile = 'topology.yaml'] = process.argv.slice(2);
 const knownFiles = new Set(['services.json', 'deployments.json', 'pods.json']);

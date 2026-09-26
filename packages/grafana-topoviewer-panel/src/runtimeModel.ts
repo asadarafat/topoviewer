@@ -1,4 +1,4 @@
-import yaml from 'js-yaml';
+import * as yaml from 'js-yaml';
 import { composeTopoViewerDocument, rendererLimitViolations, type TopoDocument } from 'topoviewer';
 import { defaultDemoFixture, getDemoFixture, listDemoFixtureIds } from './demoFixtureCatalog';
 import { normalizeInteractionOptions } from './interactionState';
