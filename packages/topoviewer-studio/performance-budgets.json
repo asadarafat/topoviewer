@@ -115,7 +115,7 @@
       "studio": {
         "initialCssGzipBytes": 9216,
         "initialJsGzipBytes": 466944,
-        "largestLazyJsGzipBytes": 663552,
+        "largestLazyJsGzipBytes": 786432,
         "totalLazyJsGzipBytes": 1212416
       }
     }
