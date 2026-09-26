@@ -108,13 +108,13 @@
     "bundle": {
       "desktop": {
         "initialCssGzipBytes": 9216,
-        "initialJsGzipBytes": 458752,
+        "initialJsGzipBytes": 466944,
         "largestLazyJsGzipBytes": 663552,
         "totalLazyJsGzipBytes": 1212416
       },
       "studio": {
         "initialCssGzipBytes": 9216,
-        "initialJsGzipBytes": 458752,
+        "initialJsGzipBytes": 466944,
         "largestLazyJsGzipBytes": 663552,
         "totalLazyJsGzipBytes": 1212416
       }
