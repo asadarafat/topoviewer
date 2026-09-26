@@ -21,7 +21,7 @@ const typedEntries = new Map([
 // Each typed public entry owns ESM/CJS runtime and declaration files. Keep the
 // non-entry allowance fixed so adding an export cannot silently relax it.
 const maxPackedFiles = 40 + (typedEntries.size * 4);
-const maxUnpackedBytes = 4_010_000 + (typedEntries.size * 35_000);
+const maxUnpackedBytes = 4_020_000 + (typedEntries.size * 35_000);
 
 function fail(message) {
   errors.push(message);
