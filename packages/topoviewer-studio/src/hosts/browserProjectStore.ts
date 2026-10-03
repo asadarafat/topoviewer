@@ -12,6 +12,7 @@ export const browserProjectStoreNames = {
 } as const;
 
 interface StoredProjectRecord {
+  directory?: FileSystemDirectoryHandle;
   id: string;
   openedAt: string;
   project: StudioProject;
@@ -122,8 +123,8 @@ function withContentHashes(project: StudioProject): StudioProject {
   return structuredClone({ ...project, documents });
 }
 
-function nextRevision(project: StudioProject, savedAt: string): string {
-  return `browser-${stableTextHash(`${project.id}\u0000${stableProjectSourceRevision(project)}\u0000${savedAt}`)}`;
+function nextRevision(): string {
+  return `browser-${globalThis.crypto.randomUUID()}`;
 }
 
 function recoveryRecord(snapshot: StudioRecoverySnapshot): StoredRecoveryRecord {
@@ -265,14 +266,41 @@ export class BrowserProjectStore {
   }
 
   private async touchProject(record: StoredProjectRecord): Promise<void> {
+    await this.updateRecord(record.id, 'record recent project access', (current) => ({ ...current, openedAt: this.now() }));
+  }
+
+  private async updateRecord(projectId: string, operation: string, update: (record: StoredProjectRecord) => StoredProjectRecord): Promise<StoredProjectRecord> {
     try {
       const database = await this.open();
       const transaction = database.transaction(browserProjectStoreNames.projects, 'readwrite');
-      transaction.objectStore(browserProjectStoreNames.projects).put({ ...record, openedAt: this.now() });
-      await this.commit(transaction, 'record recent project access');
+      const store = transaction.objectStore(browserProjectStoreNames.projects);
+      const record = await requestResult(store.get(projectId)) as StoredProjectRecord | undefined;
+      if (!record) throw new BrowserProjectStoreError('not-found', `Project "${projectId}" does not exist.`);
+      if (!projectIsValid(record.project, true)) throw new BrowserProjectStoreError('corrupt-data', `Project "${projectId}" is corrupt.`);
+      const updated = update(record);
+      store.put(updated);
+      await this.commit(transaction, operation);
+      return updated;
     } catch (error) {
-      throw mappedError(error, 'record recent project access');
+      throw mappedError(error, operation);
     }
+  }
+
+  async renameProject(projectId: string, name: string): Promise<StudioProject> {
+    if (!name.trim()) throw new BrowserProjectStoreError('invalid-request', 'Project name cannot be empty.');
+    const record = await this.updateRecord(projectId, 'rename the project', (current) => ({
+      ...current,
+      project: { ...current.project, name: name.trim() }
+    }));
+    return record.project;
+  }
+
+  async bindDirectory(projectId: string, directory: FileSystemDirectoryHandle): Promise<void> {
+    await this.updateRecord(projectId, 'remember the project folder', (current) => ({ ...current, directory }));
+  }
+
+  async directoryHandle(projectId: string): Promise<FileSystemDirectoryHandle | undefined> {
+    return (await this.readRecord(projectId)).directory;
   }
 
   async saveProject(request: StudioSaveRequest, allowLegacy = false): Promise<StudioSaveResult> {
@@ -280,23 +308,16 @@ export class BrowserProjectStore {
       throw new BrowserProjectStoreError('invalid-request', 'The project does not match the supported Studio project schema.');
     }
     try {
-      const existing = await this.readRecord(request.project.id);
-      if (request.expectedRevision && request.expectedRevision !== existing.project.revision) {
-        throw new BrowserProjectStoreError('conflict', 'The project changed after it was opened. Reload or inspect the conflict before saving.');
-      }
       const savedAt = this.now();
       const project = withContentHashes(request.project);
       project.metadata.updatedAt = savedAt;
-      project.revision = nextRevision(project, savedAt);
-      const database = await this.open();
-      const transaction = database.transaction(browserProjectStoreNames.projects, 'readwrite');
-      transaction.objectStore(browserProjectStoreNames.projects).put({
-        ...existing,
-        openedAt: savedAt,
-        project,
-        updatedAt: savedAt
-      } satisfies StoredProjectRecord);
-      await this.commit(transaction, 'save the project');
+      project.revision = nextRevision();
+      await this.updateRecord(project.id, 'save the project', (existing) => {
+        if (request.expectedRevision && request.expectedRevision !== existing.project.revision) {
+          throw new BrowserProjectStoreError('conflict', 'The project changed after it was opened. Reload or inspect the conflict before saving.');
+        }
+        return { ...existing, openedAt: savedAt, project: { ...project, name: existing.project.name }, updatedAt: savedAt };
+      });
       return { revision: project.revision, savedAt };
     } catch (error) {
       throw mappedError(error, 'save the project');

@@ -675,6 +675,14 @@
           "type": "integer",
           "minimum": 1
         },
+        "maxRegions": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maxPins": {
+          "type": "integer",
+          "minimum": 1
+        },
         "maxEdges": {
           "type": "integer",
           "minimum": 1
@@ -1288,7 +1296,9 @@
           "type": "number"
         },
         "iterations": {
-          "type": "number"
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
         },
         "linkDistance": {
           "type": "number"

@@ -103,6 +103,33 @@ test('manages active and inactive browser projects from the project manager', as
   await expect(projectButton).not.toContainText('Edge Lab copy');
 });
 
+test('renames a dirty active project without replacing edits or undo history', async ({ page }) => {
+  await page.goto('/');
+  await activateStudioPaletteTemplate(page, 'router');
+  await expect(page.locator('.react-flow__node')).toHaveCount(4);
+  await expect.poll(() => recoveryCount(page)).toBeGreaterThan(0);
+  const projectButton = page.getByRole('button', { name: 'Project menu' });
+  await projectButton.click();
+  const actions = await openProjectActions(page, 'Backbone topology');
+  await actions.getByRole('menuitem', { name: 'Rename' }).click();
+  const rename = page.getByRole('dialog', { name: 'Rename Backbone topology' });
+  await rename.getByRole('textbox', { name: 'Project name' }).fill('Renamed draft');
+  await rename.getByRole('button', { name: 'Rename' }).click();
+  await expect(projectButton).toContainText('Renamed draft');
+  await expect(page.locator('.react-flow__node')).toHaveCount(4);
+  await expect(page.locator('.studio-saved-state')).toHaveText('Modified');
+  await expect(page.getByRole('dialog', { name: 'Projects', exact: true })).not.toBeVisible();
+  await invokeStudioHeaderAction(page, 'Undo');
+  await expect(page.locator('.react-flow__node')).toHaveCount(3);
+  await expect(projectButton).toContainText('Renamed draft');
+  await invokeStudioHeaderAction(page, 'Redo');
+  await expect(page.locator('.react-flow__node')).toHaveCount(4);
+  await page.reload();
+  await expect(page.locator('.react-flow__node')).toHaveCount(4);
+  await expect(projectButton).toContainText('Renamed draft');
+  await expect(page.locator('.studio-saved-state')).toHaveText('Recovery');
+});
+
 test('opens a deterministic portable project archive through the host picker', async ({ page }) => {
   const project = createStarterProject({ id: 'imported-project', name: 'Imported topology' });
   const archive = encodeStudioProjectArchive(project);

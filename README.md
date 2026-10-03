@@ -179,6 +179,7 @@ Prerequisites:
 
 ```text
 Node.js >=24 <25
+npm >=11.21.0 <12 (CI pins 11.21.0)
 Python 3.9+
 Go >=1.25 (Desktop Studio only)
 ```
@@ -186,6 +187,7 @@ Go >=1.25 (Desktop Studio only)
 ```bash
 git clone https://github.com/asadarafat/topoviewer.git
 cd topoviewer
+npm install --global npm@11.21.0
 npm ci
 ```
 

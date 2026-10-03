@@ -1,5 +1,6 @@
 import type { EdgeChange, NodeChange } from '@xyflow/react';
 import type { TopoDocument, TopoViewerObjectDoubleClick } from '../core/types';
+import { createRuntimeIdentity } from '../core/runtimeIdentity';
 
 const runtimeOwnedNodeKeys = new Set([
   'dragging',
@@ -70,20 +71,26 @@ export function runtimeNodePosition(node: Record<string, unknown>): { x: number;
 }
 
 export function regionDragGroupRuntimeIds(document: TopoDocument, runtimeId: string): Set<string> {
-  if (!runtimeId.startsWith('region:')) return new Set([runtimeId]);
-  const rootRegionId = runtimeId.replace(/^region:/, '');
   const regions = document.graph?.regions || [];
+  if (!regions.length) return new Set([runtimeId]);
+  const identity = createRuntimeIdentity(document);
+  const regionRuntimeId = (id: string) => identity('region', [id], `region:${id}`);
+  const rootRegionId = regions.find((region) => regionRuntimeId(region.id) === runtimeId)?.id;
+  if (!rootRegionId) return new Set([runtimeId]);
   const byId = new Map(regions.map((region) => [region.id, region]));
   const excluded = new Set([runtimeId]);
+  const visited = new Set<string>();
   const visit = (regionId: string) => {
+    if (visited.has(regionId)) return;
+    visited.add(regionId);
     const region = byId.get(regionId);
     if (!region) return;
     (region.members || []).forEach((memberId) => {
-      excluded.add(memberId);
+      excluded.add(byId.has(memberId) ? regionRuntimeId(memberId) : memberId);
       if (byId.has(memberId)) visit(memberId);
     });
     regions.filter((candidate) => candidate.parent === regionId).forEach((child) => {
-      excluded.add(`region:${child.id}`);
+      excluded.add(regionRuntimeId(child.id));
       visit(child.id);
     });
   };
@@ -121,9 +128,10 @@ export function preserveRuntimeNodeMeasurements(nextNodes: unknown[], currentNod
   });
 }
 
-export function hasRegionPositionChange(changes: NodeChange[]) {
+export function hasRegionPositionChange(changes: NodeChange[], nodes: ReadonlyArray<{ id?: unknown; type?: unknown }>) {
+  const regions = new Set(nodes.filter((node) => node.type === 'region').map((node) => String(node.id)));
   return changes.some((change) => (
-    change.type === 'position' && String(change.id || '').startsWith('region:')
+    change.type === 'position' && regions.has(change.id)
   ));
 }
 

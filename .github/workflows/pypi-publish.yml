@@ -44,6 +44,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Set up npm for workspace overrides
+        run: npm install --global npm@11.21.0
+
       - name: Install Node dependencies
         run: npm ci
 
@@ -148,17 +151,8 @@ jobs:
       - name: Inspect MkDocs Python artifacts
         run: npm run inspect:mkdocs
 
-      - name: Validate built wheel imports
-        run: |
-          python -m venv .artifacts/pypi-wheel-smoke
-          .artifacts/pypi-wheel-smoke/bin/python -m pip install --quiet --upgrade pip
-          .artifacts/pypi-wheel-smoke/bin/python -m pip install .artifacts/mkdocs-dist/*.whl
-          .artifacts/pypi-wheel-smoke/bin/python - <<'PY'
-          from mkdocs_topoviewer.plugin import TopoViewerPlugin
-
-          if TopoViewerPlugin.__name__ != "TopoViewerPlugin":
-            raise SystemExit("TopoViewerPlugin import smoke failed")
-          PY
+      - name: Build real sites from the candidate wheel with minimum and latest MkDocs
+        run: npm run install:check:mkdocs:wheel
 
       - name: Upload Python package artifacts
         uses: actions/upload-artifact@v7

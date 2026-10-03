@@ -141,7 +141,7 @@ class TopoViewerPlugin(BasePlugin):
         return config
 
     def on_files(self, files_collection, config):
-        asset_root = files("mkdocs_topoviewer.assets")
+        asset_root = files("mkdocs_topoviewer").joinpath("assets")
         for asset_name in ASSET_FILES:
             asset = asset_root.joinpath(asset_name)
             files_collection.append(

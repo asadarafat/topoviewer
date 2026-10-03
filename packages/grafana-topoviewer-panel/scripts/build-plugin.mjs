@@ -8,6 +8,11 @@ const packageRoot = path.resolve(import.meta.dirname, '..');
 const repoRoot = path.resolve(packageRoot, '../..');
 const distRoot = path.join(packageRoot, 'dist');
 const backendExecutable = 'gpx_topoviewer-panel';
+const packageMetadata = JSON.parse(fs.readFileSync(path.join(packageRoot, 'package.json'), 'utf8'));
+const pluginMetadata = JSON.parse(fs.readFileSync(path.join(packageRoot, 'plugin.json'), 'utf8'));
+if (pluginMetadata.info.version !== packageMetadata.version) {
+  throw new Error(`Grafana plugin version ${pluginMetadata.info.version} does not match package version ${packageMetadata.version}. Update plugin.json before building.`);
+}
 
 function goArchForNodeArch(arch) {
   if (arch === 'arm64') return 'arm64';

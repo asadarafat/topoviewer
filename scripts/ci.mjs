@@ -113,7 +113,8 @@ const laneDefinitions = {
     })
   ],
   quality: [
-    step('lint and typecheck', 'npm', ['run', 'quality'])
+    step('lint and typecheck', 'npm', ['run', 'quality']),
+    step('test dependency audit failures and exceptions', 'npm', ['run', 'dependency:advisories:test'])
   ],
   'studio:quality': [
     step('run Studio quality contract', 'npm', ['run', 'studio:ci:quality'])
@@ -163,6 +164,9 @@ const laneDefinitions = {
   'test:topoviewer': [
     step('test TopoViewer', 'npm', ['test'])
   ],
+  'test:grafana': [
+    step('test Grafana frontend and Go backend', 'npm', ['run', 'grafana:panel:test'])
+  ],
   'perf:smoke': [
     step('attention smoke benchmark', 'npm', ['run', 'benchmark:attention:smoke']),
     step('CLOS layout smoke benchmark', 'npm', ['run', 'benchmark:clos:smoke']),
@@ -175,7 +179,8 @@ const laneDefinitions = {
     step('build Grafana plugin artifact', 'npm', ['run', 'grafana:panel:build']),
     step('inspect package artifacts', 'npm', ['run', 'artifact:check:package']),
     step('build MkDocs wheel', 'npm', ['run', 'wheel:mkdocs']),
-    step('inspect MkDocs wheel', 'npm', ['run', 'inspect:wheel'])
+    step('inspect MkDocs wheel', 'npm', ['run', 'inspect:wheel']),
+    step('build sites with candidate MkDocs wheel at minimum/latest dependency versions', 'npm', ['run', 'install:check:mkdocs:wheel'])
   ],
   'public-readiness:core': [
     ...publicReadinessContractSteps,
@@ -199,6 +204,7 @@ const fullLaneOrder = [
   'docs',
   'render-parity',
   'test:topoviewer',
+  'test:grafana',
   'perf:smoke',
   'package',
   'public-readiness'

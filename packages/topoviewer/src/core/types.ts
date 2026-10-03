@@ -205,6 +205,8 @@ export interface LayoutConfig {
 
 export interface RendererLimits {
   maxNodes?: number;
+  maxRegions?: number;
+  maxPins?: number;
   maxEdges?: number;
   maxPathSegments?: number;
   maxLabels?: number;

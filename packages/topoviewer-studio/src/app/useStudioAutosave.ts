@@ -28,15 +28,14 @@ export function useStudioAutosave(
         ? serializeStudioSourceDraftRecovery(sourceDrafts.getSnapshot())
         : undefined;
       if (
-        snapshot.status !== 'modified' &&
-        snapshot.status !== 'invalid-draft' &&
+        snapshot.status === 'saved' &&
         !candidateRecovery &&
         !sourceDraftRecovery
       ) {
         setError(undefined);
         return;
       }
-      const recoveryKey = `${snapshot.projection.sourceRevision}:${Object.values(snapshot.invalidDrafts)
+      const recoveryKey = `${snapshot.project.id}:${snapshot.project.revision}:${snapshot.project.name}:${snapshot.projection.sourceRevision}:${Object.values(snapshot.invalidDrafts)
         .map((draft) => draft?.text || '')
         .join('\u0000')}:${sourceDraftRecovery?.topology || ''}:${
         sourceDraftRecovery?.mapper || ''

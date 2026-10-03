@@ -58,6 +58,8 @@ export const stylesheetStructureFields: Record<StylesheetStructureSection, Style
   ],
   limits: [
     field('maxNodes', 'Maximum nodes', 'Maximum rendered node count.', 'maxNodes: '),
+    field('maxPins', 'Maximum pins', 'Maximum generated pin and absolute-anchor count.', 'maxPins: '),
+    field('maxRegions', 'Maximum regions', 'Maximum region count.', 'maxRegions: '),
     field('maxEdges', 'Maximum edges', 'Maximum rendered edge count.', 'maxEdges: '),
     field('maxPathSegments', 'Maximum path segments', 'Maximum compiled path-segment count.', 'maxPathSegments: '),
     field('maxLabels', 'Maximum labels', 'Maximum rendered label count.', 'maxLabels: '),

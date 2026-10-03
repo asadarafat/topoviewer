@@ -54,7 +54,7 @@ export interface StudioProjectLifecycleActions {
   open?: (id: string) => Promise<void>;
   openArchive?: (activate?: StudioProjectActivationGate) => Promise<void>;
   openFolder?: (activate?: StudioProjectActivationGate) => Promise<void>;
-  rename?: (id: string, name: string) => Promise<void>;
+  rename?: (id: string, name: string) => Promise<StudioProject | undefined>;
   resetStorage?: () => Promise<void>;
 }
 
@@ -102,11 +102,12 @@ export function ProjectMenu({ actions, project }: { actions: StudioProjectLifecy
     setRowMenuProjectId(undefined);
   }
 
-  async function run(label: string, action: () => Promise<void>, closeAfter = false) {
+  async function run<T>(label: string, action: () => Promise<T>, closeAfter = false) {
     setBusyAction(label);
     try {
-      await action();
+      const result = await action();
       if (closeAfter) closeManager();
+      return result;
     } finally {
       setBusyAction(undefined);
     }
@@ -383,7 +384,10 @@ export function ProjectMenu({ actions, project }: { actions: StudioProjectLifecy
             event.preventDefault();
             if (!renameTarget || !draftName.trim() || !actions.rename) return;
             const target = renameTarget;
-            void run(`Renaming ${target.name}`, () => actions.rename!(target.id, draftName.trim())).then(() => setRenameTarget(undefined));
+            void run(`Renaming ${target.name}`, () => actions.rename!(target.id, draftName.trim())).then((renamed) => {
+              setRenameTarget(undefined);
+              if (renamed && target.id === actions.activeProjectId) closeManager();
+            });
           }}
         >
           <StudioDialogTitle id="studio-rename-project-title">Rename {renameTarget?.name || 'project'}</StudioDialogTitle>

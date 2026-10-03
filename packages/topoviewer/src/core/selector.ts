@@ -49,6 +49,12 @@ export function selectorObjectIdReferences(selector: string): SelectorObjectIdRe
   ));
 }
 
+export function selectorReferencesField(selector: string, field: string): boolean {
+  return parseSelector(selector).conditions.some((condition) => (
+    condition.field === field || condition.field.startsWith(`${field}.`)
+  ));
+}
+
 export function rewriteSelectorFieldValue(
   selector: string,
   kind: string | undefined,

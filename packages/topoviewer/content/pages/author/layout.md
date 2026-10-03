@@ -51,6 +51,13 @@ layout:
 Force layout is useful for exploratory dependency graphs. It is less suitable
 than manual or tree layout when readers need a strict hierarchy.
 
+`iterations` must be a finite integer from 1 to 1000 (default: 180). The same
+bound applies to runtime layout overrides and direct layout-provider calls so a
+document cannot request an unbounded synchronous simulation.
+Force parameters must be finite with absolute values at most 1,000,000.
+Initial and simulated coordinates must stay finite and within ±1,000,000,000,000;
+divergent simulations fail with a diagnostic instead of entering the next tick.
+
 ## Generic CLOS Layout
 
 Use CLOS layout when the graph is layered and dense. CLOS options belong under

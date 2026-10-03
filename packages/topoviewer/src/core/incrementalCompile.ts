@@ -1,4 +1,6 @@
 import type { CompiledGraph, LayoutConfig, PositionTuple, TopoDocument } from './types';
+import { initialPositions } from './layout';
+import { selectorReferencesField } from './selector';
 
 function positionValue(value: PositionTuple | { x: number; y: number } | undefined) {
   if (Array.isArray(value)) return { x: Number(value[0] || 0), y: Number(value[1] || 0) };
@@ -73,6 +75,10 @@ export function supportsPositionOnlyCompile({
   const layout = { ...(document.layout || {}), ...(layoutOverride || {}) };
   return !hasExtensions
     && layout.mode === 'manual'
+    && !(document.stylesheet || []).some((rule) => selectorReferencesField(rule.selector, 'position'))
+    // Position creates/removes the box of an otherwise leader-only callout.
+    // Those updates can change node/pin cardinality and leader endpoints.
+    && !(document.diagram?.callouts || []).some((callout) => !callout.title && !callout.body && !callout.markdown)
     && !(document.graph?.regions || []).length
     && !(document.graph?.nodes || []).some((node) => !!node.parent)
     && !(document.attention?.aggregate?.groups || []).length
@@ -80,21 +86,34 @@ export function supportsPositionOnlyCompile({
 }
 
 export function patchCompiledPositions(graph: CompiledGraph, document: TopoDocument): CompiledGraph {
-  const positions = new Map<string, { x: number; y: number }>();
-  (document.graph?.nodes || []).forEach((node) => positions.set(node.id, positionValue(node.position)));
+  const selectedLayers = new Set(graph.selectedLayerIds);
+  const positions = initialPositions((document.graph?.nodes || []).filter((node) => (
+    (node.layers || []).some((layer) => selectedLayers.has(layer))
+  )));
   (document.diagram?.shapes || []).forEach((shape) => positions.set(shape.id, positionValue(shape.position)));
   (document.diagram?.callouts || []).forEach((callout) => positions.set(callout.id, positionValue(callout.position)));
   (document.diagram?.texts || []).forEach((text) => positions.set(text.id, positionValue(text.position)));
+  const sourceById = new Map([
+    ...(document.graph?.nodes || []), ...(document.diagram?.shapes || []),
+    ...(document.diagram?.callouts || []), ...(document.diagram?.texts || [])
+  ].map((object) => [object.id, object]));
 
   let changed = false;
   const nodes = graph.nodes.map((node) => {
     const nextPosition = positions.get(String(node.id || ''));
-    if (!nextPosition || (
-      Math.abs(node.position.x - nextPosition.x) < 0.5
-      && Math.abs(node.position.y - nextPosition.y) < 0.5
-    )) return node;
+    const source = sourceById.get(node.id);
+    if (!nextPosition || !source) return node;
+    const sourceData = source.data && Object.prototype.hasOwnProperty.call(source.data, 'position') ? source.data : source;
+    const hasPositionData = Object.prototype.hasOwnProperty.call(sourceData, 'position');
+    const nextPositionData = sourceData.position;
+    const samePositionData = JSON.stringify(node.data.position) === JSON.stringify(nextPositionData)
+      && Object.prototype.hasOwnProperty.call(node.data, 'position') === hasPositionData;
+    if (node.position.x === nextPosition.x && node.position.y === nextPosition.y && samePositionData) return node;
     changed = true;
-    return { ...node, position: nextPosition };
+    const data = { ...node.data };
+    if (hasPositionData) data.position = nextPositionData as typeof data.position;
+    else delete data.position;
+    return { ...node, position: nextPosition, data };
   });
   return changed ? { ...graph, nodes } : graph;
 }

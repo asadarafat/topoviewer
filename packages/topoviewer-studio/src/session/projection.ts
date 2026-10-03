@@ -1,6 +1,7 @@
 import { composeTopoViewerDocument, lintTopoDocument, validateTopoDocument, type TopoDocument } from 'topoviewer';
 import type { StudioDiagnostic, StudioDocumentKind } from '../contracts/project';
 import { validateStudioAssetContent } from '../security/assetSecurity';
+import { studioRendererLimitViolations } from '../security/rendererLimits';
 import { parseStudioSource, sourceRangeAtPath } from './yamlSource';
 import type { ParsedStudioSource, StudioYamlPath } from './types';
 
@@ -196,6 +197,19 @@ export function buildProjection(textByKind: Partial<Record<StudioDocumentKind, s
         }
       ],
       ok: false
+    };
+  }
+
+  const limitViolations = studioRendererLimitViolations(document);
+  if (limitViolations.length) {
+    return {
+      ok: false,
+      diagnostics: limitViolations.map((message) => ({
+        code: 'studio-renderer-limit',
+        document: 'topology',
+        message: `Studio capacity exceeded: ${message}`,
+        severity: 'error'
+      }))
     };
   }
 

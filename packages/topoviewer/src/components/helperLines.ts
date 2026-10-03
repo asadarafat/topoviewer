@@ -270,7 +270,7 @@ function sizeFromNode(node: HelperLineNodeLike) {
 
 export function helperLineBoxFromNode(node: HelperLineNodeLike, overridePosition?: { x: number; y: number }): HelperLineBox | undefined {
   const id = String(node.id || '');
-  if (!id || id.startsWith('pin:')) return undefined;
+  if (!id || node.type === 'pin') return undefined;
   const position = overridePosition || positionFromNode(node);
   const size = sizeFromNode(node);
   return {

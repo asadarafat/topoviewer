@@ -172,6 +172,51 @@ async function loadProject(host: DesktopApplicationHost): Promise<StudioProject>
 }
 
 describe('DesktopApplicationHost', () => {
+  it('restores directory recovery after reopening with a fresh native authority token', async () => {
+    const client = new FakeLifecycleClient();
+    client.startupReference = { name: 'Saved project', revision: 'sha256-existing', token: 'previous-process-token' };
+    client.files.set('topology.yaml', 'graph:\n  id: disk-project\n  nodes: []\n  links: []\n');
+    client.files.set('stylesheet.yaml', 'stylesheet: []\n');
+    const previous = await DesktopApplicationHost.create(client);
+    const draft = await loadProject(previous);
+    draft.documents.topology.text = draft.documents.topology.text.replace('disk-project', 'recoverable-draft');
+    expect((await previous.saveRecovery({
+      capturedAt: '2026-10-03T12:00:00Z', project: draft, reason: 'autosave', sourceRevision: 'draft-source'
+    })).ok).toBe(true);
+
+    // Native recovery is stored by canonical directory; ApproveRoot renews its
+    // authority token on every open, including process restart.
+    client.startupReference = { ...client.startupReference, token: 'new-process-token' };
+    const reopened = await DesktopApplicationHost.create(client);
+    const loaded = await reopened.loadProject();
+    expect(loaded).toMatchObject({
+      ok: true,
+      value: {
+        project: { id: 'new-process-token' },
+        recovery: { project: { id: 'new-process-token', documents: {
+          topology: { text: expect.stringContaining('recoverable-draft') }
+        } } }
+      }
+    });
+    // Rebinding the returned snapshot must not mutate stored/native data.
+    expect((client.recovery as { project: StudioProject }).project.id).toBe('previous-process-token');
+  });
+
+  it('rejects an old session recovery after folder authority has switched', async () => {
+    const client = new FakeLifecycleClient();
+    const host = await DesktopApplicationHost.create(client);
+    const oldProject = await loadProject(host);
+    client.openReference = { name: 'New project', revision: 'sha256-new', token: 'new-token' };
+    client.files.set('topology.yaml', 'graph:\n  id: new-project\n  nodes: []\n  links: []\n');
+    client.files.set('stylesheet.yaml', 'stylesheet: []\n');
+    expect((await host.openProjectFolder()).ok).toBe(true);
+    expect(await host.saveRecovery({
+      capturedAt: '2026-10-03T12:00:00Z', project: oldProject, reason: 'autosave', sourceRevision: 'old-source'
+    })).toMatchObject({ ok: false, error: { code: 'conflict' } });
+    expect(client.recovery).toBeUndefined();
+    expect((await loadProject(host)).id).toBe('new-token');
+  });
+
   it('discards an untitled recovery snapshot when canonical source is requested', async () => {
     const client = new FakeLifecycleClient();
     const host = await DesktopApplicationHost.create(client);

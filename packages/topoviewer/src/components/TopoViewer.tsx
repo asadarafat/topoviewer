@@ -332,7 +332,7 @@ function TopoFlow({
           activeDragLatestPositionsRef.current.set(change.id, change.position);
         }
       });
-      const canApplyPositionOnlyChange = hasPositionChange && !hasRegionPositionChange(nextChanges) && (hasActivePositionDrag || !showRegions || !document.graph?.regions?.length);
+      const canApplyPositionOnlyChange = hasPositionChange && !hasRegionPositionChange(nextChanges, nodesRef.current) && (hasActivePositionDrag || !showRegions || !document.graph?.regions?.length);
       if (canApplyPositionOnlyChange) {
         setNodes((currentNodes) => {
           const nextNodes = applyNodeChanges(nextChanges, currentNodes) as never[];

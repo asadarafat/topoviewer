@@ -9,6 +9,8 @@ import {
   type StudioStylesheetCandidateController
 } from '../../session';
 
+const pendingProjectSaves = new WeakMap<StudioDocumentSession, Promise<boolean>>();
+
 interface StudioProjectCapabilityOptions {
   announce(message: string): void;
   applyStylesheetCandidate(): boolean;
@@ -59,6 +61,41 @@ export function createStudioProjectCapability({
   stylesheetCandidate,
   synchronizeAfterHistory
 }: StudioProjectCapabilityOptions) {
+  async function saveProject() {
+    if (sourceDrafts.getSnapshot().dirty) {
+      setError('Apply or revert the unapplied topology or mapper source before saving.');
+      announce('Project save blocked by an unapplied source draft');
+      return false;
+    }
+    if (!applyStylesheetCandidate()) return false;
+    session.setStatus('saving');
+    refresh();
+    const current = session.snapshot();
+    const result = await host.saveProject({
+      expectedRevision: current.project.revision,
+      project: current.project
+    });
+    if (!result.ok) {
+      session.setStatus(result.error.code === 'conflict' ? 'conflict' : Object.keys(session.snapshot().invalidDrafts).length > 0 ? 'invalid-draft' : 'modified');
+      const message = `Save failed: ${result.error.message}`;
+      setError(message);
+      announce(message);
+      refresh();
+      return false;
+    }
+    session.markSaved(result.value.revision, result.value.savedAt, current.projection.sourceRevision);
+    if (session.snapshot().status === 'conflict') {
+      setError('The project changed outside Studio while saving. Resolve the external change before continuing.');
+      announce('Save completed; an external project conflict still needs resolution');
+      refresh();
+      return false;
+    }
+    setError(undefined);
+    announce(session.snapshot().status === 'saved' ? 'Project saved' : 'Project saved; newer edits remain unsaved');
+    refresh();
+    return true;
+  }
+
   return {
     canRedo: dispatcher.canRedo(),
     canUndo: dispatcher.canUndo(),
@@ -69,6 +106,8 @@ export function createStudioProjectCapability({
       refresh();
     },
     async flushRecovery() {
+      const pendingSave = pendingProjectSaves.get(session);
+      if (pendingSave && !await pendingSave) return false;
       const result = await saveRecoveryBeforeReload(
         session,
         host,
@@ -104,33 +143,16 @@ export function createStudioProjectCapability({
       refresh();
     },
     reload: onReload,
-    async save() {
-      if (sourceDrafts.getSnapshot().dirty) {
-        setError('Apply or revert the unapplied topology or mapper source before saving.');
-        announce('Project save blocked by an unapplied source draft');
-        return false;
-      }
-      if (!applyStylesheetCandidate()) return false;
-      session.setStatus('saving');
+    renameProject(name: string) {
+      session.renameProject(name);
       refresh();
-      const current = session.snapshot();
-      const result = await host.saveProject({
-        expectedRevision: current.project.revision,
-        project: current.project
-      });
-      if (!result.ok) {
-        session.setStatus(result.error.code === 'conflict' ? 'conflict' : 'modified');
-        const message = `Save failed: ${result.error.message}`;
-        setError(message);
-        announce(message);
-        refresh();
-        return false;
-      }
-      session.markSaved(result.value.revision, result.value.savedAt);
-      setError(undefined);
-      announce('Project saved');
-      refresh();
-      return true;
+    },
+    save() {
+      const existing = pendingProjectSaves.get(session);
+      if (existing) return existing;
+      const pending = saveProject().finally(() => pendingProjectSaves.delete(session));
+      pendingProjectSaves.set(session, pending);
+      return pending;
     },
     undo() {
       const before = session.snapshot();

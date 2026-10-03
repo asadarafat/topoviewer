@@ -83,6 +83,15 @@ signals that require triage. Do not run forced dependency upgrades into release
 branches without validating build, visual, interaction, docs, and
 package-artifact behavior.
 
+`npm run dependency:advisories` rejects failed, incomplete, or inconsistent npm
+audit responses. Production findings are always blocking. Temporary development
+exceptions live in `scripts/dependency-audit-exceptions.json`; each is limited
+to reviewed advisory URLs, severities, affected ranges, exact locked versions,
+and development-only install paths. Transitive findings must resolve to those
+same advisories. The policy records an owner and expiry; a new advisory,
+different dependency version/path, or expired exception requires a fresh review.
+Run `npm run dependency:advisories:test` to exercise these failure cases offline.
+
 ## Automated Security Monitoring
 
 The repository uses scheduled and pull-request security automation as an early

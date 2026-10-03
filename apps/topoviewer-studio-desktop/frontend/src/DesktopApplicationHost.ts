@@ -248,6 +248,16 @@ export class DesktopApplicationHost implements StudioHost {
   report(_event: StudioHostEvent): void {}
 
   async saveRecovery(snapshot: StudioRecoverySnapshot): Promise<StudioResult<void>> {
+    if (snapshot.project.id !== this.projectReference.token) {
+      return {
+        error: {
+          code: 'conflict',
+          message: 'The recovery snapshot belongs to a project that is no longer open.',
+          retryable: false
+        },
+        ok: false
+      };
+    }
     try {
       await this.systemPort().writeRecovery(snapshot);
       return ok(undefined);

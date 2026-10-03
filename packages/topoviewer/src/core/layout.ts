@@ -3,6 +3,7 @@ import type { GraphLink, GraphNode, LayoutConfig } from './types';
 import { computeClosLayoutPositions } from './closLayout';
 import { computeTreeLayoutPositions } from './treeLayout';
 import type { LayoutPosition, LayoutPositions } from './layoutTypes';
+import { assertSafeForcePositions, forceLayoutIterations, forceLayoutParameter } from './layoutLimits';
 
 export type { LayoutPosition, LayoutPositions } from './layoutTypes';
 
@@ -32,7 +33,7 @@ function normalizePosition(position: GraphNode['position']): LayoutPosition {
   return { x: 0, y: 0 };
 }
 
-function initialPositions(nodes: readonly GraphNode[]): LayoutPositions {
+export function initialPositions(nodes: readonly GraphNode[]): LayoutPositions {
   const positions: LayoutPositions = new Map();
   nodes.forEach((node, index) => {
     const fallback = {
@@ -59,8 +60,13 @@ function layoutProvider(mode: string, compute: LayoutProvider['compute']): Layou
 const manualProvider = layoutProvider('manual', ({ initialPositions: positions }) => new Map(positions));
 
 const forceProvider = layoutProvider('force', ({ nodes, links, layout, initialPositions: positions }) => {
-    const width = layout.width || 1280;
-    const height = layout.height || 720;
+    const iterations = forceLayoutIterations(layout.iterations);
+    const width = forceLayoutParameter('width', layout.width, 1280);
+    const height = forceLayoutParameter('height', layout.height, 720);
+    const linkDistance = forceLayoutParameter('linkDistance', layout.linkDistance, 160);
+    const chargeStrength = forceLayoutParameter('chargeStrength', layout.chargeStrength, -520);
+    const collideRadius = forceLayoutParameter('collideRadius', layout.collideRadius, 58);
+    const centerStrength = forceLayoutParameter('centerStrength', layout.centerStrength, 0.08);
     const simulationNodes: ForceNode[] = nodes.map((node) => ({
       id: node.id,
       ...(positions.get(node.id) || { x: width / 2, y: height / 2 })
@@ -69,15 +75,19 @@ const forceProvider = layoutProvider('force', ({ nodes, links, layout, initialPo
       .filter((link) => positions.has(link.source) && positions.has(link.target))
       .map((link) => ({ source: link.source, target: link.target }));
 
+    assertSafeForcePositions(simulationNodes);
     const simulation = forceSimulation(simulationNodes)
       .randomSource(seededRandom())
-      .force('link', forceLink<ForceNode, { source: string; target: string }>(linkData).id((node) => node.id).distance(layout.linkDistance || 160).strength(0.55))
-      .force('charge', forceManyBody().strength(layout.chargeStrength || -520))
-      .force('collide', forceCollide(layout.collideRadius || 58).strength(0.88))
-      .force('center', forceCenter(width / 2, height / 2).strength(layout.centerStrength || 0.08))
+      .force('link', forceLink<ForceNode, { source: string; target: string }>(linkData).id((node) => node.id).distance(linkDistance).strength(0.55))
+      .force('charge', forceManyBody().strength(chargeStrength))
+      .force('collide', forceCollide(collideRadius).strength(0.88))
+      .force('center', forceCenter(width / 2, height / 2).strength(centerStrength))
       .stop();
 
-    for (let index = 0; index < (layout.iterations || 180); index += 1) simulation.tick();
+    for (let index = 0; index < iterations; index += 1) {
+      simulation.tick();
+      assertSafeForcePositions(simulationNodes);
+    }
 
     return new Map(simulationNodes.map((node) => [node.id, {
       x: Number(node.x || 0),
@@ -123,6 +133,7 @@ export function computeLayoutPositions(
   providers?: LayoutProviderRegistry
 ): LayoutPositions {
   const mode = layout.mode || 'force';
+  if (mode === 'force') forceLayoutIterations(layout.iterations);
   const provider = providers?.get(mode) || BUILT_IN_LAYOUT_PROVIDERS.get(mode);
   if (!provider) {
     const registered = uniqueProviderIds(providers);

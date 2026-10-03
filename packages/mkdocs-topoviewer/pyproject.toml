@@ -28,7 +28,7 @@ classifiers = [
   "Topic :: Documentation"
 ]
 dependencies = [
-  "mkdocs>=1.5,<2",
+  "mkdocs>=1.6,<2",
   "PyYAML>=6.0"
 ]
 

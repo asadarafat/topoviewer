@@ -5,6 +5,7 @@ import { parseNodeShapePoints } from './nodeShapes';
 import { canonicalStyleKeyByLowercase } from './styleDefaults';
 import type { TopoDocument } from './types';
 import { TOPOLOGY_OBJECT_PRESENTATION_FIELDS } from './topologyOwnership';
+import { MAX_FORCE_LAYOUT_ITERATIONS } from './layoutLimits';
 
 const scalarSchema = z.union([z.string(), z.number(), z.boolean()]);
 const labelsSchema = z.record(scalarSchema);
@@ -94,8 +95,8 @@ const styleSchema = z.record(z.unknown()).superRefine((style, ctx) => {
 });
 
 const positionSchema = z.union([
-  z.tuple([z.number(), z.number()]),
-  z.object({ x: z.number(), y: z.number() }).passthrough()
+  z.tuple([z.number().finite(), z.number().finite()]),
+  z.object({ x: z.number().finite(), y: z.number().finite() }).passthrough()
 ]);
 
 const inferLabelRoleSchema = z.union([
@@ -146,7 +147,7 @@ const layoutSchema = z.object({
   mode: z.enum(['manual', 'force', 'clos', 'tree']).optional(),
   width: z.number().optional(),
   height: z.number().optional(),
-  iterations: z.number().optional(),
+  iterations: z.number().int().min(1).max(MAX_FORCE_LAYOUT_ITERATIONS).optional(),
   linkDistance: z.number().optional(),
   chargeStrength: z.number().optional(),
   collideRadius: z.number().optional(),
@@ -158,6 +159,8 @@ const layoutSchema = z.object({
 
 const limitsSchema = z.object({
   maxNodes: z.number().int().positive().optional(),
+  maxRegions: z.number().int().positive().optional(),
+  maxPins: z.number().int().positive().optional(),
   maxEdges: z.number().int().positive().optional(),
   maxPathSegments: z.number().int().positive().optional(),
   maxLabels: z.number().int().positive().optional(),

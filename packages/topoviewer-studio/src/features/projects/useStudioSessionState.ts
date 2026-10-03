@@ -6,13 +6,12 @@ import { createStudioDocumentSession, type StudioNormalizationReview } from '../
 export function useStudioSessionState(project: StudioProject, recovery?: StudioRecoverySnapshot) {
   const session = useMemo(() => {
     const next = createStudioDocumentSession(project);
+    if (recovery) next.setStatus('recovery');
     const invalidDrafts = Object.values(recovery?.invalidDrafts || {}).filter(Boolean);
     if (invalidDrafts.length) {
       invalidDrafts.forEach((draft) => {
         if (draft) next.replaceDraft(draft.document, draft.text);
       });
-    } else if (recovery) {
-      next.setStatus('recovery');
     }
     return next;
   }, [project, recovery]);

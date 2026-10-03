@@ -1,0 +1,32 @@
+{
+  "owner": "@asadarafat",
+  "reviewed": "2026-10-03",
+  "expires": "2026-11-02",
+  "reason": "Grafana SDK 13.1.1 externalizes its runtime and retains React Router 6 compatibility dependencies. These two previously accepted React Router advisories have no compatible 6.x patch. A Grafana SDK migration requires separate compatibility validation. All other/new advisories fail.",
+  "packages": {
+    "@grafana/data": {
+      "maxSeverity": "moderate",
+      "nodes": { "node_modules/@grafana/data": "13.1.1" }
+    },
+    "@grafana/runtime": {
+      "maxSeverity": "moderate",
+      "nodes": { "node_modules/@grafana/runtime": "13.1.1" }
+    },
+    "@grafana/ui": {
+      "maxSeverity": "moderate",
+      "nodes": { "node_modules/@grafana/ui": "13.1.1" }
+    },
+    "react-router-dom-v5-compat": {
+      "maxSeverity": "moderate",
+      "nodes": { "node_modules/react-router-dom-v5-compat": "6.30.4" }
+    },
+    "react-router": {
+      "maxSeverity": "moderate",
+      "nodes": { "node_modules/react-router-dom-v5-compat/node_modules/react-router": "6.30.4" },
+      "advisories": {
+        "https://github.com/advisories/GHSA-wrjc-x8rr-h8h6": { "maxSeverity": "moderate", "range": ">=6.0.0 <7.18.0" },
+        "https://github.com/advisories/GHSA-337j-9hxr-rhxg": { "maxSeverity": "moderate", "range": ">=6.4.0 <7.18.0" }
+      }
+    }
+  }
+}

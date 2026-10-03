@@ -21,6 +21,7 @@ import {
 } from '../features/workspace/workbenchLayout';
 import { defaultStudioViewportPreferences, normalizeStudioViewportPreferences, type StudioViewportPreferences } from '../features/viewport/types';
 import type { StudioProjectLifecycleActions } from '../features/projects/ProjectMenu';
+import { openStudioProjectFolder } from '../features/projects/projectLifecycle';
 import { serializeStudioSourceDraftRecovery, serializeStylesheetCandidateRecovery } from '../session';
 import { useStudioController } from './useStudioController';
 import { useStudioAutosave } from './useStudioAutosave';
@@ -145,7 +146,16 @@ export function StudioWorkspace({ forceEditorFailure, forceOptionalSurfaceFailur
       : {}),
     ...(projectLifecycle.openFolder
       ? {
-          openFolder: () => projectLifecycle.openFolder!((activate) => beforeProjectSwitch(activate, 'Opening a folder'))
+          openFolder: () => openStudioProjectFolder(host.kind, projectLifecycle.openFolder!, (activate) => beforeProjectSwitch(activate, 'Opening a folder'))
+        }
+      : {}),
+    ...(projectLifecycle.rename
+      ? {
+          rename: async (id: string, name: string) => {
+            const renamed = await projectLifecycle.rename!(id, name);
+            if (renamed && id === controller.snapshot.project.id) controller.renameProject(renamed.name);
+            return renamed;
+          }
         }
       : {})
   };

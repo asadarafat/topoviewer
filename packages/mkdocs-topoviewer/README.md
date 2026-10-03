@@ -24,6 +24,9 @@ The dependency direction is one way: build TopoViewer first, then vendor its bro
 
 ## Install
 
+Requires Python 3.9+ and MkDocs 1.6 or later, below 2.0. The plugin uses
+MkDocs 1.6's generated-file API to ship its browser assets.
+
 Install from PyPI:
 
 ```bash
@@ -101,6 +104,19 @@ python -m build
 ```
 
 The plugin package should remain independently buildable and publishable. Do not import source files from `../topoviewer`; use only the vendored browser assets under `mkdocs_topoviewer/assets/`.
+
+From the repository root, validate the candidate wheel with real site builds:
+
+```bash
+npm run dist:mkdocs
+npm run inspect:mkdocs
+npm run install:check:mkdocs:wheel
+```
+
+This installs the local wheel into clean environments with MkDocs 1.6.0 and
+the latest release below 2.0, then verifies embeds, relative references, and
+generated assets. CI repeats those builds on Python 3.9 and 3.14. The separate
+`install:check:mkdocs` command checks the already published PyPI package.
 
 ## Release Model
 

@@ -1,6 +1,7 @@
 import { applyNodeChanges, type NodeChange } from '@xyflow/react';
 import { rebuildRegionNodes } from '../core/compiler';
 import type { GraphRegion, TopoDocument } from '../core/types';
+import { sourceObjectId } from './runtimeGraph';
 
 function normalizePosition(position: unknown): { x: number; y: number } {
   if (Array.isArray(position)) return { x: Number(position[0] || 0), y: Number(position[1] || 0) };
@@ -11,21 +12,17 @@ function normalizePosition(position: unknown): { x: number; y: number } {
   return { x: 0, y: 0 };
 }
 
-function regionIdFromNodeId(nodeId = ''): string {
-  return nodeId.replace(/^region:/, '');
-}
-
 function regionDragDeltas(changes: NodeChange[], currentNodes: Array<Record<string, unknown>>) {
   const nodeById = new Map(currentNodes.map((node) => [String(node.id), node]));
   return changes.reduce((deltas, change) => {
-    if (change.type !== 'position' || !change.id?.startsWith('region:') || !change.position) return deltas;
+    if (change.type !== 'position' || !change.position) return deltas;
     const current = nodeById.get(change.id);
-    if (!current) return deltas;
+    if (!current || current.type !== 'region') return deltas;
     const currentPosition = normalizePosition(current.position);
     const dx = change.position.x - currentPosition.x;
     const dy = change.position.y - currentPosition.y;
     if (dx === 0 && dy === 0) return deltas;
-    deltas.set(regionIdFromNodeId(change.id), { dx, dy });
+    deltas.set(sourceObjectId(current), { dx, dy });
     return deltas;
   }, new Map<string, { dx: number; dy: number }>());
 }
@@ -113,8 +110,9 @@ export function applyTopoNodeChanges({
 }): never[] {
   const current = currentNodes as unknown as Array<Record<string, unknown>>;
   const regionDeltas = regionDragDeltas(changes, current);
+  const regionNodeIds = new Set(current.filter((node) => node.type === 'region').map((node) => node.id));
   const directlyMovedNodeIds = new Set(changes.flatMap((change) => (
-    change.type === 'position' && change.id && !change.id.startsWith('region:') ? [change.id] : []
+    change.type === 'position' && change.id && !regionNodeIds.has(change.id) ? [change.id] : []
   )));
   const changedNodes = applyNodeChanges(changes, currentNodes) as unknown as Array<Record<string, unknown>>;
   const translatedNodes = translateRegionMembers(changedNodes, regionDeltas, document.graph?.regions || [], directlyMovedNodeIds);

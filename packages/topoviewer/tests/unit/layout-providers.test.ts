@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   BUILT_IN_LAYOUT_PROVIDERS,
+  compileTopoGraph,
   computeLayoutPositions,
   validateTopoDocument,
   type GraphLink,
@@ -30,6 +31,37 @@ const treeLinks: GraphLink[] = [
 ];
 
 describe('layout provider contract', () => {
+  it.each([Infinity, -Infinity, Number.NaN, 0, -1, 1.5, 1001, 1e9])('rejects unsafe force iterations %s before executing layout', (iterations) => {
+    expect(() => validateTopoDocument({ layout: { mode: 'force', iterations } })).toThrow();
+    expect(() => computeLayoutPositions([{ id: 'a' }], [], { mode: 'force', iterations })).toThrow(/iterations/);
+    expect(() => computeLayoutPositions([], [], { mode: 'force', iterations })).toThrow(/iterations/);
+    expect(() => compileTopoGraph({ graph: { nodes: [{ id: 'a', layers: ['l'] }] } }, ['l'], {}, { mode: 'force', iterations }))
+      .toThrow(/iterations/);
+    expect(() => BUILT_IN_LAYOUT_PROVIDERS.get('force')!.compute({
+      nodes: [{ id: 'a' }], links: [], layout: { iterations }, initialPositions: new Map()
+    })).toThrow(/iterations/);
+  });
+
+  it('accepts bounded force layouts and keeps their output deterministic', () => {
+    const first = computeLayoutPositions([{ id: 'a' }], [], { mode: 'force', iterations: 1000 });
+    const second = computeLayoutPositions([{ id: 'a' }], [], { mode: 'force', iterations: 1000 });
+    expect([...first]).toEqual([...second]);
+    expect([...first.values()].every(({ x, y }) => Number.isFinite(x) && Number.isFinite(y))).toBe(true);
+  });
+
+  it.each([Infinity, -Infinity, 1e100])('rejects unsafe force coordinates %s before d3 builds a quadtree', (coordinate) => {
+    expect(() => computeLayoutPositions([{ id: 'a', position: [coordinate, 0] }], [], { mode: 'force' }))
+      .toThrow(/coordinates/);
+  });
+
+  it.each(['width', 'height', 'chargeStrength', 'collideRadius', 'linkDistance', 'centerStrength'] as const)(
+    'rejects unsafe force parameter %s in direct calls and overrides', (parameter) => {
+      expect(() => computeLayoutPositions([{ id: 'a' }], [], { mode: 'force', [parameter]: Infinity })).toThrow(/finite/);
+      expect(() => compileTopoGraph({ graph: { nodes: [{ id: 'a', layers: ['l'] }] } }, ['l'], {}, { mode: 'force', [parameter]: 1e100 }))
+        .toThrow(/absolute value/);
+    }
+  );
+
   it('publishes immutable built-in providers and dispatches trusted extensions', () => {
     expect([...BUILT_IN_LAYOUT_PROVIDERS.keys()]).toEqual(['manual', 'force', 'clos', 'tree']);
     expect(Object.isFrozen(BUILT_IN_LAYOUT_PROVIDERS)).toBe(true);

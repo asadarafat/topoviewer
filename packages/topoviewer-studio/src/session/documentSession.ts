@@ -59,6 +59,7 @@ export function createStudioDocumentSession(initialProject: StudioProject): Stud
 
   let sources: ParsedSources = initialProjection.sources;
   let pendingReview: StudioNormalizationReview | undefined;
+  let savedSourceRevision: string | undefined = stableProjectSourceRevision(initialProject);
   const invalidBaseStatuses: Partial<Record<StudioDocumentKind, StudioSessionSnapshot['status']>> = {};
   let current = immutableSnapshot({
     invalidDrafts: {},
@@ -314,8 +315,12 @@ export function createStudioDocumentSession(initialProject: StudioProject): Stud
       const invalidDrafts = { ...current.invalidDrafts };
       delete invalidDrafts[kind];
       const remainingInvalid = Object.keys(invalidDrafts).length > 0;
-      const fallback = current.project.revision === initialProject.revision ? 'saved' : 'modified';
-      const status = remainingInvalid ? 'invalid-draft' : invalidBaseStatuses[kind] || fallback;
+      const baseStatus = invalidBaseStatuses[kind];
+      const status = remainingInvalid
+        ? 'invalid-draft'
+        : baseStatus === 'conflict' || baseStatus === 'recovery'
+          ? baseStatus
+          : current.projection.sourceRevision === savedSourceRevision ? 'saved' : 'modified';
       delete invalidBaseStatuses[kind];
       current = immutableSnapshot({ ...current, invalidDrafts, status });
     },
@@ -372,7 +377,8 @@ export function createStudioDocumentSession(initialProject: StudioProject): Stud
           ])
         : applyText(kind, text, path);
     },
-    markSaved(revision, savedAt) {
+    markSaved(revision, savedAt, sourceRevision = current.projection.sourceRevision) {
+      savedSourceRevision = current.status === 'conflict' ? undefined : sourceRevision;
       current = immutableSnapshot({
         ...current,
         project: {
@@ -380,8 +386,15 @@ export function createStudioDocumentSession(initialProject: StudioProject): Stud
           metadata: { ...current.project.metadata, updatedAt: savedAt },
           revision
         },
-        status: 'saved'
+        status: current.status === 'conflict'
+          ? 'conflict'
+          : Object.keys(current.invalidDrafts).length > 0
+            ? 'invalid-draft'
+            : current.projection.sourceRevision === savedSourceRevision ? 'saved' : 'modified'
       });
+    },
+    renameProject(name) {
+      current = immutableSnapshot({ ...current, project: { ...current.project, name } });
     },
     moveSequenceValue(kind, path, from, to) {
       const source = sources[kind];
@@ -412,6 +425,7 @@ export function createStudioDocumentSession(initialProject: StudioProject): Stud
       return sources[kind];
     },
     rebaseRevision(revision) {
+      savedSourceRevision = undefined;
       current = immutableSnapshot({
         ...current,
         project: { ...current.project, revision },
@@ -484,7 +498,20 @@ export function createStudioDocumentSession(initialProject: StudioProject): Stud
       sources = projection.sources;
       pendingReview = undefined;
       for (const kind of ['topology', 'stylesheet', 'mapper'] as const) delete invalidBaseStatuses[kind];
-      current = immutableSnapshot(snapshot);
+      current = immutableSnapshot({
+        ...snapshot,
+        project: {
+          ...snapshot.project,
+          name: current.project.name,
+          metadata: current.project.metadata,
+          revision: current.project.revision
+        },
+        status: Object.keys(snapshot.invalidDrafts).length > 0
+          ? 'invalid-draft'
+          : snapshot.status === 'conflict'
+            ? 'conflict'
+            : snapshot.projection.sourceRevision === savedSourceRevision ? 'saved' : 'modified'
+      });
     },
     semanticIdForPath(kind, path) {
       return semanticIdAtPath(sources, kind, path);
@@ -534,6 +561,7 @@ export function createStudioDocumentSession(initialProject: StudioProject): Stud
       current = immutableSnapshot({ ...current, selection: [...selection] });
     },
     setStatus(status) {
+      if (status === 'recovery') savedSourceRevision = undefined;
       current = immutableSnapshot({ ...current, status });
     },
     setValues(kind, edits) {

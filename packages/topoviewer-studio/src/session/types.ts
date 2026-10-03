@@ -73,7 +73,8 @@ export interface StudioDocumentSession {
   confirmNormalization(reviewId: string): StudioSessionUpdateResult;
   discardInvalidDraft(document: StudioDocumentKind): void;
   insertValue(document: StudioDocumentKind, path: StudioYamlPath, value: unknown): StudioSessionUpdateResult;
-  markSaved(revision: string, savedAt: string): void;
+  markSaved(revision: string, savedAt: string, sourceRevision?: string): void;
+  renameProject(name: string): void;
   moveSequenceValue(document: StudioDocumentKind, path: StudioYamlPath, from: number, to: number): StudioSessionUpdateResult;
   parsedSource(document: StudioDocumentKind): ParsedStudioSource | undefined;
   rebaseRevision(revision: string): void;

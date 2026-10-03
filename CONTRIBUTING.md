@@ -10,10 +10,13 @@ that product boundary:
 
 ## Development Setup
 
-Use Node.js `>=24 <25` and Python `>=3.10`. The canonical local quality gate is
+Use Node.js `>=24 <25`, npm `>=11.21.0 <12`, and Python `>=3.10`. CI pins
+npm `11.21.0` because earlier versions can ignore root dependency overrides
+across workspace links. The canonical local quality gate is
 the same command used by GitHub CI:
 
 ```bash
+npm install --global npm@11.21.0
 npm ci
 npm run ci
 ```

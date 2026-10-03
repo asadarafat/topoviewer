@@ -121,7 +121,7 @@ def assert_metadata(metadata_text: str, artifact_label: str) -> None:
         )
 
     requires_dist = {item.lower() for item in metadata.get_all("Requires-Dist", [])}
-    required_dependency_prefixes = ("mkdocs<2,>=1.5", "pyyaml>=6.0")
+    required_dependency_prefixes = ("mkdocs<2,>=1.6", "pyyaml>=6.0")
     for required_prefix in required_dependency_prefixes:
         if not any(item.startswith(required_prefix) for item in requires_dist):
             raise ValueError(f"{artifact_label} metadata is missing dependency {required_prefix}")

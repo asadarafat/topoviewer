@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Smoke-test mkdocs-topoviewer from production PyPI in a clean MkDocs site."""
+"""Build a clean MkDocs site from a candidate wheel or production PyPI."""
 
 from __future__ import annotations
 
+import argparse
+import email
 import json
 import os
 import shutil
@@ -12,9 +14,11 @@ import tempfile
 import textwrap
 import urllib.request
 from pathlib import Path
+from zipfile import ZipFile
 
 
 PACKAGE = "mkdocs-topoviewer"
+MINIMUM_MKDOCS = "1.6.0"
 
 
 def resolve_expected_version() -> str:
@@ -59,8 +63,16 @@ def write_site(site_root: Path) -> None:
               - topoviewer
             nav:
               - Home: index.md
+              - Nested: nested/index.md
             """
         ),
+        encoding="utf-8",
+    )
+    nested_root = docs_root / "nested"
+    nested_root.mkdir()
+    (nested_root / "index.md").write_text(
+        "# Nested example\n\n```topoviewer\ntopology: ../topology.yaml\n"
+        "stylesheet: ../stylesheet.yaml\ntitle: Nested topology\n```\n",
         encoding="utf-8",
     )
     (docs_root / "index.md").write_text(
@@ -150,7 +162,7 @@ def write_site(site_root: Path) -> None:
     )
 
 
-def assert_site(site_root: Path, version: str) -> None:
+def assert_site(site_root: Path, version: str, source: str) -> None:
     site_dir = site_root / "site"
     index = site_dir / "index.html"
     if not index.exists():
@@ -176,11 +188,48 @@ def assert_site(site_root: Path, version: str) -> None:
         if not (site_dir / asset).is_file():
             raise SystemExit(f"Generated MkDocs site is missing asset: {asset}")
 
-    print(f"{PACKAGE}=={version} PyPI MkDocs smoke passed")
+    nested_html = (site_dir / "nested" / "index.html").read_text(encoding="utf-8")
+    for marker in ['data-topology="../topology.yaml"', 'data-stylesheet="../stylesheet.yaml"']:
+        if marker not in nested_html:
+            raise SystemExit(f"Nested MkDocs page is missing relative reference: {marker}")
+    print(f"{PACKAGE}=={version} {source} MkDocs smoke passed")
+
+
+def candidate_wheel(directory: Path) -> tuple[Path, str]:
+    wheels = list(directory.glob("mkdocs_topoviewer-*.whl"))
+    if len(wheels) != 1:
+        raise SystemExit(f"Expected exactly one candidate wheel in {directory}, found {len(wheels)}")
+    wheel = wheels[0].resolve()
+    with ZipFile(wheel) as archive:
+        metadata_files = [name for name in archive.namelist() if name.endswith(".dist-info/METADATA")]
+        if len(metadata_files) != 1:
+            raise SystemExit("Candidate wheel has missing or ambiguous distribution metadata")
+        metadata = email.message_from_bytes(archive.read(metadata_files[0]))
+    if metadata["Name"] != PACKAGE or not metadata["Version"]:
+        raise SystemExit("Candidate wheel has unexpected package metadata")
+    return wheel, metadata["Version"]
 
 
 def main() -> None:
-    expected_version = resolve_expected_version()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--wheel-dir", type=Path, help="Test the local candidate wheel instead of published PyPI code")
+    parser.add_argument("--mkdocs-version", action="append", choices=["minimum", "latest"],
+                        help="Run with the supported MkDocs floor or latest <2 (repeatable)")
+    args = parser.parse_args()
+    if args.wheel_dir:
+        wheel, expected_version = candidate_wheel(args.wheel_dir)
+        install_target = str(wheel)
+        source = "candidate wheel"
+    else:
+        expected_version = resolve_expected_version()
+        install_target = f"{PACKAGE}=={expected_version}"
+        source = "PyPI"
+    versions = args.mkdocs_version or (["minimum", "latest"] if args.wheel_dir else ["latest"])
+    for mkdocs_version in versions:
+        smoke_install(install_target, expected_version, source, mkdocs_version)
+
+
+def smoke_install(install_target: str, expected_version: str, source: str, mkdocs_version: str) -> None:
     temp_root = Path(tempfile.mkdtemp(prefix="topoviewer-mkdocs-pypi-smoke-"))
     try:
         venv = temp_root / "venv"
@@ -188,7 +237,8 @@ def main() -> None:
         run([sys.executable, "-m", "venv", str(venv)])
         python = venv / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
         run([str(python), "-m", "pip", "install", "--quiet", "--upgrade", "pip"])
-        run([str(python), "-m", "pip", "install", "--quiet", f"{PACKAGE}=={expected_version}"])
+        mkdocs_requirement = f"mkdocs=={MINIMUM_MKDOCS}" if mkdocs_version == "minimum" else "mkdocs>=1.6,<2"
+        run([str(python), "-m", "pip", "install", "--quiet", install_target, mkdocs_requirement])
         version = run(
             [
                 str(python),
@@ -200,7 +250,7 @@ def main() -> None:
             raise SystemExit(f"Expected {PACKAGE}=={expected_version}, got {version}")
         write_site(site_root)
         run([str(python), "-m", "mkdocs", "build", "--strict"], cwd=site_root)
-        assert_site(site_root, version)
+        assert_site(site_root, version, f"{source}, {mkdocs_requirement}, Python {sys.version.split()[0]}")
     finally:
         shutil.rmtree(temp_root, ignore_errors=True)
 

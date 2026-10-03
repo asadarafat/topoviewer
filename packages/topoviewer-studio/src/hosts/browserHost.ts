@@ -24,19 +24,10 @@ import { createStarterProject } from './starterProject';
 import { stableTextHash } from '../session/hash';
 import { validateStudioAssetContent } from '../security/assetSecurity';
 import { studioSecurityLimits } from '../security/limits';
-import { canonicalStudioPath } from '../security/pathSecurity';
+import { readDirectoryFiles, requireDirectoryPermission, saveDirectoryProject, withFolderWriteLock } from './browserDirectory';
 import { validateStudioProjectContent } from '../security/projectSecurity';
 
 type DirectoryPicker = (options?: { mode?: 'read' | 'readwrite' }) => Promise<FileSystemDirectoryHandle>;
-
-interface PermissionDirectoryHandle extends FileSystemDirectoryHandle {
-  queryPermission?(descriptor?: { mode?: 'read' | 'readwrite' }): Promise<PermissionState>;
-  requestPermission?(descriptor?: { mode?: 'read' | 'readwrite' }): Promise<PermissionState>;
-}
-
-interface IterableDirectoryHandle extends FileSystemDirectoryHandle {
-  entries(): AsyncIterableIterator<[string, FileSystemHandle]>;
-}
 
 function globalDirectoryPicker(): DirectoryPicker | undefined {
   const scope = globalThis as typeof globalThis & {
@@ -51,57 +42,10 @@ export interface BrowserStudioHostOptions extends BrowserProjectStoreOptions {
   storage?: Storage;
 }
 
-function canonicalRelativePath(path: string): string {
-  try {
-    return canonicalStudioPath(path);
-  } catch {
-    throw new BrowserProjectStoreError('invalid-request', `Project path "${path}" is not safe.`);
-  }
-}
-
-async function readDirectoryFiles(directory: FileSystemDirectoryHandle, prefix = '', state = { bytes: 0, files: 0 }): Promise<StudioAssetContent[]> {
-  const result: StudioAssetContent[] = [];
-  for await (const [name, handle] of (directory as IterableDirectoryHandle).entries()) {
-    const path = canonicalRelativePath(prefix ? `${prefix}/${name}` : name);
-    if (handle.kind === 'directory') {
-      result.push(...(await readDirectoryFiles(handle as FileSystemDirectoryHandle, path, state)));
-      continue;
-    }
-    const file = await (handle as FileSystemFileHandle).getFile();
-    state.files += 1;
-    state.bytes += file.size;
-    if (state.files > studioSecurityLimits.archiveFiles || state.bytes > studioSecurityLimits.archiveExpandedBytes || file.size > studioSecurityLimits.assetBytes) {
-      throw new BrowserProjectStoreError('invalid-request', 'Project folder exceeds the supported file-count or size limits.');
-    }
-    result.push({
-      bytes: new Uint8Array(await file.arrayBuffer()),
-      mediaType: file.type || 'application/octet-stream',
-      name: path
-    });
-  }
-  return result.sort((left, right) => left.name.localeCompare(right.name));
-}
-
 function sourceAsset(files: StudioAssetContent[], kind: 'topology' | 'stylesheet' | 'mapper') {
   const exact = `${kind}.yaml`;
   const suffix = kind === 'topology' ? /\.topo\.tv\.ya?ml$/i : kind === 'stylesheet' ? /\.style\.tv\.ya?ml$/i : /\.mapper\.tv\.ya?ml$/i;
   return files.find((file) => file.name === exact) || files.find((file) => suffix.test(file.name));
-}
-
-async function writeDirectoryFile(directory: FileSystemDirectoryHandle, path: string, bytes: Uint8Array) {
-  const segments = canonicalRelativePath(path).split('/');
-  const fileName = segments.pop();
-  if (!fileName) throw new BrowserProjectStoreError('invalid-request', `Project path "${path}" has no filename.`);
-  let target = directory;
-  for (const segment of segments) target = await target.getDirectoryHandle(segment, { create: true });
-  const handle = await target.getFileHandle(fileName, { create: true });
-  const writable = await handle.createWritable();
-  try {
-    const copy = Uint8Array.from(bytes);
-    await writable.write(copy.buffer);
-  } finally {
-    await writable.close();
-  }
 }
 
 function success<T>(value: T): StudioResult<T> {
@@ -187,6 +131,7 @@ export class BrowserStudioHost implements StudioHost {
           Boolean(snapshot.stylesheetCandidate)
         )
     );
+    if (recovery) recovery.project.name = project.name;
     return { project, ...(recovery ? { recovery } : {}) };
   }
 
@@ -348,14 +293,7 @@ export class BrowserStudioHost implements StudioHost {
         }
         throw error;
       }
-      const permissionHandle = directory as PermissionDirectoryHandle;
-      const currentPermission = await permissionHandle.queryPermission?.({
-        mode: 'readwrite'
-      });
-      const permission = currentPermission === 'granted' ? currentPermission : await permissionHandle.requestPermission?.({ mode: 'readwrite' });
-      if (permission && permission !== 'granted') {
-        throw new BrowserProjectStoreError('permission-denied', 'Read/write access to the selected project folder was not granted.', true);
-      }
+      await requireDirectoryPermission(directory);
       const files = await readDirectoryFiles(directory);
       const topology = sourceAsset(files, 'topology');
       const stylesheet = sourceAsset(files, 'stylesheet');
@@ -363,7 +301,8 @@ export class BrowserStudioHost implements StudioHost {
       if (!topology || !stylesheet) {
         throw new BrowserProjectStoreError('invalid-request', 'Project folder must contain topology and stylesheet YAML files.');
       }
-      const decoder = new TextDecoder('utf-8', { fatal: true });
+      // Keep a source BOM so byte comparisons use the original folder contents.
+      const decoder = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true });
       if ([topology, stylesheet, mapper].some((file) => file && file.bytes.byteLength > studioSecurityLimits.sourceBytes)) {
         throw new BrowserProjectStoreError('quota-exceeded', 'Project YAML exceeds the supported source-size limit.');
       }
@@ -406,6 +345,13 @@ export class BrowserStudioHost implements StudioHost {
       validateStudioProjectContent(project, assets);
       const created = await this.createProject({ assets, project });
       if (!created.ok) throw new BrowserProjectStoreError(created.error.code, created.error.message, created.error.retryable);
+      try {
+        await this.projects.bindDirectory(created.value.project.id, directory);
+      } catch (error) {
+        await this.projects.deleteProject(created.value.project.id);
+        this.initialProject = undefined;
+        throw error;
+      }
       this.directoryHandles.set(created.value.project.id, directory);
       return created.value;
     });
@@ -436,16 +382,9 @@ export class BrowserStudioHost implements StudioHost {
     return result(async () => {
       const name = request.name.trim();
       if (!name) throw new BrowserProjectStoreError('invalid-request', 'Project name cannot be empty.');
-      const project = await this.projects.loadProject(request.id);
-      project.name = name;
-      const saved = await this.projects.saveProject({
-        expectedRevision: project.revision,
-        project
-      });
-      project.revision = saved.revision;
-      project.metadata.updatedAt = saved.savedAt;
+      const project = await this.projects.renameProject(request.id, name);
       this.initialProject = Promise.resolve(project.id);
-      return { project };
+      return this.loadResult(project);
     });
   }
 
@@ -460,16 +399,19 @@ export class BrowserStudioHost implements StudioHost {
   saveProject(request: StudioSaveRequest): Promise<StudioResult<StudioSaveResult>> {
     return result(async () => {
       validateStudioProjectContent(request.project);
-      const directory = this.directoryHandles.get(request.project.id);
-      if (directory) {
-        const assets = await this.projects.projectAssets(request.project.id);
-        const encoder = new TextEncoder();
-        for (const document of Object.values(request.project.documents)) {
-          if (document) await writeDirectoryFile(directory, document.path, encoder.encode(document.text));
+      const directory = this.directoryHandles.get(request.project.id) || await this.projects.directoryHandle(request.project.id);
+      if (!directory) return this.projects.saveProject(request);
+      return withFolderWriteLock(async () => {
+        const previous = await this.projects.loadProject(request.project.id);
+        if ((request.expectedRevision || request.project.revision) !== previous.revision) {
+          throw new BrowserProjectStoreError('conflict', 'The project changed after it was opened. Reload or inspect the conflict before saving.');
         }
-        for (const asset of assets) await writeDirectoryFile(directory, asset.name, asset.bytes);
-      }
-      return this.projects.saveProject(request);
+        const assets = await this.projects.projectAssets(request.project.id);
+        return saveDirectoryProject(directory, previous, request.project, assets, () => this.projects.saveProject({
+          ...request,
+          expectedRevision: previous.revision
+        }));
+      });
     });
   }
 

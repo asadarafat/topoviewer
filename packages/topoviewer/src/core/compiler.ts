@@ -29,6 +29,7 @@ import type {
 } from './types';
 import { LINK_DIRECTION_KEYS } from './types';
 import { validateTopoDocument } from './validation';
+import { assertUniqueRuntimeIds, createRuntimeIdentity, type RuntimeIdentity } from './runtimeIdentity';
 
 function defaultLayerIds(spec: TopoDocument): string[] {
   return layerIds(spec.graph?.layers);
@@ -44,18 +45,18 @@ function positionOf(value: PositionTuple | { x: number; y: number } | undefined)
   return { x: 0, y: 0 };
 }
 
-function pinNodeId(ownerId: string, pinId: string): string {
-  return `pin:${ownerId}:${pinId}`;
+function pinNodeId(ownerId: string, pinId: string, identity: RuntimeIdentity): string {
+  return identity('pin', [ownerId, pinId], `pin:${ownerId}:${pinId}`);
 }
 
 function pinPosition(pin: DiagramPin): { x: number; y: number } {
   return pin.position ? positionOf(pin.position) : { x: Number(pin.x || 0), y: Number(pin.y || 0) };
 }
 
-function addPinNodes(ownerId: string, pins: DiagramPin[] | undefined, pinNodes: Array<Record<string, unknown>>) {
+function addPinNodes(ownerId: string, pins: DiagramPin[] | undefined, pinNodes: Array<Record<string, unknown>>, identity: RuntimeIdentity) {
   (pins || []).forEach((pin) => {
     pinNodes.push({
-      id: pinNodeId(ownerId, pin.id),
+      id: pinNodeId(ownerId, pin.id, identity),
       type: 'pin',
       parentId: ownerId,
       extent: 'parent',
@@ -225,13 +226,14 @@ function compileShapeNodes(
   shapes: DiagramShape[],
   selectedLayers: Set<string>,
   spec: TopoDocument,
-  pinNodes: Array<Record<string, unknown>>
+  pinNodes: Array<Record<string, unknown>>,
+  identity: RuntimeIdentity
 ) {
   return shapes.flatMap((shape) => {
     if (!intersects(shape.layers, selectedLayers)) return [];
     const visualStyle = applyStyle('shape', shape, spec);
     const rendered = compileShapeStyle(visualStyle, shape);
-    addPinNodes(shape.id, shape.pins, pinNodes);
+    addPinNodes(shape.id, shape.pins, pinNodes, identity);
     return [{
       ...rendered.flow,
       id: shape.id,
@@ -246,14 +248,15 @@ function compileCalloutNodes(
   callouts: DiagramCallout[],
   selectedLayers: Set<string>,
   spec: TopoDocument,
-  pinNodes: Array<Record<string, unknown>>
+  pinNodes: Array<Record<string, unknown>>,
+  identity: RuntimeIdentity
 ) {
   return callouts.flatMap((callout) => {
     if (!intersects(callout.layers, selectedLayers)) return [];
     if (!hasCalloutBox(callout)) return [];
     const visualStyle = applyStyle('callout', callout, spec);
     const rendered = compileCalloutStyle(visualStyle, callout);
-    addPinNodes(callout.id, callout.pins, pinNodes);
+    addPinNodes(callout.id, callout.pins, pinNodes, identity);
     return [{
       ...rendered.flow,
       id: callout.id,
@@ -287,9 +290,9 @@ function hasCalloutBox(callout: DiagramCallout): boolean {
   return !!(callout.position || callout.title || callout.body || callout.markdown);
 }
 
-function anchorId(ownerId: string | undefined, pinId: string | undefined): string | undefined {
+function anchorId(ownerId: string | undefined, pinId: string | undefined, identity: RuntimeIdentity): string | undefined {
   if (!ownerId) return undefined;
-  return pinId ? pinNodeId(ownerId, pinId) : ownerId;
+  return pinId ? pinNodeId(ownerId, pinId, identity) : ownerId;
 }
 
 function addAbsolutePin(id: string, position: PositionTuple | { x: number; y: number } | undefined, pinNodes: Array<Record<string, unknown>>): string | undefined {
@@ -340,6 +343,7 @@ export function compileTopoGraph(
 ): CompiledGraph {
   spec = validateTopoDocument(spec);
   assertRendererLimits(spec);
+  const identity = createRuntimeIdentity(spec);
   const graph = spec.graph || {};
   const diagram = spec.diagram || {};
   const selectedLayers = new Set(selectedLayerIds);
@@ -435,12 +439,12 @@ export function compileTopoGraph(
   const pinNodes: Array<Record<string, unknown>> = [];
   graphNodes.forEach((node) => {
     if (!visibleSourceNodeIds.has(node.id)) return;
-    addPinNodes(node.id, node.pins, pinNodes);
+    addPinNodes(node.id, node.pins, pinNodes, identity);
   });
 
-  const regionNodes = toggles.showRegions === false ? [] : rebuildRegionNodes(graph.regions || [], selectedLayers, networkNodes, spec);
-  const shapeNodes = compileShapeNodes(diagram.shapes || [], selectedLayers, spec, pinNodes);
-  const calloutNodes = compileCalloutNodes(diagram.callouts || [], selectedLayers, spec, pinNodes);
+  const regionNodes = toggles.showRegions === false ? [] : compileRegionNodes(graph.regions || [], selectedLayers, networkNodes, spec, identity);
+  const shapeNodes = compileShapeNodes(diagram.shapes || [], selectedLayers, spec, pinNodes, identity);
+  const calloutNodes = compileCalloutNodes(diagram.callouts || [], selectedLayers, spec, pinNodes, identity);
   const textNodes = compileTextNodes(diagram.texts || [], selectedLayers, spec);
   const visualIds = new Set([
     ...includedNodeIds,
@@ -449,19 +453,21 @@ export function compileTopoGraph(
     ...textNodes.map((node) => String(node.id)),
     ...pinNodes.map((node) => String(node.id))
   ]);
-  const primitiveEdges = buildPrimitiveEdges(diagram.connectors || [], diagram.callouts || [], selectedLayers, visualIds, pinNodes, spec, !!toggles.showEdgeLabels);
+  const primitiveEdges = buildPrimitiveEdges(diagram.connectors || [], diagram.callouts || [], selectedLayers, visualIds, pinNodes, spec, !!toggles.showEdgeLabels, identity);
   primitiveEdges.forEach((edge) => {
     visualIds.add(String(edge.source));
     visualIds.add(String(edge.target));
   });
   const edges = [
-    ...buildEdges(graph.links || [], graph.paths || [], selectedLayers, includedNodeIds, toggles, spec),
+    ...buildEdges(graph.links || [], graph.paths || [], selectedLayers, includedNodeIds, toggles, spec, identity),
     ...primitiveEdges
   ];
 
+  assertUniqueRuntimeIds(edges, 'edge');
   const accessibleNodes = withCompiledNodeAccessibility([
     ...regionNodes, ...shapeNodes, ...networkNodes, ...calloutNodes, ...textNodes, ...pinNodes
   ]);
+  assertUniqueRuntimeIds(accessibleNodes, 'node');
   return {
     nodes: accessibleNodes as CompiledGraph['nodes'],
     edges: withCompiledEdgeAccessibility(edges, accessibleNodes) as CompiledGraph['edges'],
@@ -470,6 +476,10 @@ export function compileTopoGraph(
 }
 
 export function rebuildRegionNodes(regions: GraphRegion[], selectedLayers: Set<string>, networkNodes: Array<Record<string, unknown>>, spec: TopoDocument) {
+  return regions.length ? compileRegionNodes(regions, selectedLayers, networkNodes, spec, createRuntimeIdentity(spec)) : [];
+}
+
+function compileRegionNodes(regions: GraphRegion[], selectedLayers: Set<string>, networkNodes: Array<Record<string, unknown>>, spec: TopoDocument, identity: RuntimeIdentity) {
   const nodeById = new Map<string, GraphNode & { regionBoundsWidth?: number; regionBoundsHeight?: number }>(networkNodes.map((node) => [
     String(node.id),
     {
@@ -490,7 +500,7 @@ export function rebuildRegionNodes(regions: GraphRegion[], selectedLayers: Set<s
     const rendered = compileRegionStyle(visualStyle, bounds.width, bounds.height);
     return [{
       ...rendered.flow,
-      id: `region:${region.id}`,
+      id: identity('region', [region.id], `region:${region.id}`),
       type: rendered.flow.type || 'region',
       position: { x: bounds.x, y: bounds.y },
       data: {
@@ -511,42 +521,49 @@ function buildPrimitiveEdges(
   visualIds: Set<string>,
   pinNodes: Array<Record<string, unknown>>,
   spec: TopoDocument,
-  labelsEnabled = false
+  labelsEnabled = false,
+  identity: RuntimeIdentity
 ) {
   const flowEdges: Array<Record<string, unknown>> = [];
 
   connectors.forEach((connector) => {
+    if (!intersects(connector.layers, selectedLayers)) return;
     const source = connector.sourcePosition
-      ? addAbsolutePin(pinNodeId(connector.id, 'source'), connector.sourcePosition, pinNodes)
-      : anchorId(connector.source, connector.sourcePin);
+      ? addAbsolutePin(identity('anchor', [connector.id, 'source'], `pin:${connector.id}:source`), connector.sourcePosition, pinNodes)
+      : anchorId(connector.source, connector.sourcePin, identity);
     const target = connector.targetPosition
-      ? addAbsolutePin(pinNodeId(connector.id, 'target'), connector.targetPosition, pinNodes)
-      : anchorId(connector.target, connector.targetPin);
+      ? addAbsolutePin(identity('anchor', [connector.id, 'target'], `pin:${connector.id}:target`), connector.targetPosition, pinNodes)
+      : anchorId(connector.target, connector.targetPin, identity);
 
-    if (source) visualIds.add(source);
-    if (target) visualIds.add(target);
+    if (source && connector.sourcePosition) visualIds.add(source);
+    if (target && connector.targetPosition) visualIds.add(target);
     const edge = compilePrimitiveEdge('connector', connector, selectedLayers, source, target, spec, visualIds, labelsEnabled);
     if (edge) flowEdges.push(edge);
   });
 
   callouts.forEach((callout) => {
+    if (!intersects(callout.layers, selectedLayers)) return;
     if (!callout.target && !callout.targetPosition) return;
     const source = callout.sourcePosition
-      ? addAbsolutePin(pinNodeId(callout.id, 'source'), callout.sourcePosition, pinNodes)
-      : anchorId(callout.source || (hasCalloutBox(callout) ? callout.id : undefined), callout.sourcePin);
+      ? addAbsolutePin(identity('anchor', [callout.id, 'source'], `pin:${callout.id}:source`), callout.sourcePosition, pinNodes)
+      : anchorId(callout.source || (hasCalloutBox(callout) ? callout.id : undefined), callout.sourcePin, identity);
     const target = callout.targetPosition
-      ? addAbsolutePin(pinNodeId(callout.id, 'target'), callout.targetPosition, pinNodes)
-      : anchorId(callout.target, callout.targetPin);
+      ? addAbsolutePin(identity('anchor', [callout.id, 'target'], `pin:${callout.id}:target`), callout.targetPosition, pinNodes)
+      : anchorId(callout.target, callout.targetPin, identity);
 
-    if (source) visualIds.add(source);
-    if (target) visualIds.add(target);
+    if (source && callout.sourcePosition) visualIds.add(source);
+    if (target && callout.targetPosition) visualIds.add(target);
     const showLineLabel = hasCalloutBox(callout) ? false : labelsEnabled;
     const edge = compilePrimitiveEdge('link', {
       ...callout,
       id: `${callout.id}:leader`,
       labels: { ...(callout.labels || {}), leader: true }
     }, selectedLayers, source, target, spec, visualIds, showLineLabel);
-    if (edge) flowEdges.push(edge);
+    if (edge) flowEdges.push({
+      ...edge,
+      id: identity('leader', [callout.id], `${callout.id}:leader`),
+      data: { ...edge.data, id: callout.id, objectKind: 'callout' }
+    });
   });
 
   return flowEdges;
@@ -558,7 +575,8 @@ function buildEdges(
   selectedLayers: Set<string>,
   includedNodeIds: Set<string>,
   toggles: TopoViewerToggles,
-  spec: TopoDocument
+  spec: TopoDocument,
+  identity: RuntimeIdentity
 ) {
   const flowEdges: Array<Record<string, unknown>> = [];
   const visibleLinks = links.filter((link) => (
@@ -691,7 +709,7 @@ function buildEdges(
       }
       flowEdges.push({
         ...rendered,
-        id: `${path.id}:${index}`,
+        id: identity('path', [path.id, String(index)], `${path.id}:${index}`),
         source,
         target,
         data: edgeData
@@ -729,7 +747,7 @@ function buildEdges(
         edgeData.suppressLaneMarker = true;
         flowEdges.push({
           ...rendered,
-          id: `${path.id}:${index}`,
+          id: identity('path', [path.id, String(index)], `${path.id}:${index}`),
           source,
           target,
           data: edgeData

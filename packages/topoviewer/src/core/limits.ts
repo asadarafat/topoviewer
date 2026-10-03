@@ -2,6 +2,8 @@ import type { RendererLimits, TopoDocument } from './types';
 
 export const DEFAULT_RENDERER_LIMITS: Required<RendererLimits> = {
   maxNodes: 1200,
+  maxRegions: 250,
+  maxPins: 1200,
   maxEdges: 2400,
   maxPathSegments: 1600,
   maxLabels: 2000,
@@ -13,6 +15,8 @@ export const DEFAULT_RENDERER_LIMITS: Required<RendererLimits> = {
 
 export interface RendererLimitUsage {
   nodes: number;
+  regions: number;
+  pins: number;
   edges: number;
   pathSegments: number;
   labels: number;
@@ -40,10 +44,17 @@ export function rendererLimitUsage(document: TopoDocument): RendererLimitUsage {
   const diagram = document.diagram || {};
   const nodes = graph.nodes?.length || 0;
   const links = graph.links?.length || 0;
+  const pathsById = new Map((graph.paths || []).map((path) => [path.id, path]));
   const pathSegments = (graph.paths || []).reduce((total, path) => {
-    if (Array.isArray(path.sequence)) return total + Math.max(0, path.sequence.length - 1);
-    return total + (path.parent ? 1 : 0);
+    const parent = path.parent && path.source && path.target ? pathsById.get(path.parent) : undefined;
+    // Even an unresolved carried path contributes an endpoint link to layout.
+    // Count it conservatively so malformed parent chains cannot bypass limits.
+    return total + Math.max(path.parent ? 1 : 0, (path.sequence?.length || 1) - 1, (parent?.sequence?.length || 1) - 1);
   }, 0);
+  const pins = [...(graph.nodes || []), ...(diagram.shapes || []), ...(diagram.callouts || [])]
+    .reduce((total, owner) => total + (owner.pins?.length || 0), 0)
+    + [...(diagram.connectors || []), ...(diagram.callouts || [])]
+      .reduce((total, object) => total + Number(!!object.sourcePosition) + Number(!!object.targetPosition), 0);
   const labels = [
     ...(graph.nodes || []),
     ...(graph.links || []),
@@ -56,6 +67,8 @@ export function rendererLimitUsage(document: TopoDocument): RendererLimitUsage {
 
   return {
     nodes,
+    regions: graph.regions?.length || 0,
+    pins,
     edges: links + pathSegments + (diagram.connectors?.length || 0) + (diagram.callouts?.filter((callout) => callout.target || callout.targetPosition).length || 0),
     pathSegments,
     labels,
@@ -78,6 +91,8 @@ export function rendererLimitViolations(document: TopoDocument): string[] {
   const limits = effectiveRendererLimits(document);
   const checks: Array<[keyof RendererLimitUsage, keyof Required<RendererLimits>, string]> = [
     ['nodes', 'maxNodes', 'nodes'],
+    ['regions', 'maxRegions', 'regions'],
+    ['pins', 'maxPins', 'pins'],
     ['edges', 'maxEdges', 'edges'],
     ['pathSegments', 'maxPathSegments', 'path segments'],
     ['labels', 'maxLabels', 'labels'],

@@ -2,6 +2,7 @@
   "name": "topoviewer-monorepo",
   "version": "0.5.0",
   "private": true,
+  "packageManager": "npm@11.21.0",
   "license": "Apache-2.0",
   "description": "Monorepo for TopoViewer packages.",
   "workspaces": [
@@ -101,10 +102,12 @@
     "public-readiness": "node scripts/require-node24.mjs && node scripts/check-public-readiness.mjs",
     "check:public-readiness": "node scripts/require-node24.mjs && node scripts/check-public-readiness.mjs",
     "dependency:advisories": "node scripts/require-node24.mjs && node scripts/check-dependency-advisories.mjs",
+    "dependency:advisories:test": "node scripts/require-node24.mjs && node --test scripts/tests/dependency-audit.test.mjs",
     "security:health-report": "node scripts/require-node24.mjs && node scripts/write-security-health-report.mjs",
     "test:hostile-content": "node scripts/require-node24.mjs && npm --workspace topoviewer run test:hostile-content && npm --workspace grafana-topoviewer-panel run test:hostile-content",
     "install:check": "node scripts/require-node24.mjs && node scripts/check-install-commands.mjs",
     "install:check:mkdocs": "python3 scripts/smoke-mkdocs-pypi-install.py",
+    "install:check:mkdocs:wheel": "python3 scripts/smoke-mkdocs-pypi-install.py --wheel-dir .artifacts/mkdocs-dist",
     "api:report": "node scripts/require-node24.mjs && node scripts/check-public-api-report.mjs --write",
     "api:check": "node scripts/require-node24.mjs && node scripts/check-public-api-report.mjs",
     "artifact:check": "node scripts/require-node24.mjs && node scripts/check-release-artifacts.mjs",
@@ -149,6 +152,7 @@
     "ci:docs": "node scripts/require-node24.mjs && node scripts/ci.mjs --lane docs",
     "ci:render-parity": "node scripts/require-node24.mjs && node scripts/ci.mjs --lane render-parity",
     "ci:test:topoviewer": "node scripts/require-node24.mjs && node scripts/ci.mjs --lane test:topoviewer",
+    "ci:test:grafana": "node scripts/require-node24.mjs && node scripts/ci.mjs --lane test:grafana",
     "ci:perf:smoke": "node scripts/require-node24.mjs && node scripts/ci.mjs --lane perf:smoke",
     "ci:package": "node scripts/require-node24.mjs && node scripts/ci.mjs --lane package",
     "ci:public-readiness": "node scripts/require-node24.mjs && node scripts/ci.mjs --lane public-readiness",
@@ -156,11 +160,13 @@
     "ci:remote-parity": "node scripts/require-node24.mjs && node scripts/ci.mjs --remote-parity"
   },
   "overrides": {
-    "brace-expansion": "5.0.9",
-    "monaco-editor": "0.53.0"
+    "brace-expansion": "5.0.12",
+    "monaco-editor": "0.53.0",
+    "moment": "2.31.0"
   },
   "engines": {
-    "node": ">=24 <25"
+    "node": ">=24 <25",
+    "npm": ">=11.21.0 <12"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",

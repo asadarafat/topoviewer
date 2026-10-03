@@ -68,10 +68,10 @@ describe('BrowserProjectStore', () => {
     ]);
 
     const next = structuredClone(initial);
-    next.name = 'Renamed project';
+    next.documents.topology.text += '# saved edit\n';
     const saved = await repository.saveProject({ expectedRevision: initial.revision, project: next });
     expect(saved.revision).not.toBe(initial.revision);
-    expect((await repository.loadProject(initial.id)).name).toBe('Renamed project');
+    expect((await repository.loadProject(initial.id)).documents.topology.text).toBe(next.documents.topology.text);
 
     await expect(repository.saveProject({ expectedRevision: initial.revision, project: next })).rejects.toMatchObject({ code: 'conflict' });
   });
@@ -179,4 +179,30 @@ describe('BrowserProjectStore', () => {
     await repository.reset();
     expect(await repository.listProjects()).toEqual([]);
   });
+  it('checks revisions and commits in one transaction across repository instances', async () => {
+    const options = { databaseName: `race-${crypto.randomUUID()}`, indexedDB: new IDBFactory() };
+    const first = store(options);
+    const second = store(options);
+    const project = projectFixture();
+    await first.createProject(project);
+    const results = await Promise.allSettled([
+      first.saveProject({ expectedRevision: project.revision, project }),
+      second.saveProject({ expectedRevision: project.revision, project })
+    ]);
+    expect(results.filter((result) => result.status === 'fulfilled')).toHaveLength(1);
+    expect(results.find((result) => result.status === 'rejected')).toMatchObject({ reason: { code: 'conflict' } });
+  });
+
+  it('renames metadata without invalidating recovery or letting an old save undo the name', async () => {
+    const repository = store();
+    const project = projectFixture();
+    await repository.createProject(project);
+    await repository.saveRecovery(recovery(project, '2026-07-09T09:00:00Z'));
+    const renamed = await repository.renameProject(project.id, 'New name');
+    expect(renamed).toMatchObject({ name: 'New name', revision: project.revision, metadata: project.metadata });
+    expect((await repository.recoverySnapshots(project.id))[0].project.revision).toBe(renamed.revision);
+    await repository.saveProject({ expectedRevision: project.revision, project });
+    expect((await repository.loadProject(project.id)).name).toBe('New name');
+  });
+
 });

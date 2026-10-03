@@ -38,6 +38,9 @@ jobs:
           go-version: "1.25.13"
           cache-dependency-path: packages/grafana-topoviewer-panel/go.sum
 
+      - name: Set up npm for workspace overrides
+        run: npm install --global npm@11.21.0
+
       - name: Install Node dependencies
         run: npm ci
 
@@ -48,7 +51,9 @@ jobs:
         run: npm run ci:public-readiness:core
 
       - name: npm dependency advisory triage
-        run: npm run dependency:advisories
+        run: |
+          npm run dependency:advisories:test
+          npm run dependency:advisories
 
       - name: Go vulnerability check
         run: npm run go:vulncheck

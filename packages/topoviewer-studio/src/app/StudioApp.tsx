@@ -156,7 +156,7 @@ function StudioAppBody({
       forceEditorFailure={forceEditorFailure}
       forceOptionalSurfaceFailure={forceOptionalSurfaceFailure}
       host={host}
-      key={`${project.revision}:${project.documents.topology.contentHash}`}
+      key={`${project.id}:${project.revision}:${project.documents.topology.contentHash}`}
       onReload={() => load({ id: project.id, recovery: 'discard' })}
       project={project}
       projectLifecycle={{
@@ -303,8 +303,9 @@ function StudioAppBody({
                   name
                 });
                 if (!renamed.ok) setActionError(renamed.error.message);
-                else if (id === project.id) applyLoad(renamed.value);
+                else setActionError(undefined);
                 await refreshProjects();
+                return renamed.ok ? renamed.value.project : undefined;
               }
             }
           : {}),

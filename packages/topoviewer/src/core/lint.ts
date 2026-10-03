@@ -595,6 +595,15 @@ function addPinOwners(pinIdsByOwner: Map<string, Set<string>>, owner: { id: stri
   pinIdsByOwner.set(owner.id, new Set(owner.pins.map((pin) => pin.id)));
 }
 
+function pinIdentityIssues(owner: { id: string; pins?: Array<{ id: string }> }, path: string): LintIssue[] {
+  const seen = new Set<string>();
+  return (owner.pins || []).flatMap((pin, index) => {
+    if (seen.has(pin.id)) return [issue('error', 'duplicate-pin', `Object "${owner.id}" defines duplicate pin "${pin.id}".`, `${path}.pins[${index}].id`)];
+    seen.add(pin.id);
+    return [];
+  });
+}
+
 function handleCapability(value: unknown): Array<'source' | 'target'> {
   if (value === 'source') return ['source'];
   if (value === 'target') return ['target'];
@@ -796,6 +805,7 @@ export function lintTopoDocument(input: TopoDocument, options: LintOptions = {})
 
   (graph.nodes || []).forEach((node, index) => {
     addEntity(seenIds, issues, 'node', node, `graph.nodes[${index}]`);
+    issues.push(...pinIdentityIssues(node, `graph.nodes[${index}]`));
     issues.push(...objectLayerIssues(node, knownLayers, `graph.nodes[${index}]`));
     issues.push(...layerMembershipIssues('node', node, `graph.nodes[${index}]`));
     issues.push(...nodeHandleIssues(node, index));
@@ -865,6 +875,7 @@ export function lintTopoDocument(input: TopoDocument, options: LintOptions = {})
 
   (diagram.shapes || []).forEach((shape, index) => {
     addEntity(seenIds, issues, 'shape', shape, `diagram.shapes[${index}]`);
+    issues.push(...pinIdentityIssues(shape, `diagram.shapes[${index}]`));
     issues.push(...objectLayerIssues(shape, knownLayers, `diagram.shapes[${index}]`));
     issues.push(...layerMembershipIssues('shape', shape, `diagram.shapes[${index}]`));
   });
@@ -885,6 +896,7 @@ export function lintTopoDocument(input: TopoDocument, options: LintOptions = {})
 
   (diagram.callouts || []).forEach((callout, index) => {
     addEntity(seenIds, issues, 'callout', callout, `diagram.callouts[${index}]`);
+    issues.push(...pinIdentityIssues(callout, `diagram.callouts[${index}]`));
     issues.push(...objectLayerIssues(callout, knownLayers, `diagram.callouts[${index}]`));
     issues.push(...layerMembershipIssues('callout', callout, `diagram.callouts[${index}]`));
     const source = callout.source || (hasCalloutBox(callout) ? callout.id : undefined);

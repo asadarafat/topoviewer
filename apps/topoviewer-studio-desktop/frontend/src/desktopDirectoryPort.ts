@@ -284,6 +284,9 @@ export class DesktopDirectoryPort implements StudioDirectoryPort {
         throw new DesktopNativeError('corrupt-data', 'ReadRecovery returned an invalid recovery snapshot.', false);
       }
       validateStudioProjectEnvelope(source.project as StudioProject);
+      // Native recovery is scoped to the approved directory, while authority
+      // tokens are deliberately renewed every time that directory is opened.
+      snapshot.project.id = this.id;
     }
     return snapshot;
   }
