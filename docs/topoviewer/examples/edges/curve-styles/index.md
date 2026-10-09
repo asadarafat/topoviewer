@@ -5,22 +5,17 @@ hide:
 
 # Edge curve styles
 
-## What This Demonstrates
-
 Curve styles are presentation choices. The graph still says A connects to B/C/D/E; the stylesheet controls whether that relationship renders as straight, taxi, smooth-taxi, or unbundled-bezier.
 
 ## Expected Result
 
-The live viewport should render "Edge curve styles" without blocking diagnostics. It should show: Different `curveStyle` values produce different edge routing models. The test metadata expects `graphNodes`: `5`, `minVisibleEdges`: `4`.
+Different `curveStyle` values produce different edge routing models.
 
-## What To Inspect
+## Try It
 
-- Inspect `graph.links` for endpoint IDs and labels.
-- Compare line, arrow, label, and curve style keys in the stylesheet.
-
-## Use When
-
-Use this pattern when link readability, routing, arrowheads, or edge labels matter.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link[labels.curve = "unbundled-bezier"]`.
+2. Change its `lineColor` from `"#c084fc"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

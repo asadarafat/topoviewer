@@ -1,25 +1,20 @@
 # Callouts
 
-These examples document the callouts behaviors from the canonical TopoViewer test-case catalog. Each section is generated from one test case and keeps the live viewport, topology YAML, and stylesheet YAML together.
+Explore callouts behavior with a live diagram and its two source files. Each example includes an edit to try in your own copy.
 
 ## Markdown callouts
-
-### What This Demonstrates
 
 Callout markdown supports headings, bullets, bold, underline, strike-through, inline code, links, and safe images. Use it for explanation, not for graph identity.
 
 ### Expected Result
 
-The live viewport should render "Markdown callouts" without blocking diagnostics. It should show: Callout bodies support markdown, inline formatting, and images. The test metadata expects `graphNodes`: `1`, `visibleCallouts`: `1`.
+Callout bodies support markdown, inline formatting, and images.
 
-### What To Inspect
+### Try It
 
-- Inspect `diagram.callouts` for visual notes that do not change graph semantics.
-- Check the stylesheet rule that controls callout color, border, and text treatment.
-
-### Use When
-
-Use this pattern when the diagram needs explanatory annotations without changing graph semantics.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `callout`.
+2. Change its `lineColor` from `"rgba(226, 232, 240, 0.72)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 
@@ -46,22 +41,17 @@ Use this pattern when the diagram needs explanatory annotations without changing
 
 ## Pins and leaders
 
-### What This Demonstrates
-
 Pins give leaders exact attachment points. This matters when a diagram has bars, ports, SAPs, or physical slots where center-point attachment is misleading.
 
 ### Expected Result
 
-The live viewport should render "Pins and leaders" without blocking diagnostics. It should show: Leaders can attach to named pins instead of object centers. The test metadata expects `graphNodes`: `1`, `shapes`: `1`, `visibleCallouts`: `1`, `minVisibleEdges`: `2`.
+Leaders can attach to named pins instead of object centers.
 
-### What To Inspect
+### Try It
 
-- Inspect `diagram.callouts` for visual notes that do not change graph semantics.
-- Check the stylesheet rule that controls callout color, border, and text treatment.
-
-### Use When
-
-Use this pattern when the diagram needs explanatory annotations without changing graph semantics.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `shape`.
+2. Change its `borderWidth` from `2` to `4`, then reload your page. Compare the stroke thickness of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 
@@ -88,22 +78,17 @@ Use this pattern when the diagram needs explanatory annotations without changing
 
 ## Image embed callout
 
-### What This Demonstrates
-
 Image embeds are allowed inside markdown when the URL is safe. This lets documentation diagrams include small symbols, screenshots, or badges without creating fake graph nodes.
 
 ### Expected Result
 
-The live viewport should render "Image embed callout" without blocking diagnostics. It should show: Image embeds are allowed when the URL is safe. The test metadata expects `visibleCallouts`: `1`.
+Image embeds are allowed when the URL is safe.
 
-### What To Inspect
+### Try It
 
-- Inspect `diagram.callouts` for visual notes that do not change graph semantics.
-- Check the stylesheet rule that controls callout color, border, and text treatment.
-
-### Use When
-
-Use this pattern when the diagram needs explanatory annotations without changing graph semantics.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `callout`.
+2. Change its `lineColor` from `"rgba(226, 232, 240, 0.72)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

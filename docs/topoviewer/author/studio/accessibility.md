@@ -15,13 +15,16 @@ than color alone.
 - Focus the source/preview separator and use `Left` or `Right` to resize it
   within the documented bounds.
 - Focus a palette item and press `Enter` to create it.
-- Use additive selection and **Connect selected nodes** when pointer connection
+- Select two nodes, focus the canvas, and press `L` when pointer connection
   handles are not practical.
-- Use toolbar commands for copy, duplicate, delete, align, distribute, nudge,
-  undo, and redo.
-- Double-click an object to open its focused label or text editor. Press
-  `Enter` to commit, `Shift+Enter` to add a line in standalone text, or `Escape`
-  to cancel and return focus.
+- With focus on the canvas, use `Ctrl+C`, `Ctrl+X`, and `Ctrl+V` (`Cmd` on macOS)
+  for copy, cut, and paste. Arrow keys move the selection.
+- Open **Selection actions** or press `Shift+F10` for Duplicate, Delete,
+  Align, and Distribute. Undo and Redo are in the header, or **More Studio
+  actions** on compact screens.
+- For a visible label, select the object, navigate to **Properties > Topology**,
+  edit **Visible label**, and press `Enter`. Pointer users can also double-click
+  the object to open its quick editor.
 - Resize one selected object with `Alt` plus an arrow key when pointer handles
   are not practical.
 - Use `Escape` to close contextual menus, drawers, dialogs, and presentation
@@ -29,9 +32,8 @@ than color alone.
 
 Dialogs and temporary narrow-layout drawers trap focus and return it to the
 invoking control. Project source exposes the selected document, and
-Source/Split/Preview exposes pressed state. One shared Monaco workspace switches
-among topology, stylesheet, and optional mapper source. Preview-local Add,
-Properties, and Mapper Visual never mount another editor. Visual fields use
+Source/Split/Preview exposes pressed state. The shared editor switches among
+topology, stylesheet, and optional mapper source. Visual fields use
 named accordions, associated labels and errors, explicit
 mixed values, provenance text, and keyboard-reachable reset or source actions.
 The source footer announces validation state and keeps Apply and Revert
@@ -57,14 +59,14 @@ On macOS, enable VoiceOver with `Cmd+F5`, then verify this sequence:
 4. Select an object and confirm Properties opens without moving focus. Hear the
    Topology and Appearance sections, effective values, provenance, and
    validation text.
-5. Commit and reset a Visual field, then confirm selection and viewport context
+5. Commit and reset an Appearance field, then confirm selection and viewport context
    remain unchanged.
 6. Move between `topology.yaml` and `stylesheet.yaml` in project source, use
    completion and diagnostics, then return to preview without losing the
-   candidate or focus context.
+   pending style or focus context.
 7. Trigger invalid `stylesheet.yaml` and confirm the status, Apply-disabled state, and
    Revert action are announced.
-8. Open Mapper Visual, create the first rule, select `mapper.yaml` in project
+8. Open **Telemetry rules**, create the first rule, select `mapper.yaml` in project
    source, and confirm the shared editor, diagnostics, Apply, and Revert
    controls are announced.
 9. Use **Properties > Attention** to focus a compatible canvas selection, then

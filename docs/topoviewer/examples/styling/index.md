@@ -1,25 +1,20 @@
 # Styling
 
-These examples document the styling behaviors from the canonical TopoViewer test-case catalog. Each section is generated from one test case and keeps the live viewport, topology YAML, and stylesheet YAML together.
+Explore styling behavior with a live diagram and its two source files. Each example includes an edit to try in your own copy.
 
 ## Selector styling
-
-### What This Demonstrates
 
 Selector styling is the core authoring contract. Topology authors classify objects once; visual rules then match by kind, id, labels, or data.
 
 ### Expected Result
 
-The live viewport should render "Selector styling" without blocking diagnostics. It should show: Selector rules classify objects by kind, id, labels, or data. The test metadata expects `graphNodes`: `2`, `minVisibleEdges`: `1`.
+Selector rules classify objects by kind, id, labels, or data.
 
-### What To Inspect
+### Try It
 
-- Inspect selector order and the style keys applied by each rule.
-- Compare broad defaults with more specific label or data selectors.
-
-### Use When
-
-Use this pattern when building reusable visual rules from labels and data.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `node[labels.vendor = "cisco"]`.
+2. Change its `borderColor` from `"#cffafe"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 
@@ -46,22 +41,17 @@ Use this pattern when building reusable visual rules from labels and data.
 
 ## Inline style override
 
-### What This Demonstrates
-
 Inline style is an escape hatch. Use it sparingly for one-off emphasis; reusable visual policy still belongs in the stylesheet.
 
 ### Expected Result
 
-The live viewport should render "Inline style override" without blocking diagnostics. It should show: Inline `style` overrides are local escape hatches on individual objects. The test metadata expects `graphNodes`: `2`, `minVisibleEdges`: `1`.
+Inline `style` overrides are local escape hatches on individual objects.
 
-### What To Inspect
+### Try It
 
-- Inspect selector order and the style keys applied by each rule.
-- Compare broad defaults with more specific label or data selectors.
-
-### Use When
-
-Use this pattern when building reusable visual rules from labels and data.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link[id = "normal-override"]`.
+2. Change its `lineColor` from `"#fb7185"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 
@@ -88,22 +78,17 @@ Use this pattern when building reusable visual rules from labels and data.
 
 ## Light and dark theme variables
 
-### What This Demonstrates
-
 Theme-aware examples should use CSS variables so the same diagram follows MkDocs Material light and dark mode without duplicating the topology.
 
 ### Expected Result
 
-The live viewport should render "Light and dark theme variables" without blocking diagnostics. It should show: Theme-aware styles should use TopoViewer CSS variables. The test metadata expects `graphNodes`: `2`, `minVisibleEdges`: `1`.
+Theme-aware styles should use TopoViewer CSS variables.
 
-### What To Inspect
+### Try It
 
-- Inspect selector order and the style keys applied by each rule.
-- Compare broad defaults with more specific label or data selectors.
-
-### Use When
-
-Use this pattern when building reusable visual rules from labels and data.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link`.
+2. Change its `lineColor` from `"var(--topoviewer-link-physical)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 
@@ -130,22 +115,17 @@ Use this pattern when building reusable visual rules from labels and data.
 
 ## Label z-index
 
-### What This Demonstrates
-
 Use `labelZIndex` when labels need their own draw order without moving the object body, edge line, or region hull. The region label, edge label, endpoint labels, and node labels in this example intentionally use separate label layers.
 
 ### Expected Result
 
-The live viewport should render "Label z-index" without blocking diagnostics. It should show: Labels can draw in their own layer without changing object, edge, or region draw order. The test metadata expects `graphNodes`: `2`, `minVisibleEdges`: `1`, `minRegions`: `1`.
+Labels can draw in their own layer without changing object, edge, or region draw order.
 
-### What To Inspect
+### Try It
 
-- Inspect selector order and the style keys applied by each rule.
-- Compare broad defaults with more specific label or data selectors.
-
-### Use When
-
-Use this pattern when building reusable visual rules from labels and data.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `region`.
+2. Change its `borderColor` from `"rgba(25, 118, 210, 0.48)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

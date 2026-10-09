@@ -1,25 +1,21 @@
 # Regions
 
-These examples document the regions behaviors from the canonical TopoViewer test-case catalog. Each section is generated from one test case and keeps the live viewport, topology YAML, and stylesheet YAML together.
+Explore regions behavior with a live diagram and its two source files. Each example includes an edit to try in your own copy.
 
 ## Nested regions
-
-### What This Demonstrates
 
 Nested regions let broad domains contain narrower regions. In this case the AS region contains an IS-IS L1 region and the member routers.
 
 ### Expected Result
 
-The live viewport should render "Nested regions" without blocking diagnostics. It should show: Regions can be nested so broad domains contain smaller domains. The test metadata expects `graphNodes`: `3`, `minVisibleEdges`: `1`, `minRegions`: `2`.
+Regions can be nested so broad domains contain smaller domains.
 
-### What To Inspect
+### Try It
 
-- Inspect `graph.regions` membership and label placement.
-- Check padding and region style keys that prevent overlap with member nodes.
-
-### Use When
-
-Use this pattern when grouping nodes into sites, racks, pods, domains, or ownership boundaries.
+1. Copy the two YAML tabs into your own project.
+2. In topology.yaml, remove `R05` only from region `isis-l1`'s `members` list. Keep R05 itself and its membership in every other region.
+3. Reload. The `isis-l1` hull contracts around its remaining member. R05 and its links remain visible; the outer AS region still contains it.
+4. Restore the original settings and reload to compare with the starting view.
 
 === "Live Viewport"
 
@@ -46,22 +42,18 @@ Use this pattern when grouping nodes into sites, racks, pods, domains, or owners
 
 ## Overlapping regions
 
-### What This Demonstrates
-
 Overlapping regions are important for network diagrams because some routers, such as ABRs, belong to two scopes at once. R05 is intentionally inside both IS-IS L1 and IS-IS L2.
 
 ### Expected Result
 
-The live viewport should render "Overlapping regions" without blocking diagnostics. It should show: A shared node can be a member of multiple regions. The test metadata expects `graphNodes`: `3`, `minVisibleEdges`: `1`, `minRegions`: `3`.
+A shared node can be a member of multiple regions.
 
-### What To Inspect
+### Try It
 
-- Inspect `graph.regions` membership and label placement.
-- Check padding and region style keys that prevent overlap with member nodes.
-
-### Use When
-
-Use this pattern when grouping nodes into sites, racks, pods, domains, or ownership boundaries.
+1. Copy the two YAML tabs into your own project.
+2. In topology.yaml, remove `R05` only from region `isis-l2`'s `members` list. Keep R05 itself and its membership in every other region.
+3. Reload. The `isis-l2` hull contracts around its remaining member. R05 and its links remain visible; the outer AS region still contains it.
+4. Restore the original settings and reload to compare with the starting view.
 
 === "Live Viewport"
 
@@ -88,22 +80,18 @@ Use this pattern when grouping nodes into sites, racks, pods, domains, or owners
 
 ## Region label placement
 
-### What This Demonstrates
-
 Region label placement keeps small or single-node regions readable. Use `labelPosition` and `labelMargin` in region styles to anchor the label on a region edge, then set `headerPadding`, `paddingX`, or `paddingY` in the same region stylesheet rule when an auto-fit hull needs reserved interior space.
 
 ### Expected Result
 
-The live viewport should render "Region label placement" without blocking diagnostics. It should show: Region labels can be anchored around the hull with an explicit margin. The test metadata expects `graphNodes`: `2`, `minVisibleEdges`: `1`, `minRegions`: `2`.
+Region labels can be anchored around the hull with an explicit margin.
 
-### What To Inspect
+### Try It
 
-- Inspect `graph.regions` membership and label placement.
-- Check padding and region style keys that prevent overlap with member nodes.
-
-### Use When
-
-Use this pattern when grouping nodes into sites, racks, pods, domains, or ownership boundaries.
+1. Copy the two YAML tabs into your own project.
+2. In stylesheet.yaml, find `region[labels.placement = "side"]` and change `labelPosition` from `rightCenter` to `leftCenter`.
+3. Reload. That region's label moves to the opposite side; its member nodes and membership stay unchanged.
+4. Restore the original settings and reload to compare with the starting view.
 
 === "Live Viewport"
 
@@ -130,22 +118,18 @@ Use this pattern when grouping nodes into sites, racks, pods, domains, or owners
 
 ## Draggable regions
 
-### What This Demonstrates
-
 Regions can be interactive hulls. Setting `draggable: true` and `selectable: true` in the stylesheet makes the region behave like an editable scope object.
 
 ### Expected Result
 
-The live viewport should render "Draggable regions" without blocking diagnostics. It should show: Regions can be selectable and draggable hulls. The test metadata expects `graphNodes`: `2`, `minVisibleEdges`: `1`, `minRegions`: `1`.
+Regions can be selectable and draggable hulls.
 
-### What To Inspect
+### Try It
 
-- Inspect `graph.regions` membership and label placement.
-- Check padding and region style keys that prevent overlap with member nodes.
-
-### Use When
-
-Use this pattern when grouping nodes into sites, racks, pods, domains, or ownership boundaries.
+1. Copy the two YAML tabs into your own project.
+2. Drag the Site A hull by its label or border and observe both member nodes moving with it. Reload to reset the temporary movement.
+3. In stylesheet.yaml, set draggable: false on the region rule. Reload and drag the same hull again: it stays fixed, while individual node dragging remains available.
+4. Restore the original settings and reload to compare with the starting view.
 
 === "Live Viewport"
 

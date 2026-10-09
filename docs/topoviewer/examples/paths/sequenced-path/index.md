@@ -5,22 +5,17 @@ hide:
 
 # Sequenced path
 
-## What This Demonstrates
-
 A sequenced path is more than a link: it records the ordered nodes that the logical path traverses. Rendering expands the sequence into path segments.
 
 ## Expected Result
 
-The live viewport should render "Sequenced path" without blocking diagnostics. It should show: A path sequence models ordered traversal through graph nodes. The test metadata expects `graphNodes`: `3`, `minVisibleEdges`: `2`.
+A path sequence models ordered traversal through graph nodes.
 
-## What To Inspect
+## Try It
 
-- Inspect `graph.paths` and the nodes or links they traverse.
-- Check lane, pipe, label, and arrow styling for service-path readability.
-
-## Use When
-
-Use this pattern when visualizing service paths, dependency paths, or multi-hop routes.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `path[labels.protocol = "sr-te"]`.
+2. Change its `lineColor` from `"#fb7185"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

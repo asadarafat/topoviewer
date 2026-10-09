@@ -5,22 +5,18 @@ hide:
 
 # Hide context
 
-## What This Demonstrates
-
 Hide context mode is useful when context should be removed from the rendered view instead of muted. The topology marks two PE nodes with `labels.role: pe`; the attention query focuses that label and hides every non-matching node and link.
 
 ## Expected Result
 
-The live viewport should render "Hide context" without blocking diagnostics. It should show: Use hide-context mode when the focused set should be isolated instead of dimmed. The test metadata expects `graphNodes`: `2`.
+Use hide-context mode when the focused set should be isolated instead of dimmed.
 
-## What To Inspect
+## Try It
 
-- Review the attention state in the live viewport and compare it with the optional Attention YAML tab.
-- Check which objects stay prominent and which objects are dimmed, collapsed, or summarized.
-
-## Use When
-
-Use this pattern when a dense graph needs focus, dimming, aggregation, or label-priority behavior.
+1. Copy the two YAML tabs into your own project.
+2. In topology.yaml, change `attention.query.mode` from `hide-context` to `dim-context`.
+3. Reload. The same PE nodes remain focused, while the previously hidden core nodes and links return as muted context.
+4. Restore the original settings and reload to compare with the starting view.
 
 === "Live Viewport"
 

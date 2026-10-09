@@ -5,22 +5,17 @@ hide:
 
 # Custom polygon node
 
-## What This Demonstrates
-
 Use `shape: polygon` with `shapePolygonPoints` when a domain needs a recognizable marker that is not covered by the named shape set. Points are normalized x/y pairs in the `[-1, 1]` coordinate space.
 
 ## Expected Result
 
-The live viewport should render "Custom polygon node" without blocking diagnostics. It should show: Polygon node bodies use normalized x/y point pairs through `shapePolygonPoints`. The test metadata expects `graphNodes`: `3`, `minVisibleEdges`: `2`.
+Polygon node bodies use normalized x/y point pairs through `shapePolygonPoints`.
 
-## What To Inspect
+## Try It
 
-- Inspect node labels, data, icon definitions, and body shape settings.
-- Compare label, badge, status, icon, border, and underlay style keys.
-
-## Use When
-
-Use this pattern when node identity, iconography, labels, status, or shape treatment matters.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link`.
+2. Change its `lineColor` from `"#14b8a6"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

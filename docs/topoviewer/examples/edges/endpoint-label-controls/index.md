@@ -5,8 +5,6 @@ hide:
 
 # Endpoint label controls
 
-## What This Demonstrates
-
 Use endpoint labels when the two ends of an edge need visible port names. This
 example keeps circle and square arrow markers as geometry only, then renders
 `sourceLabel` and `targetLabel` as styled endpoint annotations with automatic
@@ -21,16 +19,13 @@ text independently.
 
 ## Expected Result
 
-The live viewport should render "Endpoint label controls" without blocking diagnostics. It should show: Endpoint labels can show physical ports while arrow markers remain pure geometry. The test metadata expects `graphNodes`: `3`, `minVisibleEdges`: `2`.
+Endpoint labels can show physical ports while arrow markers remain pure geometry.
 
-## What To Inspect
+## Try It
 
-- Inspect `graph.links` for endpoint IDs and labels.
-- Compare line, arrow, label, and curve style keys in the stylesheet.
-
-## Use When
-
-Use this pattern when link readability, routing, arrowheads, or edge labels matter.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link[labels.class = "silver"]`.
+2. Change its `lineColor` from `"#64748b"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

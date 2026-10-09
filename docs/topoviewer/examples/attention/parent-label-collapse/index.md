@@ -5,22 +5,18 @@ hide:
 
 # Parent and label collapse
 
-## What This Demonstrates
-
 Parent and label collapse shows the other aggregate group types. Service child nodes under `PE-1` collapse by parent-child relationship, and access nodes collapse by `labels.role: access`; clicking the `PE-1 services` summary expands only that parent-derived group.
 
 ## Expected Result
 
-The live viewport should render "Parent and label collapse" without blocking diagnostics. It should show: Collapse parent-child objects and label-defined groups into aggregate summaries. The test metadata expects `graphNodes`: `4`, `minVisibleEdges`: `3`.
+Collapse parent-child objects and label-defined groups into aggregate summaries.
 
-## What To Inspect
+## Try It
 
-- Review the attention state in the live viewport and compare it with the optional Attention YAML tab.
-- Check which objects stay prominent and which objects are dimmed, collapsed, or summarized.
-
-## Use When
-
-Use this pattern when a dense graph needs focus, dimming, aggregation, or label-priority behavior.
+1. Copy the two YAML tabs into your own project.
+2. In topology.yaml, add `expandedGroupIds: [pe-services]` under `attention.aggregate`, alongside `groups`.
+3. Reload. `PE-1 services` starts expanded into its member nodes; other configured groups remain collapsed. This sets the initial view without a click.
+4. Restore the original settings and reload to compare with the starting view.
 
 === "Live Viewport"
 

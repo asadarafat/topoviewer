@@ -5,22 +5,17 @@ hide:
 
 # Markdown callouts
 
-## What This Demonstrates
-
 Callout markdown supports headings, bullets, bold, underline, strike-through, inline code, links, and safe images. Use it for explanation, not for graph identity.
 
 ## Expected Result
 
-The live viewport should render "Markdown callouts" without blocking diagnostics. It should show: Callout bodies support markdown, inline formatting, and images. The test metadata expects `graphNodes`: `1`, `visibleCallouts`: `1`.
+Callout bodies support markdown, inline formatting, and images.
 
-## What To Inspect
+## Try It
 
-- Inspect `diagram.callouts` for visual notes that do not change graph semantics.
-- Check the stylesheet rule that controls callout color, border, and text treatment.
-
-## Use When
-
-Use this pattern when the diagram needs explanatory annotations without changing graph semantics.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `callout`.
+2. Change its `lineColor` from `"rgba(226, 232, 240, 0.72)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

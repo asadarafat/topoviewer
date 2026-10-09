@@ -56,6 +56,7 @@
     "reference/topoviewer-stylesheet.md",
     "reference/typescript-api.md",
     "reference/yaml-schemas.md",
+    "start/export-your-first-topology.md",
     "start/first-topology.md",
     "start/style-your-first-topology.md",
     "start/why-topoviewer.md"

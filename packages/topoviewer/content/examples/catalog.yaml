@@ -4,6 +4,7 @@ examples:
     title: Graph basic
     feature: graph
     path: graph/basic
+    extraFiles: [stylesheet-tutorial.yaml]
     page: topoviewer/examples/graph/basic
     summary: A minimal graph with two nodes and one named link.
     render:

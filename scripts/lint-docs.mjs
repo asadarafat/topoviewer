@@ -536,7 +536,7 @@ function checkGeneratedCriticalPages() {
   const graphIndex = path.join(docsRoot, 'topoviewer/examples/graph/index.md');
   if (fs.existsSync(graphIndex)) {
     const text = readText(graphIndex);
-    for (const heading of ['What This Demonstrates', 'Expected Result', 'What To Inspect', 'Use When']) {
+    for (const heading of ['Expected Result', 'Try It']) {
       if (!text.includes(heading)) {
         fail(`Generated graph examples page is missing "${heading}" sections.`);
       }
@@ -775,6 +775,10 @@ function visitNavLeaves(navItems, visitor, ancestors = []) {
 
 function checkNavPathAlignment() {
   const mkdocsConfig = readYaml(path.join(repoRoot, 'mkdocs.yml'));
+  // Keep published URLs stable when an editorial title becomes shorter.
+  const retainedRoutes = new Map([
+    ['topoviewer/evaluate/adopt-topoviewer-or-keep-topology-locked-to-a-surface.md', 'Adoption Guide']
+  ]);
   const sectionSlugs = new Map([
     ['Start', 'start'],
     ['Author', 'author'],
@@ -806,6 +810,7 @@ function checkNavPathAlignment() {
         if (label === 'Overview' && target === `${expectedPrefix}/index.md`) {
           return;
         }
+        if (retainedRoutes.get(target) === label) return;
         const expectedSlug = slugifyNavLabel(label);
         const actualSlug = navTargetSlug(target);
         if (actualSlug !== expectedSlug) {
@@ -857,11 +862,10 @@ function checkPublicPromoArtifactReferences() {
   }
 }
 
-function checkNoGuideNextSteps() {
-  for (const filePath of listMarkdownFiles(contentPagesRoot)) {
-    const text = readText(filePath);
-    if (/^#{1,6}\s+Next Steps?\s*$/mi.test(text)) {
-      fail(`${relative(filePath)} must not include a "Next Steps" section. Use mkdocs.yml navigation instead.`);
+function checkNoInternalExampleAssertions() {
+  for (const filePath of listMarkdownFiles(path.join(docsRoot, 'topoviewer/examples'))) {
+    if (readText(filePath).includes('The test metadata expects')) {
+      fail(`${relative(filePath)} exposes internal test metadata instead of explaining the visible result.`);
     }
   }
 }
@@ -898,7 +902,7 @@ checkStartNavBoundary();
 checkExamplesNavBoundary();
 checkPublicPathWording();
 checkPublicPromoArtifactReferences();
-checkNoGuideNextSteps();
+checkNoInternalExampleAssertions();
 checkGuidePageLengthBudgets();
 
 if (errors.length) {

@@ -5,24 +5,19 @@ hide:
 
 # Icon fit and badges
 
-## What This Demonstrates
-
 Icon fit, badges, and status markers let a small node carry asset, count, and health cues. Use badges for compact values and status markers for color-coded state.
 
 `iconFit` accepts `contain`, `cover`, and `fill`. This example uses the same wide SVG in a circular node for all three nodes: `contain` preserves the whole SVG with empty space, `cover` crops the wide SVG to fill the circular node body, and `fill` stretches the SVG across the circular node body. The demo SVG opts into stretching with `preserveAspectRatio="none"` so the `fill` behavior is visible.
 
 ## Expected Result
 
-The live viewport should render "Icon fit and badges" without blocking diagnostics. It should show: Icon fit, badges, and status markers add compact node-level signals. The test metadata expects `graphNodes`: `3`, `minVisibleEdges`: `2`.
+Icon fit, badges, and status markers add compact node-level signals.
 
-## What To Inspect
+## Try It
 
-- Inspect node labels, data, icon definitions, and body shape settings.
-- Compare label, badge, status, icon, border, and underlay style keys.
-
-## Use When
-
-Use this pattern when node identity, iconography, labels, status, or shape treatment matters.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link`.
+2. Change its `lineColor` from `"#94a3b8"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

@@ -1,25 +1,20 @@
 # Nodes
 
-These examples document the nodes behaviors from the canonical TopoViewer test-case catalog. Each section is generated from one test case and keeps the live viewport, topology YAML, and stylesheet YAML together.
+Explore nodes behavior with a live diagram and its two source files. Each example includes an edit to try in your own copy.
 
 ## Named node shapes
-
-### What This Demonstrates
 
 Node shape is presentation policy. Use stylesheet selectors to map graph labels such as role or device type to distinct node bodies while keeping topology facts in `graph.nodes` and `graph.links`.
 
 ### Expected Result
 
-The live viewport should render "Named node shapes" without blocking diagnostics. It should show: Node body shape can encode device or service role without changing graph facts. The test metadata expects `graphNodes`: `8`, `minVisibleEdges`: `7`.
+Node body shape can encode device or service role without changing graph facts.
 
-### What To Inspect
+### Try It
 
-- Inspect node labels, data, icon definitions, and body shape settings.
-- Compare label, badge, status, icon, border, and underlay style keys.
-
-### Use When
-
-Use this pattern when node identity, iconography, labels, status, or shape treatment matters.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link`.
+2. Change its `lineColor` from `"#94a3b8"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 
@@ -46,22 +41,17 @@ Use this pattern when node identity, iconography, labels, status, or shape treat
 
 ## Custom polygon node
 
-### What This Demonstrates
-
 Use `shape: polygon` with `shapePolygonPoints` when a domain needs a recognizable marker that is not covered by the named shape set. Points are normalized x/y pairs in the `[-1, 1]` coordinate space.
 
 ### Expected Result
 
-The live viewport should render "Custom polygon node" without blocking diagnostics. It should show: Polygon node bodies use normalized x/y point pairs through `shapePolygonPoints`. The test metadata expects `graphNodes`: `3`, `minVisibleEdges`: `2`.
+Polygon node bodies use normalized x/y point pairs through `shapePolygonPoints`.
 
-### What To Inspect
+### Try It
 
-- Inspect node labels, data, icon definitions, and body shape settings.
-- Compare label, badge, status, icon, border, and underlay style keys.
-
-### Use When
-
-Use this pattern when node identity, iconography, labels, status, or shape treatment matters.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link`.
+2. Change its `lineColor` from `"#14b8a6"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 
@@ -88,22 +78,17 @@ Use this pattern when node identity, iconography, labels, status, or shape treat
 
 ## Node label placement
 
-### What This Demonstrates
-
 Node label placement keeps labels readable when node shapes, labels, and nearby links compete for space. This example places labels above, beside, and inside four nodes while keeping graph facts unchanged.
 
 ### Expected Result
 
-The live viewport should render "Node label placement" without blocking diagnostics. It should show: Node labels can be placed around or inside node bodies with wrapping and backing controls. The test metadata expects `graphNodes`: `4`, `minVisibleEdges`: `4`.
+Node labels can be placed around or inside node bodies with wrapping and backing controls.
 
-### What To Inspect
+### Try It
 
-- Inspect node labels, data, icon definitions, and body shape settings.
-- Compare label, badge, status, icon, border, and underlay style keys.
-
-### Use When
-
-Use this pattern when node identity, iconography, labels, status, or shape treatment matters.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link`.
+2. Change its `lineColor` from `"#94a3b8"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 
@@ -130,22 +115,17 @@ Use this pattern when node identity, iconography, labels, status, or shape treat
 
 ## Border, outline, and underlay
 
-### What This Demonstrates
-
 Border, outline, and underlay styles create operational emphasis without changing the topology. Warning and critical nodes stand out through stroke pattern, outline, and underlay while the normal peer stays visually quiet.
 
 ### Expected Result
 
-The live viewport should render "Border, outline, and underlay" without blocking diagnostics. It should show: Node border, outline, and underlay controls provide operational emphasis without changing graph facts. The test metadata expects `graphNodes`: `3`, `minVisibleEdges`: `2`.
+Node border, outline, and underlay controls provide operational emphasis without changing graph facts.
 
-### What To Inspect
+### Try It
 
-- Inspect node labels, data, icon definitions, and body shape settings.
-- Compare label, badge, status, icon, border, and underlay style keys.
-
-### Use When
-
-Use this pattern when node identity, iconography, labels, status, or shape treatment matters.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link`.
+2. Change its `lineColor` from `"#94a3b8"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 
@@ -172,24 +152,19 @@ Use this pattern when node identity, iconography, labels, status, or shape treat
 
 ## Icon fit and badges
 
-### What This Demonstrates
-
 Icon fit, badges, and status markers let a small node carry asset, count, and health cues. Use badges for compact values and status markers for color-coded state.
 
 `iconFit` accepts `contain`, `cover`, and `fill`. This example uses the same wide SVG in a circular node for all three nodes: `contain` preserves the whole SVG with empty space, `cover` crops the wide SVG to fill the circular node body, and `fill` stretches the SVG across the circular node body. The demo SVG opts into stretching with `preserveAspectRatio="none"` so the `fill` behavior is visible.
 
 ### Expected Result
 
-The live viewport should render "Icon fit and badges" without blocking diagnostics. It should show: Icon fit, badges, and status markers add compact node-level signals. The test metadata expects `graphNodes`: `3`, `minVisibleEdges`: `2`.
+Icon fit, badges, and status markers add compact node-level signals.
 
-### What To Inspect
+### Try It
 
-- Inspect node labels, data, icon definitions, and body shape settings.
-- Compare label, badge, status, icon, border, and underlay style keys.
-
-### Use When
-
-Use this pattern when node identity, iconography, labels, status, or shape treatment matters.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link`.
+2. Change its `lineColor` from `"#94a3b8"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 
@@ -216,8 +191,6 @@ Use this pattern when node identity, iconography, labels, status, or shape treat
 
 ## Card node layout
 
-### What This Demonstrates
-
 Card node layout is for nodes that need to read like compact operational
 records instead of plain device glyphs.
 
@@ -234,16 +207,13 @@ of metadata.
 
 ### Expected Result
 
-The live viewport should render "Card node layout" without blocking diagnostics. It should show: Nested `nodeLayout` makes round-rectangle nodes read like compact service cards. The test metadata expects `graphNodes`: `3`, `minVisibleEdges`: `2`.
+Nested `nodeLayout` makes round-rectangle nodes read like compact service cards.
 
-### What To Inspect
+### Try It
 
-- Inspect node labels, data, icon definitions, and body shape settings.
-- Compare label, badge, status, icon, border, and underlay style keys.
-
-### Use When
-
-Use this pattern when node identity, iconography, labels, status, or shape treatment matters.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link`.
+2. Change its `lineColor` from `"#64748b"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

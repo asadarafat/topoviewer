@@ -5,22 +5,17 @@ hide:
 
 # Border, outline, and underlay
 
-## What This Demonstrates
-
 Border, outline, and underlay styles create operational emphasis without changing the topology. Warning and critical nodes stand out through stroke pattern, outline, and underlay while the normal peer stays visually quiet.
 
 ## Expected Result
 
-The live viewport should render "Border, outline, and underlay" without blocking diagnostics. It should show: Node border, outline, and underlay controls provide operational emphasis without changing graph facts. The test metadata expects `graphNodes`: `3`, `minVisibleEdges`: `2`.
+Node border, outline, and underlay controls provide operational emphasis without changing graph facts.
 
-## What To Inspect
+## Try It
 
-- Inspect node labels, data, icon definitions, and body shape settings.
-- Compare label, badge, status, icon, border, and underlay style keys.
-
-## Use When
-
-Use this pattern when node identity, iconography, labels, status, or shape treatment matters.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link`.
+2. Change its `lineColor` from `"#94a3b8"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

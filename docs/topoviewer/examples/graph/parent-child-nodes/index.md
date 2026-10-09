@@ -5,22 +5,17 @@ hide:
 
 # Parent and child nodes
 
-## What This Demonstrates
-
 Parent and child nodes model ownership without losing graph semantics. The child remains selectable and linkable, while the parent can auto-expand when child nesting is enabled.
 
 ## Expected Result
 
-The live viewport should render "Parent and child nodes" without blocking diagnostics. It should show: Logical nodes can be nested inside physical parent nodes. The test metadata expects `graphNodes`: `4`, `minVisibleEdges`: `1`.
+Logical nodes can be nested inside physical parent nodes.
 
-## What To Inspect
+## Try It
 
-- Inspect `graph.nodes`, `graph.links`, and object labels.
-- Check how the stylesheet turns semantic facts into visual presentation.
-
-## Use When
-
-Use this pattern when modeling the core semantic graph.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link[labels.link = "service"]`.
+2. Change its `lineColor` from `"#c084fc"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

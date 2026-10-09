@@ -2,9 +2,10 @@
 
 **Support status:** Beta Preview
 
-This example keeps one portable bundle intact while changing the surface around
-it. The graph below is the documentation consumer. The same three source files
-are also the Studio import fixture and the Grafana consumer contract fixture.
+This example uses one bundle in Studio, a documentation page, and Grafana without
+changing object IDs. The graph below renders that bundle. For a walkthrough that
+starts in hosted Studio without a repository checkout, use
+[First Project](../../author/studio/first-project.md).
 
 ```topoviewer
 topology: examples/integration/studio-portable-bundle/topology.yaml
@@ -17,7 +18,8 @@ title: Studio portable bundle
 
 ## Try The Authoring Loop
 
-Start Studio from the repository:
+For this folder-based walkthrough, follow [Run Studio locally](../../author/studio/index.md#run-studio-locally),
+then start Studio from the repository root:
 
 ```bash
 npm run studio:dev
@@ -38,24 +40,33 @@ preview.
 
 Open **Object drawer** under Authoring to place an object. Selecting an object
 opens preview-local **Properties** for its topology and appearance. Clicking
-empty preview opens canvas, grid, interaction, and layer settings. Pinning
-**Mapper** keeps telemetry authoring open while you inspect topology objects.
+empty preview opens canvas, grid, interaction, and layer settings.
+**Telemetry rules** opens the Mapper drawer, which stays open while you inspect
+other topology objects.
 
 Select `edge-a`, change its **Visible label** in Properties, then select
 `topology.yaml` in project source to inspect the committed source and undo the
-change. Open Mapper Visual and paste a sample:
+change. Open **Telemetry rules > Coverage**, paste this into **Sample JSON**,
+then choose **Analyze samples**:
 
 ```json
-{
-  "metric": "topoviewer_link_up",
-  "source_id": "studio-portable-consumer",
-  "link_id": "edge-a-core-b",
-  "up": 0
-}
+[
+  {
+    "metric": "topoviewer_link_up",
+    "value": 0,
+    "labels": {
+      "source_id": "studio-portable-consumer",
+      "link_id": "edge-a-core-b"
+    }
+  }
+]
 ```
 
-Coverage should resolve the sample to `edge-a-core-b` and classify the `down`
-state. The topology ID and link ID do not change when runtime state changes.
+Coverage should show one resolved sample and an object link to `edge-a-core-b`.
+Join keys belong inside `labels`; putting them at the top level leaves the
+target unresolved. Coverage checks the binding, not runtime state coloring.
+Use the Grafana consumer with actual data frames to check the rule's `down`
+style. The topology ID and link ID do not change with runtime state.
 
 Use **Appearance** in the header to choose **System**, **Light**, or **Dark**.
 System follows the operating system. Theme-owned canvas and grid colors follow
@@ -63,16 +74,20 @@ that choice; explicit project colors remain unchanged.
 
 ??? example "Use archive import when folder access is unavailable"
 
-    Browser folder access is not available everywhere. Create a Studio project
-    and use the shared source workspace for topology, stylesheet, and optional
-    mapper YAML. Export a `.tvstudio` archive after validation so the complete
-    project can move as one file.
+    If someone has exported this bundle as `.tvstudio`, use **Project menu >
+    Open archive**. If you only have the YAML files, create a project and replace
+    its topology and stylesheet in the source editor, applying each. Create a
+    first mapper rule to make `mapper.yaml` available, then replace its source
+    with this bundle's mapper and Apply. Follow the
+    [draft and save rules](../../author/studio/yaml-recovery.md#draft-and-save-rules)
+    before exporting a verified archive for future imports.
 
 ## Publish The Documentation
 
-This page is authored once in the canonical docs tree. `npm run sync:docs`
-projects it into both MkDocs and Zensical. The live viewport references the same
-example files rather than copying YAML into each documentation page.
+Open **Export project > Documentation**, choose MkDocs or Static HTML, and export
+the documentation bundle. Its README explains where to put the YAML and embed
+snippet. See [Export](../../author/studio/export.md#documentation-bundle) for the
+bundle contents and deployment steps.
 
 ??? example "Inspect the canonical mapper"
 
@@ -84,7 +99,7 @@ example files rather than copying YAML into each documentation page.
 
 In Studio, open **Export project > Grafana**. The readiness check confirms that
 `mapper.yaml` is present and valid before **Export Grafana bundle** becomes
-the production action. Studio then emits the mounted-bundle layout:
+available. Studio then emits the mounted-bundle layout:
 
 ```text
 studio-portable-consumer/

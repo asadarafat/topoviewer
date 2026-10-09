@@ -5,22 +5,18 @@ hide:
 
 # Aggregate badge and status
 
-## What This Demonstrates
-
 Aggregate badge and status defaults make a collapsed group useful before drill-down. The summary node shows the hidden member count as a badge and the worst member severity as a status marker.
 
 ## Expected Result
 
-The live viewport should render "Aggregate badge and status" without blocking diagnostics. It should show: Collapsed aggregate summaries can expose hidden member count and worst severity as compact node cues. The test metadata expects `graphNodes`: `2`, `minVisibleEdges`: `1`.
+Collapsed aggregate summaries can expose hidden member count and worst severity as compact node cues.
 
-## What To Inspect
+## Try It
 
-- Review the attention state in the live viewport and compare it with the optional Attention YAML tab.
-- Check which objects stay prominent and which objects are dimmed, collapsed, or summarized.
-
-## Use When
-
-Use this pattern when a dense graph needs focus, dimming, aggregation, or label-priority behavior.
+1. Copy the two YAML tabs into your own project.
+2. Keep the Access region summary collapsed. In topology.yaml, change ACC-2's data.severity from critical to normal.
+3. Reload. The summary's worst severity changes from critical to major because AGG-1 is still major. Its member-count badge remains 3.
+4. Restore the original settings and reload to compare with the starting view.
 
 === "Live Viewport"
 

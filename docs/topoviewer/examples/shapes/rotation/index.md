@@ -5,22 +5,17 @@ hide:
 
 # Shape rotation
 
-## What This Demonstrates
-
 Shape geometry, dimensions, and rotation are stylesheet policy. The topology keeps stable shape identity, position, layers, and selector labels; text remains a separate annotation concern.
 
 ## Expected Result
 
-The live viewport should render "Shape rotation" without blocking diagnostics. It should show: Shape geometry can be rotated directly or through a stylesheet rule. The test metadata expects `shapes`: `3`.
+Shape geometry can be rotated directly or through a stylesheet rule.
 
-## What To Inspect
+## Try It
 
-- Inspect `diagram.shapes` and confirm they are visual explanation objects, not graph facts.
-- Check shape geometry, fill, stroke, z-index, and label behavior.
-
-## Use When
-
-Use this pattern when adding visual explanation objects around a graph.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `shape`.
+2. Change its `borderWidth` from `2` to `4`, then reload your page. Compare the stroke thickness of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

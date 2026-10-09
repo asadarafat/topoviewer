@@ -5,24 +5,19 @@ hide:
 
 # Layered network authoring
 
-## What This Demonstrates
-
 The default compact Studio authoring fixture.
 
 It combines underlay, BGP, service, and operations layers in one small topology so Studio and regression checks can exercise layer toggles, relationship editing, attention, and diagnostics without starting from an empty graph.
 
 ## Expected Result
 
-The live viewport should render "Layered network authoring" without blocking diagnostics. It should show: A compact layered-network fixture for Studio, demos, and regression checks.
+A compact layered-network fixture for Studio, demos, and regression checks.
 
-## What To Inspect
+## Try It
 
-- Use the example as an authoring template in TopoViewer Studio.
-- Apply changes and confirm the rendered viewport stays in sync with the source bundle.
-
-## Use When
-
-Use this pattern when building Browser or Desktop Studio authoring workflows.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `region`.
+2. Change its `borderColor` from `"rgba(25, 118, 210, 0.34)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

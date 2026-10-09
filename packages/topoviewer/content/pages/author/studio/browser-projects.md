@@ -2,32 +2,23 @@
 
 **Support status:** Beta Preview
 
-The browser host stores projects and recovery snapshots in IndexedDB. It does
-not write project content to `localStorage` and does not upload source to a
-service.
+Browser projects and recovery snapshots stay in this browser profile on this
+machine. Studio does not upload them to a service. Use an archive to move a
+project to another browser or computer.
 
 Open **Project menu** to enter the **Projects** manager. Create, import, and
 open-folder commands stay at the top. Each project row shows its last update
 time and exposes rename, duplicate, export, and delete through its action menu.
-The current project is marked explicitly, and project search appears when more
-than one project exists. On narrow screens, primary commands stack at full
-width while the project list remains unchanged.
+The current project is marked explicitly, and search appears when more than one
+project exists.
 
 ## Saved And Recovery State
 
-- `Saved` means the explicit project revision matches the current source.
-- `Modified` means valid source differs from the saved revision.
-- `Recovery` means Studio restored bounded autosave data after interruption.
-- `Invalid Draft` means raw source is recoverable while the canvas uses the last
-  valid projection.
-
-A dirty stylesheet candidate is stored separately from the last valid applied
-project. Restoring it does not mark invalid candidate text as saved source. Save
-and export first apply a valid candidate; an invalid candidate must be corrected
-or reverted.
-
-Recovery does not replace explicit save. Export important work before clearing
-browser site data.
+Use the [draft and save rules](yaml-recovery.md#draft-and-save-rules) to distinguish
+accepted changes, pending source, style drafts, and restored work. Recovery does
+not replace Save or an external backup. Before clearing site data, follow
+[Back up before resetting storage](yaml-recovery.md#back-up-before-resetting-storage):
+unresolved editor text must be copied separately from a project archive.
 
 Edits made while a save is running remain `Modified` until a later save includes
 them. Renaming a project preserves its current edits, source drafts, and undo
@@ -36,13 +27,16 @@ history.
 ## Move A Project
 
 Choose **Export archive** from a project row's action menu to write a
-deterministic `.tvstudio` archive containing source, metadata, and local assets.
+`.tvstudio` archive containing accepted source, metadata, and local assets.
 **Open archive** validates all entries before creating a project. Duplicate
 project IDs receive a new browser ID.
 
-Highly compressible files are stored uncompressed inside the archive when needed
-to satisfy the import expansion-ratio limit. Source text, including a UTF-8 BOM,
-round-trips unchanged. Size limits include the manifest as well as project files.
+Apply any edits you want included first: the archive excludes pending topology,
+mapper, and stylesheet drafts. Reopen it and inspect the result before removing
+the original project; [First Project](first-project.md#export-and-reopen-the-archive)
+walks through that check. Source text, including a UTF-8 BOM, is preserved.
+
+## Work With A Folder
 
 Browsers with the File System Access API may expose **Open folder**. Studio asks
 for explicit read/write permission and keeps access inside the selected
@@ -52,12 +46,10 @@ project unsaved. Archive import remains the portable fallback.
 
 Folder saves check both the browser revision and current disk contents before
 writing. External changes produce a conflict without overwriting those files.
-If a write or browser-storage commit fails, Studio restores files already
-changed by that save. A failed restoration is reported explicitly so you can
-export the draft and inspect the folder. Browser file APIs cannot make several
-files and IndexedDB one crash-atomic transaction; export important work before
-resolving an interrupted or conflicting folder save.
+If a write or browser-storage commit fails, Studio attempts to restore files
+already changed by that save. A failed restoration is reported explicitly.
+Keep Studio open, [back up accepted source and unresolved drafts](yaml-recovery.md#back-up-before-resetting-storage),
+and inspect the folder before retrying. An interrupted save can require manual
+recovery because browser file writes and browser storage are separate operations.
 
-Quota, corrupt-record, interrupted-save, and migration failures are contained.
-Studio preserves dirty source, offers retry or explicit reset, and does not
-blank the current canvas.
+For quota, permission, or conflict messages, use [Troubleshooting](troubleshooting.md#save-or-export-failed).

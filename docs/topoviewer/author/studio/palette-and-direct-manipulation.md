@@ -104,9 +104,8 @@ the target uses imported inline visual values, move those values to
   to release it without deleting either object.
 
 **Alignment assistance** enables helper lines and alignment snapping together.
-These transient authoring aids affect the final position but do not serialize
-private guide objects. Active drag remains in the renderer and writes YAML only
-after release.
+These guides help place objects without becoming part of the exported diagram.
+The final position is written to YAML when you release the pointer.
 
 Active resize is transition-free so the pointer and geometry remain coupled.
 After release, Studio uses a brief outline cue to confirm the commit. The cue is
@@ -130,10 +129,10 @@ protects the final declared layer and prevents an object from losing its final
 layer membership.
 
 Layer definitions and object membership are portable `topology.yaml` data.
-Visibility checkboxes are view state: they filter the current preview without
-rewriting project source. When a YAML draft is invalid, Studio keeps expansion,
-source navigation, selection, and visibility available but disables actions
-that would mutate the last valid topology behind the draft.
+Visibility checkboxes filter the current preview without rewriting source.
+Pending or invalid topology YAML protects the document from visual edits;
+Apply or Revert it before changing layer definitions or membership. See the
+[draft and save rules](yaml-recovery.md#draft-and-save-rules).
 
 ## Attention Authoring
 
@@ -176,19 +175,16 @@ attention YAML** to edit those fields in the shared schema-aware source
 workspace. **Remove attention** requires confirmation because it removes the
 complete top-level policy, including advanced clauses.
 
-When an unapplied topology draft is invalid, Attention remains visible and
-**View attention YAML** remains available, but every visual source mutation is
-disabled. Correct or revert the draft first; Studio never applies a visual
-change over stale valid topology. Undo and redo restore the complete previous
-and next Attention policy.
+When topology YAML is pending or invalid, resolve it with Apply or Revert before
+changing Attention. **View attention YAML** remains available. Undo and Redo
+restore accepted Attention changes; they cannot discard a conflicting source
+draft. See [YAML Recovery](yaml-recovery.md#draft-and-save-rules).
 
 Select empty canvas to open canvas **Properties** for viewport behavior and
 overlay toggles. Fixed canvas dimensions and presentation overrides are
 available under **Advanced viewport** so they do not compete with background,
 grid, and alignment controls during normal authoring.
-Studio defers automatic fit-on-open for dense projects because fitting the whole
-graph would defeat viewport culling. Use the canvas **Fit** command when a full
-overview is explicitly needed.
+Use the canvas **Fit** command when you need an overview of the whole graph.
 
 ## Regions As Groups
 

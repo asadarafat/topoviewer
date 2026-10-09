@@ -3,7 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { chromium } from '@playwright/test';
+import { chromium, expect } from '@playwright/test';
 import { createDocsStaticServer, pagesBasePath } from './lib/docs-static-server.mjs';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -46,6 +46,22 @@ async function assertEmbedRendered(page, label, minimumNodes = 1, minimumEdges =
   await assertNoTopoViewerError(page, label);
 }
 
+async function assertTutorialRendered(page, styled) {
+  const viewport = page.locator('.topoviewer-embed').first();
+  await expect(viewport.locator('.react-flow__node-network')).toHaveCount(2);
+  await expect(viewport.locator('.react-flow__node-network[data-id="R01"]')).toContainText('R01');
+  const cisco = viewport.locator('.react-flow__node-network[data-id="R02"]');
+  await expect(cisco).toContainText('R02');
+  await expect(viewport.locator('.topoviewer-edge-label-center')).toHaveText('R01 to R02 Ethernet');
+  if (styled) {
+    await expect(cisco.locator('.topoviewer-node-geometry').first()).toHaveAttribute('data-node-shape', 'roundRectangle');
+    await expect(cisco.locator('.topoviewer-node-geometry').first().locator(':scope > :last-child')).toHaveCSS('fill', 'rgb(124, 58, 237)');
+    const edge = viewport.locator('.topoviewer-edge-visible-path');
+    await expect(edge).toHaveCSS('stroke', 'rgb(156, 39, 176)');
+    await expect(edge).toHaveCSS('stroke-dasharray', '7px, 7px');
+  }
+}
+
 async function run() {
   const { server, baseUrl } = await createDocsStaticServer({ siteRoot });
   const browser = await chromium.launch();
@@ -72,6 +88,23 @@ async function run() {
     });
 
     const checks = [
+      ...['mkdocs', 'zensical'].flatMap((host) => [
+        {
+          label: `${host} first topology tutorial`,
+          url: `${baseUrl}${pagesBasePath}/docs/${host}/topoviewer/start/first-topology/`,
+          nodes: 2,
+          edges: 1,
+          tutorial: true
+        },
+        {
+          label: `${host} styling tutorial`,
+          url: `${baseUrl}${pagesBasePath}/docs/${host}/topoviewer/start/style-your-first-topology/`,
+          nodes: 2,
+          edges: 1,
+          tutorial: true,
+          styled: true
+        }
+      ]),
       {
         label: 'MkDocs graph basic',
         url: `${baseUrl}${pagesBasePath}/docs/mkdocs/topoviewer/examples/graph/basic/`,
@@ -120,6 +153,7 @@ async function run() {
           }
         } else {
           await assertEmbedRendered(page, check.label, check.nodes, check.edges);
+          if (check.tutorial) await assertTutorialRendered(page, check.styled);
         }
         console.log(`Docs smoke passed: ${check.label}`);
       } catch (error) {

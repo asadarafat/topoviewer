@@ -5,22 +5,17 @@ hide:
 
 # Three-dimensional shapes
 
-## What This Demonstrates
-
 3D shapes cover the common diagram metaphors: cube, cuboid, sphere, cone, cylinder, pyramid, and prism. Topology labels classify each primitive and stylesheet selectors own its geometry and dimensions. Use callouts when text needs to sit near them.
 
 ## Expected Result
 
-The live viewport should render "Three-dimensional shapes" without blocking diagnostics. It should show: 3D geometry primitives are available for common diagram metaphors. The test metadata expects `shapes`: `7`.
+3D geometry primitives are available for common diagram metaphors.
 
-## What To Inspect
+## Try It
 
-- Inspect `diagram.shapes` and confirm they are visual explanation objects, not graph facts.
-- Check shape geometry, fill, stroke, z-index, and label behavior.
-
-## Use When
-
-Use this pattern when adding visual explanation objects around a graph.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `shape`.
+2. Change its `borderWidth` from `2` to `4`, then reload your page. Compare the stroke thickness of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

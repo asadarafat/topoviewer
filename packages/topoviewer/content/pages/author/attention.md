@@ -18,58 +18,100 @@ Use topology-level `attention:` when the focus behavior is part of the intended 
 | Focus by severity, health, operational state, counters, timestamps | `data` key/value pairs. Nested objects are addressable by dot path. |
 | Focus an LSP, service path, traffic path, or ordered dependency chain | `graph.paths[].sequence` or path `source`/`target` with `parent`. |
 | Focus or collapse a site, domain, failure area, or ownership boundary | `graph.regions[].members`. |
-| Collapse child services, interfaces, or logical objects under a parent | `parent` on the child nodes, links, paths, or regions. |
+| Collapse child services, interfaces, or logical objects under a node | `parent` on the child nodes. |
 | Traverse blast radius | Directed `graph.links` and `graph.paths` adjacency. |
 
-Example attention-ready topology facts:
+## Topology Attention Block
 
+Start with this complete bundle. It renders four graph nodes, their links and
+path, and a region hull. The queries below use these object IDs and labels.
+
+**topology.yaml**
+
+<!-- docs-check: topology attention-baseline -->
 ```yaml
+version: "0.2"
 graph:
+  layers:
+    - id: physical
   nodes:
     - id: CORE-1
-      labels:
-        role: core
-        site: fra
+      layers: [physical]
+      position: [100, 80]
+      labels: { role: core, site: fra }
       data:
         severity: critical
         changedAt: "2026-06-15T10:30:00Z"
-        metrics:
-          fanout: 12
-
+        metrics: { fanout: 12 }
+    - id: DIST-1
+      layers: [physical]
+      position: [300, 80]
+      labels: { role: p, site: fra }
+    - id: ACCESS-1
+      layers: [physical]
+      position: [500, 80]
+      labels: { role: pe, site: fra }
+    - id: ACCESS-2
+      layers: [physical]
+      position: [500, 260]
+      labels: { role: access, site: fra }
   links:
     - id: core-dist
       source: CORE-1
       target: DIST-1
-      labels:
-        media: fiber
-
+      layers: [physical]
+      labels: { media: fiber }
+    - id: dist-access
+      source: DIST-1
+      target: ACCESS-1
+      layers: [physical]
+    - id: parallel-1
+      source: ACCESS-1
+      target: ACCESS-2
+      layers: [physical]
+      labels: { link: parallel }
+    - id: parallel-2
+      source: ACCESS-1
+      target: ACCESS-2
+      layers: [physical]
+      labels: { link: parallel }
   paths:
     - id: critical-path
       sequence: [CORE-1, DIST-1, ACCESS-1]
-
+      layers: [physical]
   regions:
     - id: access-metro
       members: [DIST-1, ACCESS-1, ACCESS-2]
-```
-
-## Topology Attention Block
-
-Topology YAML can carry the default attention state:
-
-```yaml
-graph:
-  nodes:
-    - id: CORE-1
-    - id: CORE-2
-  links:
-    - id: core-link
-      source: CORE-1
-      target: CORE-2
-
+      layers: [physical]
 attention:
   interactive: true
   clickMode: dim-context
 ```
+
+**stylesheet.yaml**
+
+<!-- docs-check: stylesheet attention-baseline -->
+```yaml
+version: "0.2"
+layout:
+  mode: manual
+stylesheet:
+  - selector: link
+    style:
+      curveStyle: bezier
+  - selector: path
+    style:
+      lineColor: "#d97706"
+      lineWidth: 3
+```
+
+Attention indexes graph nodes, links, link directions, paths, and regions.
+Shapes, callouts, connectors, and text in `diagram` are not attention-query
+targets. Use a node when an object needs graph focus or aggregation.
+
+Each `attention:` example below is a **topology.yaml fragment**: replace the
+baseline's `attention` block with it, or merge the shown settings into that
+block. Do not paste several top-level `attention` keys into one file.
 
 ## MkDocs Attention Blocks
 
@@ -88,10 +130,11 @@ The public block supports:
 
 | Field | Use |
 |---|---|
-| `attention.interactive` | Enables click-to-focus. Clicking a node, link, path segment, or region applies a focus query for that object; clicking empty viewport space clears the active focus. |
+| `attention.interactive` | Enables click-to-focus. Clicking a node, link, path segment, or region applies a focus query for that object; clicking empty viewport space restores the configured default query. |
 | `attention.clickMode` | Focus mode used by click-to-focus. |
 | `attention.query` | Static focus query applied when the page loads. |
 | `attention.aggregate` | Derived aggregate view applied when the page loads. |
+| `attention.links.grouping` | Parallel-link grouping applied to the visible topology. |
 
 ### Focus Query Fields
 
@@ -100,7 +143,7 @@ The public block supports:
 | Query field | Source facts | Behavior |
 |---|---|---|
 | `ids` | Any graph object `id` | Focuses exact objects. |
-| `labels` | `labels.*` and direct `label` | Focuses objects with matching classification values. Values can be scalar or lists. |
+| `labels` | `labels.*` | Focuses objects with matching classification values. Values can be scalar or lists. |
 | `data` | `data.*` | Focuses objects with matching operational values. Nested fields use dot paths such as `metrics.fanout`. |
 | `pathIds` | `graph.paths[].id` | Focuses the path object and its member nodes. Rendered path segments are emphasized. |
 | `regionIds` | `graph.regions[].id` | Focuses the region object and its member nodes. |
@@ -108,6 +151,11 @@ The public block supports:
 | `dependency` | Directed links and path sequences | Focuses seed objects and marks upstream, downstream, or bidirectional neighbors as related up to `depth`. |
 | `changes` | `data.changed`, timestamps, revisions | Focuses objects changed since a timestamp or revision baseline. |
 | `mode` | Runtime presentation | One of `highlight`, `dim-context`, or `hide-context`. Defaults to `dim-context`. |
+
+Region queries use direct `members`; they do not recursively traverse nested
+regions. Region aggregation collapses direct node members. If a nested scope
+needs one summary, list its intended node members explicitly in the aggregate
+region.
 
 ### Focus Modes
 
@@ -233,7 +281,9 @@ attention:
   clickMode: dim-context
 ```
 
-With interactive attention, an object click focuses that object and an empty viewport click resets the view to the unfocused topology.
+With interactive attention, a graph-object click focuses that object. An empty
+viewport click clears the interactive selection and restores the configured
+default query, if one exists.
 
 ### Aggregate Examples
 
@@ -250,7 +300,9 @@ attention:
     expandOnClick: true
 ```
 
-Collapse by parent-child relationship:
+For a topology with a node `PE-1` and child nodes that declare `parent: PE-1`,
+use this fragment to collapse those children. That relationship is not present
+in the baseline above:
 
 ```yaml
 attention:
@@ -262,7 +314,7 @@ attention:
         label: PE-1 services
 ```
 
-Collapse by label-defined group:
+Collapse the access-role node in the baseline by label:
 
 ```yaml
 attention:
@@ -320,7 +372,8 @@ attention:
 
 At low zoom, the group is rendered as one aggregate summary. At high zoom, the source members and region hull are rendered again. `viewport.groupIds` can limit the policy to specific aggregate groups. The source topology is unchanged either way.
 
-Aggregate nodes expose summary data:
+Aggregate nodes expose summary data. This illustrative **runtime output fragment**
+is not authored YAML or the exact result of the baseline above:
 
 ```yaml
 labels:
@@ -361,7 +414,7 @@ attention:
       expandOnClick: true
 ```
 
-The default grouping key is `[endpoints, layer]`, which keeps unrelated links separate and only summarizes links between the same visible endpoint pair in the same layer. The optional `selector` limits which links are eligible; the example groups only links explicitly labeled as parallel, so ordinary links between the same nodes remain independent. Omit `selector` when grouping should apply globally. The aggregate link keeps `data.members`, `data.count`, and `data.isLinkAggregate` for labels, styling, export, and click-to-expand behavior. When the group is expanded, same-endpoint links using `curveStyle: bezier` are drawn as bundled quadratic Bezier edges with distinct control-point curvature. Set `controlPointStepSize` in the link style when the default separation needs to be stronger.
+The default grouping key is `[endpoints, layer]`, which groups links between the same visible endpoint pair with the same layer membership. In the baseline, `parallel-1` and `parallel-2` become one summary link. The optional `selector` limits which links are eligible; the example groups only links explicitly labeled as parallel, so ordinary links between the same nodes remain independent. Omit `selector` when grouping should apply globally. The aggregate link keeps `data.members`, `data.count`, and `data.isLinkAggregate` for labels, styling, export, and click-to-expand behavior. When the group is expanded, same-endpoint links using `curveStyle: bezier` are drawn as bundled quadratic Bezier edges with distinct control-point curvature. Set `controlPointStepSize` in the link style when the default separation needs to be stronger.
 
 Link grouping can also follow viewport zoom:
 

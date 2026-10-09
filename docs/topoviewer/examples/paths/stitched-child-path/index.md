@@ -5,22 +5,17 @@ hide:
 
 # Stitched child path
 
-## What This Demonstrates
-
 Stitched service paths model access-to-core-to-access behavior. The child endpoints remain inside AGG nodes, while the service lane is stitched into every segment of the parent transport path.
 
 ## Expected Result
 
-The live viewport should render "Stitched child path" without blocking diagnostics. It should show: A child service path can stitch from child endpoints into a parent transport path. The test metadata expects `graphNodes`: `7`, `minVisibleEdges`: `1`.
+A child service path can stitch from child endpoints into a parent transport path.
 
-## What To Inspect
+## Try It
 
-- Inspect `graph.paths` and the nodes or links they traverse.
-- Check lane, pipe, label, and arrow styling for service-path readability.
-
-## Use When
-
-Use this pattern when visualizing service paths, dependency paths, or multi-hop routes.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `path[labels.path = "service"]`.
+2. Change its `lineColor` from `"#22c55e"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

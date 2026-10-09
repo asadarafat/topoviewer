@@ -5,8 +5,8 @@ This page is generated from the public JSON Schemas and the renderer style defau
 
 Use this reference with:
 
-- [Reference model](reference-model.md) for the conceptual model;
-- [TopoViewer Stylesheet](topoviewer-stylesheet.md) for detailed style-key accepted values and examples;
+- [Topology Model](topology-model.md) for choosing objects and [Reference Model](reference-model.md) for ownership and relationships;
+- [Stylesheet Reference](stylesheet-reference.md) for exact style-key values and [TopoViewer Stylesheet](topoviewer-stylesheet.md) for recipes;
 - [Grafana TopoViewer Panel](../examples/use-cases/grafana-topoviewer-panel.md) for mapper workflow and telemetry examples;
 - [YAML schemas](yaml-schemas.md) for editor configuration and validation commands.
 

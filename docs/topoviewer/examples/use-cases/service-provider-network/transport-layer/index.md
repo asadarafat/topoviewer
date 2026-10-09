@@ -5,22 +5,17 @@ hide:
 
 # Real network transport layer
 
-## What This Demonstrates
-
 The transport layer view starts from the real network BGP view and adds the programmed SR transport path between FRA-PE1 and LON-PE1. BGP remains visible as control-plane context, while the transport path shows the ordered forwarding intent across the underlay.
 
 ## Expected Result
 
-The live viewport should render "Real network transport layer" without blocking diagnostics. It should show: A transport layer view that adds the programmed SR path on top of the real network BGP view. The test metadata expects `graphNodes`: `5`, `minVisibleEdges`: `8`, `minRegions`: `3`.
+A transport layer view that adds the programmed SR path on top of the real network BGP view.
 
-## What To Inspect
+## Try It
 
-- Inspect the topology YAML for semantic objects.
-- Inspect the stylesheet YAML for the visual contract.
-
-## Use When
-
-Use this pattern when documenting how TopoViewer fits into another system, dashboard, or operational workflow.
+1. Copy the two YAML tabs into your own project. Select the same layers in the viewer: `underlay`, `bgp`, `transport`. In stylesheet.yaml, find selector `region`.
+2. Change its `borderWidth` from `1` to `3`, then reload your page. Compare the stroke thickness of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

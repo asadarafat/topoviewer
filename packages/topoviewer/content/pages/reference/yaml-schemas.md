@@ -143,27 +143,31 @@ The schemas are intentionally permissive for domain-specific metadata:
 
 That balance keeps the model robust without turning TopoViewer into a closed network-only schema.
 
-Schema validation is not semantic validation. Run `npm run validate:semantics` to catch broken references, missing names, invalid parents, unknown layers, unused selectors, unsafe image references, and renderer limit violations.
+Schema validation is not semantic validation. Use the [file-based validation workflow](../author/validate-yaml.md) to catch broken references, invalid parents, unknown layers, unsafe image references, and renderer limit violations in your own project.
 
 ## Canonical Example Catalog
 
 Documented examples are authored in one place:
 
 ```text
-content/examples/catalog.yaml
-content/examples/<feature>/<case>/topology.yaml
-content/examples/<feature>/<case>/stylesheet.yaml
-content/examples/<feature>/<case>/README.md
-content/examples/<feature>/<case>/expected.yaml
+packages/topoviewer/content/examples/catalog.yaml
+packages/topoviewer/content/examples/<feature>/<case>/topology.yaml
+packages/topoviewer/content/examples/<feature>/<case>/stylesheet.yaml
+packages/topoviewer/content/examples/<feature>/<case>/README.md
+packages/topoviewer/content/examples/<feature>/<case>/expected.yaml
 ```
 
 One test case equals one documented behavior. The topology and stylesheet define the fixture, `README.md` becomes the generated docs prose, and `expected.yaml` stays internal to CI. It defines DOM counts, feature assertions, semantic lint expectations, and the visual snapshot flag; it is not copied into MkDocs or Zensical public pages.
 
-Run `npm run sync:docs` to generate package projections and docs files from the canonical content root. Use `node scripts/sync-examples.mjs --docs-root ./docs` only when regenerating the MkDocs example projection after `npm run sync:content`. Run `npm run check:examples` to fail when generated docs drift from the canonical sources.
+Run `npm run sync:docs` to generate package projections and docs files from the canonical content root. Use `node packages/topoviewer/scripts/sync-examples.mjs --docs-root ./docs` only when regenerating the MkDocs example projection after `npm run sync:content`. Run `npm run check:examples` to fail when generated docs drift from the canonical sources.
 
-## Local Validation
+## Repository Fixture Validation
 
-Run:
+These commands require a TopoViewer repository checkout and check its maintained
+example catalog. They do not discover arbitrary YAML in a consumer project.
+For your own files, use [Validate YAML](../author/validate-yaml.md).
+
+From the repository root, run:
 
 ```bash
 npm run validate:schemas

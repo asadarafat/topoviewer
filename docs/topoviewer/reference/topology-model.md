@@ -1,421 +1,152 @@
 # Topology Model
 
-Use this page when you need object-by-object topology authoring details. Use [TopoViewer Authoring Model](../author/authoring-model.md) for the higher-level authoring workflow, and [Object Attribute Reference](./object-attributes.md) for the generated schema-backed attribute contract.
+Use this page to choose the right object for what you want to describe. The
+[Authoring Model](../author/authoring-model.md) provides a runnable two-file
+bundle; [Reference Model](./reference-model.md) defines field ownership and
+relationships; [Object Attribute Reference](./object-attributes.md) lists the
+schema fields.
+
+Keep network or application facts in `graph`. Use `diagram` for explanations
+that help a reader understand those facts.
+
+| What you need to represent | Object |
+|---|---|
+| A router, service, application, interface, or resource | Node |
+| A direct relationship between two nodes | Link |
+| An ordered route across several nodes | Path |
+| Membership in a site, tenant, rack, or failure domain | Region |
+| A note, drawing, or explanatory arrow | Diagram primitive |
 
 ## Layers
 
-Layers are orthogonal visibility groups. They are not fixed by TopoViewer.
+Layers are visibility groups, such as `physical`, `transport`, or `service`.
+Declare the available IDs in `graph.layers`, then assign each renderable object
+one or more of those IDs in its `layers` list. An object renders when at least
+one of its layers is selected. An object without layer membership stays hidden.
 
-```yaml
-graph:
-  layers:
-    - id: physical
-      labels:
-        name: Physical
-    - id: igp
-      labels:
-        name: IGP
-    - id: transport
-      labels:
-        name: Transport
-    - id: service
-      labels:
-        name: Service
-```
-
-A graph object can belong to one or many layers.
+Layer membership does not imply containment or connectivity. A node may belong
+to several views while keeping the same identity. Links also need their source
+and target nodes visible; selecting a link's layer alone cannot reveal hidden
+endpoints.
 
 ## Nodes
 
-```yaml
-nodes:
-  - id: R01
-    labels:
-      node: router
-      vendor: nokia
-      role: pe
-    layers: [physical, igp, transport, service]
-    position: [90, 260]
-```
+A node represents an entity whose identity matters to the topology. Keep its
+ID stable even if its visible name changes. Use `labels.name` for a display
+alias, classification labels for reusable style selectors, and `data` for
+operational facts.
 
-`position` can be either `[x, y]` or `{ x: 90, y: 260 }`. The list form is preferred for compact YAML. In `force` mode, positions are seeds; in `clos` mode, positions are ignored unless the node is listed in `layout.clos.pinnedNodeIds` with `preservePinned: true`.
+An authored `position` belongs to the node's topology facts. Manual layout uses
+that position; force layout treats it as a seed. CLOS and tree calculate their
+own placement. CLOS can preserve explicitly pinned nodes. See
+[Layout](../author/layout.md) for the stylesheet options.
 
-Any logical child node can be nested inside a parent node with `parent`. A service endpoint inside a router is one common example, but the model is generic. When `showChildNodesInsideParents` is enabled, TopoViewer auto-expands the parent node around its visible children and positions the children inside the parent bounds.
-
-```yaml
-nodes:
-  - id: svc-1321-r01
-    labels:
-      name: '**L3VPN** ++1321++'
-      node: service
-      service: l3vpn
-    parent: R01
-    layers: [service]
-```
+`node.parent` represents containment inside another node. For example, a
+service endpoint may belong to a router. The `showChildNodesInsideParents`
+toggle controls whether child nodes are shown inside the parent; the renderer
+expands the parent around its visible children. Use a region when you need a
+membership boundary around independent nodes instead.
 
 ## Links
 
-Links connect two nodes.
+A link connects exactly two nodes through `source` and `target`. It may stand
+for a physical connection, protocol adjacency, dependency, or service
+relationship. Its direction also provides input to tree/CLOS layout and
+attention dependency traversal.
 
-```yaml
-links:
-  - id: phy-R01-R03
-    source: R01
-    target: R03
-    labels:
-      link: physical
-      role: core
-    data:
-      metric: 10
-      delayMs: 5
-    layers: [physical]
-```
+Use two link objects when you have two distinct relationships. Use one link
+with `directions.sourceToTarget` and `directions.targetToSource` when a single
+adjacency has measurements in both directions. Direction labels can show
+bandwidth or loss; `linkDirection` stylesheet rules control their strokes.
+Endpoint labels such as `sourceLabel` and `targetLabel` can show port names.
 
-Links can also declare a `parent` link. For links, `parent` means the child link is visually carried by the parent link. This is useful for showing an overlay service lane inside an underlay transport pipe.
-
-```yaml
-links:
-  - id: transport-tunnel
-    source: PE1
-    target: PE2
-    labels:
-      link: transport
-      protocol: sr-te
-    layers: [transport]
-
-  - id: service-overlay
-    source: l3vpn-a
-    target: l3vpn-b
-    parent: transport-tunnel
-    labels:
-      link: service
-    layers: [service]
-```
-
-When a parent link has visible child links, TopoViewer renders the parent as a pipe/corridor and renders the child links as lanes along the parent route. The child link keeps its own source and target as graph facts, but its rendered lane follows the parent link geometry.
-
-Use `directions` when the topology has one physical link but telemetry differs by direction. This is different from two explicit links: the graph still has one adjacency, while the renderer shows two opposing strokes inside the same corridor.
-
-```yaml
-links:
-  - id: leaf1-spine1
-    source: leaf1
-    target: spine1
-    labels:
-      link: fabric
-    directions:
-      sourceToTarget:
-        label: 3.2 Gbps
-        data:
-          metric: if_out_bps
-      targetToSource:
-        label: 1.1 Gbps
-        data:
-          metric: if_out_bps
-```
-
-Style directions with the virtual `linkDirection` selector:
-
-```yaml
-stylesheet:
-  - selector: link
-    style:
-      directionalStrokes: true
-      directionCenterGap: 64
-      directionStartGap: 18
-  - selector: linkDirection[direction = "sourceToTarget"]
-    style:
-      lineColor: "#4caf50"
-      targetArrowShape: triangle
-  - selector: linkDirection[direction = "targetToSource"]
-    style:
-      lineColor: "#ff9800"
-      sourceArrowShape: triangle
-```
+`link.parent` means a link is visually carried by another link. The child keeps
+its real endpoints while its rendered lane follows the parent route. This is
+useful for an overlay carried by a transport pipe; it is different from node
+containment. See the [Link field contract](./reference-model.md#link).
 
 ## Paths
 
-Paths are ordered node sequences. TopoViewer compiles them into visual edges between each consecutive node pair.
+Use a path when the route itself has identity: an LSP, traffic-engineering
+policy, service route, or ordered dependency chain. A `sequence` lists the
+visited node IDs in order. The renderer draws a segment between each
+consecutive pair; a sequence does not require separate graph links for those
+segments.
 
-```yaml
-paths:
-  - id: srte-1321-forward
-    labels:
-      name: SR-TE 1321
-      path: transport
-      protocol: sr-te
-    layers: [transport, service]
-    sequence: [R01, R03, R05, R07, R09]
-```
-
-Use paths for overlay narratives such as LSPs, SR Policies, traffic-engineered paths, or service transport.
-
-Paths can also declare `source`, `target`, and `parent` instead of `sequence`. In that form, the path is a stitched child path carried by a sequenced parent path. The child path keeps its real endpoints, but the rendered lane follows every segment of the parent path. TopoViewer draws a stub from the child source to the first parent-path node, lanes across the parent path, and a stub from the last parent-path node to the child target.
-
-```yaml
-paths:
-  - id: transport-agg1-agg2
-    labels:
-      name: AGG transport carrier
-      path: transport
-      protocol: sr-te
-    layers: [transport, service]
-    sequence: [AGG1, PE1, P, PE2, AGG2]
-
-  - id: stitched-services-a-j
-    source: services-1-10-agg1
-    target: services-1-10-agg2
-    parent: transport-agg1-agg2
-    labels:
-      name: Services A-J stitched over transport
-      path: service
-      scope: aggregate
-    data:
-      serviceCount: 10
-    layers: [service]
-```
+A stitched child path instead declares `source`, `target`, and a `parent` path
+that has a sequence. It draws an endpoint stub, follows the parent's segments,
+and draws a final stub to the child target. These relationships remain topology
+facts; lane widths and pipe appearance belong to the stylesheet. See the
+[Path field contract](./reference-model.md#path).
 
 ## Regions
 
-Regions represent scope or membership: AS domains, IGP areas, sites, availability zones, or failure domains.
+Regions express scope or membership: a site, AS, availability zone, rack, or
+failure domain. `members` can contain node IDs and region IDs; `region.parent`
+also establishes nested containment. Containment must be acyclic.
 
-```yaml
-regions:
-  - id: isis-l1
-    labels:
-      name: IS-IS L1
-      region: igp
-      protocol: isis
-    parent: as65000
-    members: [R01, R03, R05]
-    layers: [igp]
-```
+By default, the hull fits its visible members and child regions. Moving a
+member therefore changes the hull. For a fixed boundary, keep the region's
+origin in topology `position` and author both `width` and `height` in a matching
+region stylesheet rule. Those explicit dimensions remain authoritative when
+members move. Padding, minimum dimensions, and nested-region spacing also
+belong to the stylesheet.
 
-Regions support two geometry modes. A region without matching stylesheet `width` and `height` is an auto-fit hull around its members and child regions. An explicit region keeps its `position` with the topology facts and receives `width` and `height` from a matching stylesheet rule. Explicit geometry is authoritative, so member movement does not resize the hull.
-
-Region labels default to the top-left of the hull using the historical renderer offset: 12 px from the top edge and 18 px from the left edge. Move the label with region style keys such as `labelPosition: rightCenter` and `labelMargin: 14`.
-
-Auto-fit spacing is presentation policy and belongs in `stylesheet.yaml`:
-
-| Field | Use |
-|---|---|
-| `padding`, `paddingX`, `paddingY` | Space around members. |
-| `headerPadding` | Extra top room for region labels. |
-| `minWidth`, `minHeight` | Prevent tiny regions. |
-| `parentPadding`, `parentPaddingX`, `parentPaddingY` | Extra parent-region space around child regions. |
-
-```yaml
-stylesheet:
-  - selector: region[id = "single-node-site"]
-    style:
-      paddingX: 54
-      paddingY: 34
-      headerPadding: 34
-      minWidth: 220
-      minHeight: 170
-```
-
-For an explicit region, keep the origin in `topology.yaml`:
-
-```yaml
-regions:
-  - id: maintenance-window
-    position: [120, 80]
-    members: [edge-a, edge-b]
-    layers: [site]
-```
-
-Put its dimensions in `stylesheet.yaml`:
-
-```yaml
-stylesheet:
-  - selector: region[id = "maintenance-window"]
-    style:
-      width: 360
-      height: 220
-```
-
-Author both `width` and `height` to switch an auto-fit region to explicit
-geometry. Region `size`, padding, minimum dimensions, and member-size policy are
-invalid in topology YAML. Normal rendering and Studio reject those ownership
-leaks. Convert an older bundle explicitly with `migrateTopoBundle`; migration
-moves its presentation values into exact-ID stylesheet rules.
+Region membership can drive attention focus and aggregation. A decorative box
+cannot replace that relationship. See [Attention](../author/attention.md) for
+the supported queries and direct-member aggregation behavior.
 
 ## Toggles
 
-Toggles are boolean display controls used by the embed UI and React API.
+Topology `toggles` declares reader-visible switches with stable IDs, optional
+`labels.name`, and boolean defaults. Built-in switches include `showRegions`,
+`showChildNodesInsideParents`, and `showEdgeLabels`. The historical
+`showServicesInsideNodes` alias maps to `showChildNodesInsideParents`.
 
-```yaml
-toggles:
-  - id: showRegions
-    labels:
-      name: Show regions
-    default: true
-  - id: showChildNodesInsideParents
-    labels:
-      name: Show child nodes inside parents
-    default: false
-  - id: showEdgeLabels
-    labels:
-      name: Show link/path labels
-    default: false
-```
-
-Built-in toggles:
-
-| Toggle | Behavior |
-|---|---|
-| `showRegions` | Shows or hides regions. |
-| `showChildNodesInsideParents` | Shows child nodes nested under parent nodes. |
-| `showEdgeLabels` | Enables link/path labels. |
-
-`showServicesInsideNodes` remains accepted as a backward-compatible alias for older diagrams. New diagrams should use `showChildNodesInsideParents`.
-
-Additional toggles are accepted and preserved for custom UI use.
+Extra toggles can be preserved for host-owned behavior. They do not create a
+new renderer feature by themselves. See the
+[Toggle field contract](./reference-model.md#toggles).
 
 ## Validation Contract
 
-TopoViewer validates core structure at runtime:
+Schema validation checks the authored shape. Semantic lint checks relationships
+such as endpoint IDs, layers, duplicate identities, and region cycles. A file
+can be valid YAML and still describe a topology that cannot render correctly.
+Follow [Validate YAML](../author/validate-yaml.md) to check your bundle.
 
-- Every graph entity must have a non-empty `id`.
-- Links require `source` and `target`.
-- Paths require either a `sequence` of at least two node IDs, or `source`, `target`, and `parent` when carried by another path.
-- Positions must be `[number, number]` or an object with numeric `x` and `y`.
-
-Domain-specific facts belong in `labels` or `data`. Canonical version `0.2`
-rejects generic object `name`, generic object `label`, inline `style`, object-level
-`icon`, and callout `leader` appearance so identity and visual policy cannot
-acquire competing owners.
-
-The same contract is available as JSON Schema in `schemas/topoviewer*.schema.json`.
+Persistent visual properties belong in the stylesheet. Canonical topology
+objects reject inline `style`, object-level `icon`, generic `name`/`label`, and
+primitive dimensions. Use explicit migration for old bundles; see
+[Identity And Source Ownership](../author/identity-and-source-ownership.md).
 
 ## Diagram Primitive Layer
 
-TopoViewer separates semantic graph objects from explanatory diagram primitives. Use `graph` for topology facts and `diagram` for shape and callout objects that make a technical story readable.
-
-| Capability | Primitive | Why it exists |
-|---|---|---|
-| First-class callouts | `diagram.callouts[]` | Explanation boxes with leader arrows are not graph nodes. |
-| Markdown text blocks | `callout.markdown` plus stylesheet `textAlign` | Bullet lists, bold text, inline code, and left/center/right alignment need a text-box model. |
-| Basic geometry primitives | `diagram.shapes[]` | 2D and 3D geometry can explain structure without becoming topology facts. |
-| Pin/port anchors | `pins`, `sourcePin`, `targetPin` | Callout lines can attach to exact points, not only floating object centers. |
-| Documentation framing | Locked callouts or shapes | Stable visual boundaries for docs, screenshots, and slides should not be interactive graph entities. |
-| Decorative versus semantic objects | `diagram.*` versus `graph.*` | A router, service, or interface can remain semantic while notes and decorative shapes stay visual-only. |
-| Static export quality | Export utilities plus locked frames | Slide/document workflows need PNG/SVG output, not only interactive viewing. |
+Use diagram primitives for explanatory content. They can be positioned, placed
+on layers, and locked for authoring, but are not indexed by graph attention
+queries. If an object needs graph relationships or operational focus, model it
+as a node instead.
 
 ### Shapes
 
-Shapes are geometry-only visual primitives. They do not render labels, paragraphs, SVGs, or images. Use them for bars, disks, simple solids, background panels, and other non-topology geometry. If a shape needs text, place a `diagram.callouts[]` object on top of it or next to it.
-
-```yaml
-diagram:
-  shapes:
-    - id: sap-1
-      position: [185, 245]
-      layers: [access]
-      labels:
-        shape: sap
-      pins:
-        - id: left
-          position: [0, 14]
-        - id: right
-          position: [300, 14]
-```
-
-The matching stylesheet owns presentation:
-
-```yaml
-stylesheet:
-  - selector: shape[labels.shape = "sap"]
-    style:
-      shape: rectangle
-      width: 300
-      height: 28
-      fill: rgba(14, 165, 233, 0.14)
-      stroke: "#38bdf8"
-```
-
-Supported 2D `shape` values are `circle`, `triangle`, `square`, `rectangle`, `pentagon`, `hexagon`, `octagon`, `ellipse`, `semicircle`, `trapezoid`, `parallelogram`, `rhombus`, `kite`, and `star`.
-
-Supported 3D `shape` values are `cube`, `cuboid`, `sphere`, `cone`, `cylinder`, `pyramid`, and `prism`.
-
-Use stylesheet `rotation` to rotate geometry in degrees:
-
-```yaml
-stylesheet:
-  - selector: shape[id = "tilted-cuboid"]
-    style:
-      shape: cuboid
-      rotation: -6
-      width: 100
-      height: 60
-```
-
-Shape `type`, `size`, and `rotation` are invalid in topology YAML. Normal
-rendering and Studio reject them instead of maintaining a second presentation
-owner. Use `migrateTopoBundle` explicitly to convert an older bundle.
+Shapes provide decorative geometry such as a background panel, disk, or simple
+solid. Their topology owns identity, position, pins, and lock state. A `shape`
+stylesheet rule owns the geometry, dimensions, rotation, fill, and stroke.
+Shapes display their name over the geometry. Use a text object or callout for
+separately positioned or longer text, and a node icon for an image.
 
 ### Callouts
 
-Callouts are markdown boxes, leader lines, and line-only visual relationships.
-Use `source`, `sourcePin`, `target`, and `targetPin` when the callout is only a
-line between two objects. Use `position`, `title`, and `markdown` for a visible
-text box, then define its dimensions and alignment in the stylesheet.
-
-```yaml
-diagram:
-  callouts:
-    - id: subscriber-subnet-callout
-      title: Represents subscriber subnet
-      markdown: |
-        - Internal loopback interface
-        - Maintains up to **256 subscriber subnets**
-        - Can include images: ![Badge](./badge.svg)
-      target: subscriber-interface
-      targetPin: left
-      position: [925, 85]
-      layers: [explanation]
-```
-
-Put the box geometry, text alignment, and leader appearance in the stylesheet:
-
-```yaml
-stylesheet:
-  - selector: 'callout[id = "subscriber-subnet-callout"]'
-    style:
-      width: 320
-      height: 210
-      textAlign: left
-      lineColor: "#2fa8dc"
-      lineWidth: 4
-      targetArrowShape: triangle
-```
-
-A line-only callout uses the same object family:
-
-```yaml
-diagram:
-  callouts:
-    - id: sap-1-to-group-interface
-      source: sap-1
-      sourcePin: right
-      target: group-interface-1
-      targetPin: left
-      layers: [access]
-      labels:
-        callout: sap-binding
-```
+A callout can be a Markdown explanation box, a leader line, or a line-only
+relationship between visual objects. Topology owns its text, position, and
+attachments. Stylesheet rules own the box dimensions, alignment, and leader
+appearance. A plain text object is a simpler choice when no leader is needed.
 
 ### Pins
 
-Pins are invisible child anchors. They can be added to graph nodes, shapes, or callouts.
+Pins are named local attachment points on nodes, shapes, or callouts. A
+connector or callout can reference `sourcePin` or `targetPin` to attach to a
+specific point. Pins move with their owner. For graph-link ports, use node
+`handles` and link `sourceHandle`/`targetHandle`; these are a separate contract.
 
-```yaml
-nodes:
-  - id: subscriber-interface
-    pins:
-      - id: left
-        position: [0, 45]
-```
-
-Pins move with their parent object, so callout lines stay attached when a node, shape, or callout is dragged.
+See [Pins And Connectors](./reference-model.md#pins-and-connectors) for the
+field contract and [Examples](../examples/index.md) for complete bundles.

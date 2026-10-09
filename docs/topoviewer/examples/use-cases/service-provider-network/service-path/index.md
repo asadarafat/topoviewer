@@ -5,22 +5,17 @@ hide:
 
 # Real network service path
 
-## What This Demonstrates
-
 The service path view starts from the real network transport layer and adds the Payments L3VPN. Customer edge nodes and access links appear at the sides, while the service lane is stitched over the SR transport path through the provider core.
 
 ## Expected Result
 
-The live viewport should render "Real network service path" without blocking diagnostics. It should show: A service path view that focuses the customer L3VPN path across the same provider topology. The test metadata expects `graphNodes`: `7`, `minVisibleEdges`: `13`, `minRegions`: `3`.
+A service path view that focuses the customer L3VPN path across the same provider topology.
 
-## What To Inspect
+## Try It
 
-- Inspect the topology YAML for semantic objects.
-- Inspect the stylesheet YAML for the visual contract.
-
-## Use When
-
-Use this pattern when documenting how TopoViewer fits into another system, dashboard, or operational workflow.
+1. Copy the two YAML tabs into your own project. Copy the Attention YAML tab into your `topoviewer` fence too; focus and collapse settings are separate from the two source files. Select the same layers in the viewer: `underlay`, `bgp`, `transport`, `service`. In stylesheet.yaml, find selector `region`.
+2. Change its `borderWidth` from `1` to `3`, then reload your page. Compare the stroke thickness of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

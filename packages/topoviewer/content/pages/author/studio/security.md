@@ -17,17 +17,17 @@ limits still apply. Force-layout iterations must be a finite integer between
 1 and 1,000. Projects that exceed these limits report diagnostics before the
 canvas compiles them.
 
-The stylesheet candidate uses the same bounded parser, schema, semantic lint,
-asset policy, and renderer limits as applied project source. Invalid candidate
-text is recoverable but cannot be saved or exported as the applied stylesheet.
+Pending stylesheet text passes the same validation, asset checks, and renderer
+limits as applied source. Invalid text is recoverable but cannot be saved or
+exported as the applied stylesheet. Follow the
+[backup procedure](yaml-recovery.md#back-up-before-resetting-storage) to preserve
+unresolved text separately from an archive.
 Completion derives suggestions from the already loaded project and canonical
 metadata; it does not query a network service or evaluate selector text as code.
 
-The browser host keeps projects in local IndexedDB. Desktop Studio keeps file
-access inside an explicitly approved, canonical project root and uses bounded,
-coordinated rollback-capable native writes. Shared Studio features reach
-persistence, files, preferences, export, and reporting only through the typed
-host contract.
+Browser projects stay in local browser storage. Desktop Studio keeps file
+access inside the chosen project directory and attempts to restore original
+files if a save fails. Neither storage location is an encrypted vault.
 
 Studio does not:
 

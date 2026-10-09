@@ -7,58 +7,48 @@ drawer without merging their source documents. Select an object and Studio
 opens **Properties**. Select empty preview and Studio opens canvas
 **Properties**.
 
-The ownership boundary remains explicit:
+Edits appear in the document that owns the value:
 
 - topology fields write to `topology.yaml`;
-- appearance fields write to a candidate `stylesheet.yaml`;
-- Mapper Visual owns rule forms while the shared source workspace owns
-  `mapper.yaml`.
-
-This keeps the common workflow short while preserving portable TopoViewer YAML.
+- appearance fields write to the pending `stylesheet.yaml`;
+- **Telemetry rules** edits rules in `mapper.yaml`.
 
 ## Visual Editing
 
-Properties keeps the selected object's ID, optional display alias, position,
-layers, and common appearance controls in one compact workspace. The selection strip
-identifies the active object, and the property area is the only vertical scroll
-owner in the panel. Labels stay in the left column and their Material UI controls
-stay in the right column.
+Check the selection strip before editing: it identifies the object whose ID,
+visible label, position, layers, and appearance you are changing.
 
-Properties contains two collapsible sections.
-
-**Topology** edits object facts such as its canonical ID, `labels.name` alias,
-and position. These controls
-commit through the project document session and remain undoable. ID and layer
+**Topology** edits object facts such as its stable ID, visible label
+(`labels.name`), and position. These changes are undoable. ID and layer
 membership are visible without opening a secondary Advanced form. Use
-**Reveal in source** when the object needs fields that are not exposed as a
-visual control.
+the source button beside **Topology** when the object needs fields that are not
+exposed as a visual control.
 
-**Appearance** exposes typed Material UI controls generated from the core style
-metadata. It supports nodes, links, link directions, paths, regions, shapes,
+**Appearance** edits the selected object's style. It supports nodes, links,
+link directions, paths, regions, shapes,
 callouts, and text objects. Controls include colors with opacity, switches,
 bounded numbers, enumerated values, icons, text, and supported nested styles.
 
 Search covers labels, canonical property names, descriptions, groups, and
-aliases. Properties starts with eight common, non-nested fields derived from the core
-style metadata. Descriptions remain available as accessible label help without
-adding a paragraph below every field. Choose **View more** to reveal applicable
+aliases. Common fields appear first; use label help for their descriptions.
+Choose **View more** to reveal applicable
 less-common and nested fields in the same list; there is no separate Advanced
-mode.
+mode for appearance. **Attention**, when available for the selection, provides
+[focus and aggregation shortcuts](palette-and-direct-manipulation.md#attention-authoring).
 
 The **Icon** control combines project-defined icons with Studio's trusted Nokia
 catalog: router, switch, spine, data-center gateway, controller, NSP, server,
 cloud, PON, residential gateway, user equipment, and client. Selecting a
 catalog icon that is not already present writes its complete SVG declaration to
 `stylesheet.yaml`; the exported bundle never depends on a private Studio asset.
-Catalog SVGs resolve `${fillColor}` and `${strokeColor}` from effective node
-style, so **Background color** remains authoritative instead of being hidden by
-an opaque default inside the SVG. Project-defined SVGs follow node colors only
-when they use those tokens; hardcoded SVG fills and strokes remain as authored.
+Catalog icons follow node colors. For a project-defined SVG, use `${fillColor}`
+and `${strokeColor}` where colors should follow the node; hardcoded fills and
+strokes retain their authored color.
 
 ## Selected Object Appearance
 
 Appearance controls create or update exact-ID rules for the current
-selection in the candidate stylesheet:
+selection in the pending stylesheet:
 
 ```yaml
 stylesheet:
@@ -68,7 +58,7 @@ stylesheet:
 ```
 
 It does not add an inline `style` to `topology.yaml`. Reset removes only that
-candidate field so the object inherits from other matching rules again.
+pending field so the object inherits from other matching rules again.
 
 Properties stays scoped to direct visual editing of the selected object.
 Author reusable selector policy by selecting `stylesheet.yaml` in project
@@ -81,13 +71,11 @@ stylesheet:
       backgroundColor: "#1565c0"
 ```
 
-The shared source editor provides selector and style completion derived from topology IDs, labels,
-and data. Studio does not infer compound Boolean selectors or silently tag
-objects.
+The source editor suggests selectors from topology IDs, labels, and data.
 
 Same-kind multi-selection remains available in Properties. Mixed values are
-identified explicitly and one candidate transaction updates the selected
-exact-ID rules. Mixed-kind selection remains source-only.
+identified explicitly; changing a field updates the selected exact-ID rules
+together. Use source editing for mixed-kind selections.
 
 ## Shared Source Editing
 
@@ -97,18 +85,18 @@ Properties and source are two representations of the same project. Keep
 - `topology.yaml` for graph and diagram facts;
 - `stylesheet.yaml` for reusable visual policy.
 
-Monaco loads only when source is visible. Switching files preserves each
-file's unapplied draft, so inspecting another document does not discard work.
+Switching files preserves each file's unapplied draft, so inspecting another
+document does not discard work.
 The question-mark command in each YAML toolbar opens context help at the active
 cursor: documented fields open hover documentation, while insertion points
 open compatible completion. `Ctrl+Space`, field hover, and standalone `?`
 discovery remain available directly in Monaco.
 
 `topology.yaml` reveals the selected object when a source range is available.
-Changes apply through the topology document session. Invalid text remains in
+Apply accepts your changes. Invalid text remains in
 the editor with diagnostics while the canvas keeps the last valid topology.
 
-`stylesheet.yaml` edits the same candidate used by Appearance. It provides
+`stylesheet.yaml` edits the same pending style used by Appearance. It provides
 source-mapped diagnostics, hover help, target-compatible property and value
 completion, project icon completion, and selectors derived from topology IDs,
 labels, and data. The toolbar can search, reveal a matching rule, or format
@@ -120,41 +108,28 @@ contracts under `layout`, `layout.clos`, `limits`, `toggles`, icons, and
 contextual discovery. Comments, quoted strings, block scalars, URLs, and SVG
 source remain unchanged.
 
-## Candidate Lifecycle
+## Apply Appearance Changes
 
-Appearance and `stylesheet.yaml` write only to the stylesheet candidate until
-**Apply** is selected. The footer reports whether the candidate is applied,
-being checked, valid and dirty, or invalid and dirty.
+Appearance and stylesheet YAML share the same style draft. The canvas previews
+its latest valid version. **Apply** accepts it as one undoable change; **Revert**
+restores the applied style. Both buttons disappear when no draft remains.
 
-An applied candidate uses a compact status-only footer. **Apply** and **Revert**
-appear when candidate work exists, so the clean state does not reserve action
-space that cannot be used.
+Use the [draft and save rules](yaml-recovery.md#draft-and-save-rules) for Save,
+export, and invalid text. A pending topology or mapper draft also protects its
+document from visual edits; Apply or Revert it before changing the same facts
+in Properties.
 
-The canvas previews the latest valid candidate. If a newer stylesheet edit is
-invalid, Studio retains that raw text and its diagnostics while rendering the
-last valid candidate. **Revert** restores the applied stylesheet. **Apply**
-replaces `stylesheet.yaml` as one undoable command.
+## Older Bundles And Formatting
 
-Save and export apply a valid dirty stylesheet candidate first. An invalid
-candidate blocks those operations. Project switching and external changes
-require an explicit apply, revert, discard, or reload decision when candidate
-work would otherwise be lost.
-
-## Canonical Source Ownership
-
-Studio-created objects write identity and structure to `topology.yaml` and
-generated appearance to exact-ID stylesheet rules. Canonical `0.2` topology
-therefore has no inline visual owner competing with the stylesheet.
-
-Use the explicit repository migration command for a version `0.1` or unversioned
-bundle that still has generic names or inline appearance. Studio does not expose
-an object-level **Move all** control because migration must consider the complete
-topology and stylesheet together. See [Identity And Source Ownership](../identity-and-source-ownership.md)
-for the canonical contract, semantic rename behavior, and migration command.
+Version `0.2` keeps appearance in `stylesheet.yaml`. For a version `0.1` or
+unversioned bundle with inline appearance, use the migration command in
+[Identity And Source Ownership](../identity-and-source-ownership.md) before editing.
+See [Style Provenance](style-provenance.md) to understand inherited values and
+runtime mapper overrides.
 
 Structured edits preserve comments, blank lines, scalar style, aliases, unknown
 keys, line endings, and rule order when a safe local mutation exists. Operations
 that require broader normalization require explicit review.
 
-Select `mapper.yaml` in project source to edit mapper source. Mapper Visual
-remains preview-local and can reveal the selected rule in that shared editor.
+Select `mapper.yaml` in project source to edit mapper source, or use
+[Telemetry rules](telemetry-mapper.md) to create a rule and check sample coverage.

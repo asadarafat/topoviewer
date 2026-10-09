@@ -5,22 +5,18 @@ hide:
 
 # Link grouping
 
-## What This Demonstrates
-
 Link grouping demonstrates threshold-based edge aggregation. Three transport links between the same two routers start as one summary link labeled `3 links`; click the summary link to reveal each member as a Cytoscape-style bundled Bezier edge. Use the explicit `Collapse 3 links` control to return to the summary without turning member-edge selection into a hidden toggle.
 
 ## Expected Result
 
-The live viewport should render "Link grouping" without blocking diagnostics. It should show: Group parallel links by endpoint and layer when the count crosses a threshold. The test metadata expects `graphNodes`: `2`.
+Group parallel links by endpoint and layer when the count crosses a threshold.
 
-## What To Inspect
+## Try It
 
-- Review the attention state in the live viewport and compare it with the optional Attention YAML tab.
-- Check which objects stay prominent and which objects are dimmed, collapsed, or summarized.
-
-## Use When
-
-Use this pattern when a dense graph needs focus, dimming, aggregation, or label-priority behavior.
+1. Copy the two YAML tabs into your own project.
+2. In topology.yaml, change `attention.links.grouping.threshold` from `2` to `4`.
+3. Reload. These three parallel links no longer meet the threshold, so they render individually instead of as one counted summary.
+4. Restore the original settings and reload to compare with the starting view.
 
 === "Live Viewport"
 

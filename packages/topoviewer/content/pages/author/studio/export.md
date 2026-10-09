@@ -2,14 +2,24 @@
 
 **Support status:** Beta Preview
 
-Export reads an immutable snapshot of the current valid project. It never
-normalizes or mutates authoring source as a side effect.
+Choose an export for the job: a source archive for continued editing, an image
+for a report, or a bundle for documentation or Grafana. The header's **Open
+export panel** opens the **Export project** dialog.
+
+Resolve topology and mapper drafts first. Opening the export panel applies a
+valid pending stylesheet; an invalid or checking style draft blocks it. The
+export then uses the accepted project. See the [draft and save rules](yaml-recovery.md#draft-and-save-rules).
 
 ## Project Archive
 
 Open **Project menu**, open the project's action menu, and choose **Export
 archive** for a deterministic `.tvstudio` project. This is the portable Studio
-interchange format and includes source, metadata, and validated local assets.
+interchange format and includes accepted source, metadata, and validated local
+assets. This separate action does not include unresolved topology, mapper, or
+stylesheet drafts. Apply intended changes before exporting, or follow
+[the backup procedure](yaml-recovery.md#back-up-before-resetting-storage) to copy
+unresolved text separately. [First Project](first-project.md#export-and-reopen-the-archive)
+shows how to verify an archive by reopening it.
 
 ## Images
 
@@ -50,5 +60,7 @@ fail. A ready project emits the mounted-bundle filenames and manifest expected
 by the TopoViewer panel. Containerlab is not a runtime requirement; it is only
 used by the repository demo to produce telemetry.
 
-Export errors keep the project dirty and editable. Correct the reported limit
-or host failure, then retry without recreating the project.
+For the source files and sample behind a complete export, see the
+[Studio portable-bundle example](../../examples/use-cases/topoviewer-studio.md).
+If export fails, correct the reported draft, limit, or storage error and retry;
+do not recreate the project. See [Troubleshooting](troubleshooting.md#save-or-export-failed).

@@ -5,22 +5,17 @@ hide:
 
 # Node label placement
 
-## What This Demonstrates
-
 Node label placement keeps labels readable when node shapes, labels, and nearby links compete for space. This example places labels above, beside, and inside four nodes while keeping graph facts unchanged.
 
 ## Expected Result
 
-The live viewport should render "Node label placement" without blocking diagnostics. It should show: Node labels can be placed around or inside node bodies with wrapping and backing controls. The test metadata expects `graphNodes`: `4`, `minVisibleEdges`: `4`.
+Node labels can be placed around or inside node bodies with wrapping and backing controls.
 
-## What To Inspect
+## Try It
 
-- Inspect node labels, data, icon definitions, and body shape settings.
-- Compare label, badge, status, icon, border, and underlay style keys.
-
-## Use When
-
-Use this pattern when node identity, iconography, labels, status, or shape treatment matters.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link`.
+2. Change its `lineColor` from `"#94a3b8"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

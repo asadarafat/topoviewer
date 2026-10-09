@@ -1,10 +1,8 @@
 # Text
 
-These examples document the text behaviors from the canonical TopoViewer test-case catalog. Each section is generated from one test case and keeps the live viewport, topology YAML, and stylesheet YAML together.
+Explore text behavior with a live diagram and its two source files. Each example includes an edit to try in your own copy.
 
 ## Standalone text boxes
-
-### What This Demonstrates
 
 Standalone text belongs under `diagram.texts`, not `graph.nodes`. Use it for
 titles, explanatory copy, maintenance notes, and other presentation content that
@@ -12,16 +10,13 @@ must remain selectable, resizable, layer-aware, and reviewable in YAML.
 
 ### Expected Result
 
-The live viewport should render "Standalone text boxes" without blocking diagnostics. It should show: Layer-aware text boxes add editable canvas copy without creating graph objects. The test metadata expects `texts`: `3`.
+Layer-aware text boxes add editable canvas copy without creating graph objects.
 
-### What To Inspect
+### Try It
 
-- Inspect `diagram.texts` for standalone labels and explanatory copy that do not change graph semantics.
-- Check text alignment, typography, background, border, rotation, and layer membership.
-
-### Use When
-
-Use this pattern when the canvas needs editable standalone text instead of a graph node or callout.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `text[id = "rotated-note"]`.
+2. Change its `borderColor` from `"#4caf50"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

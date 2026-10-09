@@ -5,24 +5,19 @@ hide:
 
 # Dense link grouping
 
-## What This Demonstrates
-
 A compact Studio fixture for parallel links and link grouping.
 
 Use it to tune bundle threshold behavior without loading a large topology.
 
 ## Expected Result
 
-The live viewport should render "Dense link grouping" without blocking diagnostics. It should show: A Studio fixture for parallel link grouping and bundle threshold editing.
+A Studio fixture for parallel link grouping and bundle threshold editing.
 
-## What To Inspect
+## Try It
 
-- Use the example as an authoring template in TopoViewer Studio.
-- Apply changes and confirm the rendered viewport stays in sync with the source bundle.
-
-## Use When
-
-Use this pattern when building Browser or Desktop Studio authoring workflows.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link[labels.layer = "observability"]`.
+2. Change its `lineColor` from `"#2e7d32"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

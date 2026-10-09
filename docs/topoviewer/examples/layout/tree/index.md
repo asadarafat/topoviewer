@@ -5,8 +5,6 @@ hide:
 
 # Tree layout
 
-## What This Demonstrates
-
 Tree layout arranges a directed hierarchy into deterministic levels without
 requiring authored positions.
 
@@ -23,16 +21,14 @@ reviewed artifact.
 
 ## Expected Result
 
-The live viewport should render "Tree layout" without blocking diagnostics. It should show: Tree layout computes deterministic levels for directed hierarchies and disconnected components. The test metadata expects `graphNodes`: `6`, `minVisibleEdges`: `4`.
+Tree layout computes deterministic levels for directed hierarchies and disconnected components.
 
-## What To Inspect
+## Try It
 
-- Inspect `layout` options and node positions.
-- Check whether positions are authored manually, inferred, or preserved by layout settings.
-
-## Use When
-
-Use this pattern when positions should be repeatable, inferred, or constrained by topology structure.
+1. Copy the two YAML tabs into your own project.
+2. In stylesheet.yaml, change `layout.tree.direction` from `leftToRight` to `topToBottom`.
+3. Reload. The stages or hierarchy turn to the new orientation while node IDs and link endpoints stay the same.
+4. Restore the original settings and reload to compare with the starting view.
 
 === "Live Viewport"
 

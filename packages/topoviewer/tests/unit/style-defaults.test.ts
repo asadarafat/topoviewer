@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import {
   canonicalStyleKeyByLowercase,
   compileTopoGraph,
+  lintTopoDocument,
   styleDefaultNumber,
   styleDefaultSummary,
   styleDefaultValue,
@@ -125,7 +126,8 @@ describe('canonical style defaults registry', () => {
   });
 
   it('keeps schema-owned style keys and public docs aligned with the registry', () => {
-    const documented = readText('packages/topoviewer/content/pages/reference/topoviewer-stylesheet.md');
+    const documented = readText('packages/topoviewer/content/pages/reference/stylesheet-reference.md');
+    const guide = readText('packages/topoviewer/content/pages/reference/topoviewer-stylesheet.md');
 
     for (const key of stylePropertiesFromSchema()) {
       expect(canonicalStyleKeyByLowercase.has(key.toLowerCase()), `schema style key ${key} is missing from registry`).toBe(true);
@@ -143,7 +145,30 @@ describe('canonical style defaults registry', () => {
       'Defaults to `180` x `72`',
       'Defaults to `320` x `120`'
     ].forEach((needle) => {
-      expect(documented).toContain(needle);
+      expect(guide).toContain(needle);
     });
+  });
+
+  it.each([
+    ['node', 'borderOpacity'],
+    ['node', 'outlineOpacity'],
+    ['node', 'underlayOpacity'],
+    ['node', 'iconOpacity'],
+    ['node', 'labelOpacity'],
+    ['node', 'labelBackgroundOpacity'],
+    ['link', 'sourceLabelOpacity'],
+    ['link', 'targetLabelOpacity']
+  ])('documents the enforced opacity boundaries for %s.%s', (selector, key) => {
+    const documented = readText('packages/topoviewer/content/pages/reference/stylesheet-reference.md');
+    expect(documented).toContain(`| \`${key}\` | number | Finite number from 0 to 1, inclusive. |`);
+
+    const errors = (value: number) => lintTopoDocument({
+      stylesheet: [{ selector, style: { [key]: value } }]
+    }).filter((issue) => issue.severity === 'error' && issue.path?.endsWith(`.${key}`));
+
+    expect(errors(0)).toEqual([]);
+    expect(errors(1)).toEqual([]);
+    expect(errors(-0.01)).toHaveLength(1);
+    expect(errors(1.01)).toHaveLength(1);
   });
 });

@@ -123,15 +123,18 @@ ${positioning}
 
 ![TopoViewer YAML to rendered network diagram](assets/topoviewer-yaml-to-diagram.png)
 
-## Start In 60 Seconds
+## Build Your First Diagram
 
-\`\`\`bash
-npm install topoviewer @xyflow/react react react-dom
-\`\`\`
+Follow one short path using the same two-router project throughout:
 
-1. Render the copyable YAML pair in [First Topology](topoviewer/start/first-topology.md).
-2. Style it with [Style Your First Topology](topoviewer/start/style-your-first-topology.md).
-3. Embed it in [React](topoviewer/examples/use-cases/react.md) or [MkDocs](topoviewer/examples/use-cases/mkdocs.md).
+1. [Create and render your first topology](topoviewer/start/first-topology.md).
+2. [Change its styling](topoviewer/start/style-your-first-topology.md).
+3. [Validate your files](topoviewer/author/validate-yaml.md).
+4. [Export the site and source](topoviewer/start/export-your-first-topology.md).
+
+The tutorial needs Python and the MkDocs plugin. For visual authoring, use
+[Studio First Project](topoviewer/author/studio/first-project.md); for an
+application component, use the [React integration](topoviewer/examples/use-cases/react.md).
 
 ## Choose A Path
 
@@ -145,7 +148,7 @@ npm install topoviewer @xyflow/react react react-dom
 | Embed in documentation | [MkDocs](topoviewer/examples/use-cases/mkdocs.md) or [Static HTML / Zensical Adapter](topoviewer/examples/use-cases/static-html-zensical-adapter.md) |
 | Operate from telemetry | [Grafana TopoViewer Panel](topoviewer/examples/use-cases/grafana-topoviewer-panel.md) |
 | Reference accepted contracts | [Object attributes](topoviewer/reference/object-attributes.md), [YAML schemas](topoviewer/reference/yaml-schemas.md), [compatibility](topoviewer/reference/compatibility.md), and [stylesheet reference](topoviewer/reference/stylesheet-reference.md) |
-| Evaluate architecture and risk | [Architecture](topoviewer/evaluate/architecture.md), [threat model](topoviewer/evaluate/threat-model.md), [performance and accessibility](topoviewer/evaluate/performance-reliability-accessibility.md), and [Adopt TopoViewer Or Keep Topology Locked To A Surface](topoviewer/evaluate/adopt-topoviewer-or-keep-topology-locked-to-a-surface.md) |
+| Evaluate architecture and risk | [Architecture](topoviewer/evaluate/architecture.md), [threat model](topoviewer/evaluate/threat-model.md), [performance and accessibility](topoviewer/evaluate/performance-reliability-accessibility.md), and [Adoption Guide](topoviewer/evaluate/adopt-topoviewer-or-keep-topology-locked-to-a-surface.md) |
 | Maintain or release the repo | [Production Hardening](topoviewer/maintainers/production-hardening.md), [Design Review Checklist](topoviewer/maintainers/design-review-checklist.md), [Release](topoviewer/maintainers/release.md), and [Documentation Standard](topoviewer/maintainers/documentation-standard.md) |
 | Debug a broken render | [Debug Rendering](topoviewer/author/debug-rendering.md) |
 

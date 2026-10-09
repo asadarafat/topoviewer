@@ -5,22 +5,17 @@ hide:
 
 # Light and dark theme variables
 
-## What This Demonstrates
-
 Theme-aware examples should use CSS variables so the same diagram follows MkDocs Material light and dark mode without duplicating the topology.
 
 ## Expected Result
 
-The live viewport should render "Light and dark theme variables" without blocking diagnostics. It should show: Theme-aware styles should use TopoViewer CSS variables. The test metadata expects `graphNodes`: `2`, `minVisibleEdges`: `1`.
+Theme-aware styles should use TopoViewer CSS variables.
 
-## What To Inspect
+## Try It
 
-- Inspect selector order and the style keys applied by each rule.
-- Compare broad defaults with more specific label or data selectors.
-
-## Use When
-
-Use this pattern when building reusable visual rules from labels and data.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link`.
+2. Change its `lineColor` from `"var(--topoviewer-link-physical)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

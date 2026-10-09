@@ -5,22 +5,17 @@ hide:
 
 # Label z-index
 
-## What This Demonstrates
-
 Use `labelZIndex` when labels need their own draw order without moving the object body, edge line, or region hull. The region label, edge label, endpoint labels, and node labels in this example intentionally use separate label layers.
 
 ## Expected Result
 
-The live viewport should render "Label z-index" without blocking diagnostics. It should show: Labels can draw in their own layer without changing object, edge, or region draw order. The test metadata expects `graphNodes`: `2`, `minVisibleEdges`: `1`, `minRegions`: `1`.
+Labels can draw in their own layer without changing object, edge, or region draw order.
 
-## What To Inspect
+## Try It
 
-- Inspect selector order and the style keys applied by each rule.
-- Compare broad defaults with more specific label or data selectors.
-
-## Use When
-
-Use this pattern when building reusable visual rules from labels and data.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `region`.
+2. Change its `borderColor` from `"rgba(25, 118, 210, 0.48)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

@@ -5,8 +5,6 @@ hide:
 
 # CLOS 2-spine 4-leaf
 
-## What This Demonstrates
-
 A compact **2-spine, 4-leaf CLOS** fixture using `layout.mode: clos`.
 
 - 2 spine nodes
@@ -23,16 +21,13 @@ and reference it with `layout.clos.stageKey`.
 
 ## Expected Result
 
-The live viewport should render "CLOS 2-spine 4-leaf" without blocking diagnostics. It should show: A compact data center fabric template with two spine switches, four leaf switches, and full leaf-to-spine mesh links. The test metadata expects `graphNodes`: `6`, `minVisibleEdges`: `8`, `minRegions`: `1`.
+A compact data center fabric template with two spine switches, four leaf switches, and full leaf-to-spine mesh links.
 
-## What To Inspect
+## Try It
 
-- Use the example as an authoring template in TopoViewer Studio.
-- Apply changes and confirm the rendered viewport stays in sync with the source bundle.
-
-## Use When
-
-Use this pattern when building Browser or Desktop Studio authoring workflows.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link`.
+2. Change its `lineColor` from `"#42a5f5"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

@@ -2,11 +2,9 @@
 
 **Support status:** Experimental
 
-Desktop Studio packages the same authoring application as a native Wails shell.
-The application behavior remains owned by `topoviewer-studio`; the Go boundary
-owns operating-system dialogs, bounded directory access, coordinated
-rollback-capable source writes, recovery, recent-project state, clipboard
-access, exports, and file-change events.
+Desktop Studio uses the same authoring workspace as browser Studio, with native
+folder and file dialogs. It saves ordinary YAML and asset files in a directory
+you choose and reports changes made to those files outside Studio.
 
 Desktop Studio is built separately for each operating system and architecture.
 There is no single executable that runs unchanged on macOS, Linux, and Windows.
@@ -37,29 +35,30 @@ the platform package path.
 
 ## Project Lifecycle
 
-**New project** starts as an untitled recoverable draft. The first save asks for
-an empty directory and persists the canonical source, recovery migration, and
-recent-project identity through one coordinated, rollback-capable native
-operation. Use **Open folder** for an existing bundle.
+**New project** starts as an untitled draft. Save it to a directory before
+relying on recovery across application restarts. The first save asks for
+an empty directory and writes the project files there. Use **Open folder** for
+an existing bundle.
 
-Desktop Studio confines every file operation to an approved project token.
-Paths are canonicalized, symlinks and traversal are rejected, source and asset
-sizes are bounded, and coordinated writes either complete or roll back.
-Partial writes, permission failures, and flush failures reject the save before
-replacing existing files. The same checks protect recovery state and exports.
-External changes reload only when the current session is clean; dirty sessions
-receive an explicit conflict instead of being overwritten.
+Keep project files and assets inside the chosen directory; symlinks and paths
+outside it are rejected. A failed save reports the error and attempts to restore
+the original files. If restoration also fails, preserve any backup named in
+the error before retrying.
+
+External changes reload when you have no unsaved work. Otherwise Studio asks
+you to resolve a conflict before replacing source.
+
+The [draft and save rules](yaml-recovery.md#draft-and-save-rules) apply in both
+desktop and browser Studio. For an external conflict or partial-save error,
+follow [Troubleshooting](troubleshooting.md#a-folder-project-reports-an-external-conflict)
+before replacing source or repairing files.
 
 ## Platform Notes
 
-- **macOS:** release candidates need a universal application bundle, Developer
-  ID signing, notarization, stapling, and Gatekeeper verification.
-- **Windows:** the application uses WebView2. Public installers need
-  Authenticode signing; the package workflow builds an NSIS installer.
+- **macOS:** use a build matching your architecture. Unsigned development
+  builds can be blocked by Gatekeeper.
+- **Windows:** WebView2 is required. The package command creates an NSIS installer.
 - **Linux:** the executable is native but dynamically uses GTK 3 and
-  WebKitGTK 4.1 from the target system. Build and test against the oldest
-  supported distribution ABI before public promotion.
+  WebKitGTK 4.1 from the target system; keep those runtime libraries installed.
 
-The checked-in release workflow has protected signing hooks. It deliberately
-labels unsigned outputs as internal and does not promote them to a public
-release.
+For packaging and signing requirements, see [Desktop release candidates](../../maintainers/release.md#desktop-release-candidates).

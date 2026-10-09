@@ -5,22 +5,17 @@ hide:
 
 # Named node shapes
 
-## What This Demonstrates
-
 Node shape is presentation policy. Use stylesheet selectors to map graph labels such as role or device type to distinct node bodies while keeping topology facts in `graph.nodes` and `graph.links`.
 
 ## Expected Result
 
-The live viewport should render "Named node shapes" without blocking diagnostics. It should show: Node body shape can encode device or service role without changing graph facts. The test metadata expects `graphNodes`: `8`, `minVisibleEdges`: `7`.
+Node body shape can encode device or service role without changing graph facts.
 
-## What To Inspect
+## Try It
 
-- Inspect node labels, data, icon definitions, and body shape settings.
-- Compare label, badge, status, icon, border, and underlay style keys.
-
-## Use When
-
-Use this pattern when node identity, iconography, labels, status, or shape treatment matters.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link`.
+2. Change its `lineColor` from `"#94a3b8"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

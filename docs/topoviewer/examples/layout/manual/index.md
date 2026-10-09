@@ -5,22 +5,18 @@ hide:
 
 # Manual layout
 
-## What This Demonstrates
-
 Manual layout means the author supplies coordinates. This is the right mode for diagrams where placement carries meaning.
 
 ## Expected Result
 
-The live viewport should render "Manual layout" without blocking diagnostics. It should show: Manual layout preserves authored positions. The test metadata expects `graphNodes`: `3`, `minVisibleEdges`: `2`.
+Manual layout preserves authored positions.
 
-## What To Inspect
+## Try It
 
-- Inspect `layout` options and node positions.
-- Check whether positions are authored manually, inferred, or preserved by layout settings.
-
-## Use When
-
-Use this pattern when positions should be repeatable, inferred, or constrained by topology structure.
+1. Copy the two YAML tabs into your own project.
+2. In topology.yaml, change node `A`'s `position` from `[120,140]` to `[120,240]`.
+3. Reload. That node moves down relative to the other authored positions, and its connected links follow it.
+4. Restore the original settings and reload to compare with the starting view.
 
 === "Live Viewport"
 

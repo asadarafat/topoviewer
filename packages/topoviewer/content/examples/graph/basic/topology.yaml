@@ -38,3 +38,8 @@ graph:
         metric: 10
       layers:
         - physical
+toggles:
+  - id: showEdgeLabels
+    default: true
+    labels:
+      name: Show link labels

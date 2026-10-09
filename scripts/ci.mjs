@@ -146,6 +146,8 @@ const laneDefinitions = {
       projectionArea: 'README.md and docs/topoviewer/**'
     }),
     step('lint documentation contract', 'npm', ['run', 'docs:lint']),
+    step('test documentation fence extraction', 'node', ['--test', 'scripts/tests/docs-code-blocks.test.mjs']),
+    step('validate runnable documentation snippets', 'node', ['scripts/check-docs-examples.mjs']),
     step('build MkDocs site', 'npm', ['run', 'docs:build:fast']),
     step('build Zensical site', 'npm', ['run', 'zensical:build'], { env: { TOPOVIEWER_ZENSICAL_SKIP_VIEWER_BUILD: '1' } }),
     checkGeneratedStep('check Zensical generated config is committed', ZENSICAL_GENERATED_PATHS, {

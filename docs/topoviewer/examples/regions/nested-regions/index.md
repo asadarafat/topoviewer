@@ -5,22 +5,18 @@ hide:
 
 # Nested regions
 
-## What This Demonstrates
-
 Nested regions let broad domains contain narrower regions. In this case the AS region contains an IS-IS L1 region and the member routers.
 
 ## Expected Result
 
-The live viewport should render "Nested regions" without blocking diagnostics. It should show: Regions can be nested so broad domains contain smaller domains. The test metadata expects `graphNodes`: `3`, `minVisibleEdges`: `1`, `minRegions`: `2`.
+Regions can be nested so broad domains contain smaller domains.
 
-## What To Inspect
+## Try It
 
-- Inspect `graph.regions` membership and label placement.
-- Check padding and region style keys that prevent overlap with member nodes.
-
-## Use When
-
-Use this pattern when grouping nodes into sites, racks, pods, domains, or ownership boundaries.
+1. Copy the two YAML tabs into your own project.
+2. In topology.yaml, remove `R05` only from region `isis-l1`'s `members` list. Keep R05 itself and its membership in every other region.
+3. Reload. The `isis-l1` hull contracts around its remaining member. R05 and its links remain visible; the outer AS region still contains it.
+4. Restore the original settings and reload to compare with the starting view.
 
 === "Live Viewport"
 

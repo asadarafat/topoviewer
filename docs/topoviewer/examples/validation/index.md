@@ -1,30 +1,25 @@
 # Validation
 
-These examples document the validation behaviors from the canonical TopoViewer test-case catalog. Each section is generated from one test case and keeps the live viewport, topology YAML, and stylesheet YAML together.
+Explore validation behavior with a live diagram and its two source files. Each example includes an edit to try in your own copy.
 
 ## Broken reference validation
-
-### What This Demonstrates
 
 This fixture is intentionally invalid. It documents the semantic linter behavior for links that point at missing node IDs.
 
 ### Expected Result
 
-This fixture should not render as a normal topology. It should produce the documented validation behavior without hiding the diagnostic.
+This example intentionally produces a validation diagnostic. Inspect the message and source together before trying the repair below.
 
-### What To Inspect
+### Try It
 
-- Inspect the invalid or edge-case YAML and the expected diagnostic behavior.
-- Use this example to understand what CI should reject.
-
-### Use When
-
-Use this pattern when documenting lint, schema, or invalid-input behavior.
+1. Copy the two YAML tabs into local files and [run the file validator](../../author/validate-yaml.md) with those paths. It should exit with an error.
+2. Find the diagnostic `broken-target` and locate the offending source field.
+3. Correct that field in a local copy, then [validate the same files again](../../author/validate-yaml.md). The intended failure should disappear before you publish the diagram.
 
 === "Live Viewport"
 
-    !!! warning "Non-renderable validation fixture"
-        This test case intentionally violates semantic validation. It is documented so the linter behavior is testable and stable.
+    !!! warning "Intentional validation failure"
+        This source is deliberately invalid. Copy the two YAML tabs and run the linked validator to see the diagnostic before repairing it.
 
 === "Topology YAML"
 
@@ -40,27 +35,22 @@ Use this pattern when documenting lint, schema, or invalid-input behavior.
 
 ## Unsafe image validation
 
-### What This Demonstrates
-
 This fixture is intentionally invalid. It documents the security lint rule that rejects unsafe image references such as `javascript:` URLs.
 
 ### Expected Result
 
-This fixture should not render as a normal topology. It should produce the documented validation behavior without hiding the diagnostic.
+This example intentionally produces a validation diagnostic. Inspect the message and source together before trying the repair below.
 
-### What To Inspect
+### Try It
 
-- Inspect the invalid or edge-case YAML and the expected diagnostic behavior.
-- Use this example to understand what CI should reject.
-
-### Use When
-
-Use this pattern when documenting lint, schema, or invalid-input behavior.
+1. Copy the two YAML tabs into local files and [run the file validator](../../author/validate-yaml.md) with those paths. It should exit with an error.
+2. Find the diagnostic `unsafe-image-reference` and locate the offending source field.
+3. Correct that field in a local copy, then [validate the same files again](../../author/validate-yaml.md). The intended failure should disappear before you publish the diagram.
 
 === "Live Viewport"
 
-    !!! warning "Non-renderable validation fixture"
-        This test case intentionally violates semantic validation. It is documented so the linter behavior is testable and stable.
+    !!! warning "Intentional validation failure"
+        This source is deliberately invalid. Copy the two YAML tabs and run the linked validator to see the diagnostic before repairing it.
 
 === "Topology YAML"
 
@@ -76,27 +66,22 @@ Use this pattern when documenting lint, schema, or invalid-input behavior.
 
 ## Renderer limit validation
 
-### What This Demonstrates
-
 This fixture is intentionally invalid. It documents renderer limit enforcement before a diagram can overload the browser or a documentation build.
 
 ### Expected Result
 
-This fixture should not render as a normal topology. It should produce the documented validation behavior without hiding the diagnostic.
+This example intentionally produces a validation diagnostic. Inspect the message and source together before trying the repair below.
 
-### What To Inspect
+### Try It
 
-- Inspect the invalid or edge-case YAML and the expected diagnostic behavior.
-- Use this example to understand what CI should reject.
-
-### Use When
-
-Use this pattern when documenting lint, schema, or invalid-input behavior.
+1. Copy the two YAML tabs into local files and [run the file validator](../../author/validate-yaml.md) with those paths. It should exit with an error.
+2. Find the diagnostic `renderer-limit` and locate the offending source field.
+3. Correct that field in a local copy, then [validate the same files again](../../author/validate-yaml.md). The intended failure should disappear before you publish the diagram.
 
 === "Live Viewport"
 
-    !!! warning "Non-renderable validation fixture"
-        This test case intentionally violates semantic validation. It is documented so the linter behavior is testable and stable.
+    !!! warning "Intentional validation failure"
+        This source is deliberately invalid. Copy the two YAML tabs and run the linked validator to see the diagnostic before repairing it.
 
 === "Topology YAML"
 

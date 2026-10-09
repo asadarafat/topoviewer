@@ -5,7 +5,13 @@ TopoViewer uses a selector stylesheet inspired by Cytoscape, then compiles match
 Use this page in two passes:
 
 1. Start with the authoring workflow and file anatomy.
-2. Use the style key reference only when you need the exact key, accepted values, and defaults.
+2. Use the generated [Stylesheet Reference](./stylesheet-reference.md) when you need the exact key, accepted values, and defaults.
+
+YAML blocks on this page are **stylesheet.yaml fragments** unless marked as
+topology fragments. Merge their sections into your stylesheet; do not paste
+repeated `layout` or `stylesheet` keys into one file. Selectors use example
+labels and IDs that must exist in your topology. For a complete matching pair,
+start with [Authoring Model](../author/authoring-model.md).
 
 ## Authoring Workflow
 
@@ -51,7 +57,7 @@ stylesheet:
 Stylesheet YAML can define layout policy, reusable icon assets, label extraction, and ordered style rules.
 
 ```yaml
-$schema: ../../schemas/topoviewer-stylesheet.schema.json
+version: "0.2"
 layout:
   mode: force
   width: 1280
@@ -64,7 +70,8 @@ icons:
     stroke: '#d8e8ff'
 
 labelFields:
-  - name
+  - labels.name
+  - id
 
 stylesheet:
   - selector: node
@@ -76,10 +83,12 @@ stylesheet:
 
 | Section | Purpose |
 |---|---|
-| `$schema` | Optional editor/schema hint. |
+| `$schema` | Optional editor/schema hint; see [YAML Schemas](./yaml-schemas.md) for setup. |
+| `version` | Authoring-model version; maintained bundles use `"0.2"`. |
 | `layout` | Default viewport and layout policy. |
+| `limits` | Renderer object and embedded-image limits. |
 | `icons` | Reusable glyph, image, data URI, or inline SVG assets. |
-| `labelFields` | Data fields rendered as primary labels when object labels are not explicit. |
+| `labelFields` | Ordered field paths used for primary labels when no style rule sets `label`; defaults to `labels.name`, then `id`. |
 | `stylesheet` | Ordered selector rules that turn topology facts into visual presentation. |
 
 ## Rule Model
@@ -156,7 +165,9 @@ stylesheet:
   - selector: node[labels.vendor = "nokia"]
     style:
       icon: router.nokia
-      iconSize: 48
+      width: 82
+      height: 60
+      iconPadding: 8
 ```
 
 ## Layout
@@ -229,10 +240,11 @@ stages without adding a dedicated stage field:
 ```yaml
 layout:
   mode: clos
-  inferLabelRole:
-    - stage-1: p
-    - stage-2: pe
-    - stage-3: agg
+  clos:
+    inferLabelRole:
+      - stage-1: p
+      - stage-2: pe
+      - stage-3: agg
       - stage-4: access
 ```
 
@@ -320,7 +332,7 @@ stylesheet:
           height: 44
         content:
           align: left
-          titleField: name
+          titleField: labels.name
           subtitleField: data.subtitle
       badgePosition: topRight
       badgeFontSize: 11
@@ -385,16 +397,10 @@ positions before falling back to opacity reduction in unavoidable dense cases.
 
 ## Style Key Index
 
-This is a compact index of canonical camelCase keys accepted by the runtime. Use [Stylesheet Reference](./stylesheet-reference.md) for exact data types, accepted enum values, defaults, and target-specific notes.
-
-- Node keys: `shape`, `nodeLayout`, `shapePolygonPoints`, `width`, `height`, `backgroundColor`, `borderColor`, `borderWidth`, `borderStyle`, `borderDashPattern`, `borderOpacity`, `outlineColor`, `outlineWidth`, `outlineOpacity`, `underlayColor`, `underlayPadding`, `underlayOpacity`, `icon`, `iconSize`, `iconWidth`, `iconHeight`, `iconColor`, `iconFit`, `iconPadding`, `iconBackgroundColor`, `iconOpacity`, `labelPosition`, `labelColor`, `labelFontSize`, `labelFontWeight`, `labelOpacity`, `labelBackgroundColor`, `labelBackgroundOpacity`, `labelBorderColor`, `labelBorderWidth`, `labelPadding`, `labelTextMaxWidth`, `labelTextWrap`, `labelTextOverflow`, `labelTextAlign`, `labelXOffset`, `labelYOffset`, `labelCollisionPolicy`, `labelZIndex`, `minZoomedLabelFontSize`, `metaColor`, `metaFontSize`, `metaFontWeight`, `metaZIndex`, `badgeLabel`, `badgePosition`, `badgeColor`, `badgeBackgroundColor`, `badgeBorderColor`, `badgeBorderWidth`, `badgeFontSize`, `badgeFontWeight`, `badgeMinWidth`, `badgeMinHeight`, `badgePadding`, `badgeOffset`, `statusColor`, `statusPlacement`, `statusSize`, `display`, `draggable`, `selectable`, `opacity`, `zIndex`.
-- Link keys: `labelXOffset`, `labelYOffset`, `directionalStrokes`, `directionCenterGap`, `directionStartGap`, `directionLabelPlacement`, `directionLabelOffset`, `directionLabelRotation`, `directionOverlayLayer`, `label`, `lineColor`, `lineWidth`, `lineStyle`, `lineDashPattern`, `lineDashOffset`, `lineCap`, `lineOutlineWidth`, `lineOutlineColor`, `lineOpacity`, `lineFill`, `lineGradientStopColors`, `lineGradientStopPositions`, `curveStyle`, `anchor`, `controlPointStepSize`, `controlPointDistance`, `controlPointWeight`, `edgeDistances`, `segmentDistances`, `segmentWeights`, `taxiDirection`, `taxiTurn`, `taxiTurnMinDistance`, `sourceDistanceFromNode`, `targetDistanceFromNode`, `arrowColor`, `targetArrowShape`, `targetArrowColor`, `targetArrowBorderColor`, `targetArrowBorderWidth`, `targetArrowSize`, `targetArrowOffset`, `sourceArrowShape`, `sourceArrowColor`, `sourceArrowBorderColor`, `sourceArrowBorderWidth`, `sourceArrowSize`, `sourceArrowOffset`, `edgeLabelColor`, `labelColor`, `labelFontSize`, `labelFontWeight`, `labelFontStyle`, `labelCollisionPolicy`, `labelBorderColor`, `labelBorderWidth`, `textBackgroundColor`, `textBackgroundOpacity`, `labelZIndex`, `sourceLabel`, `sourceLabelColor`, `sourceLabelBackgroundColor`, `sourceLabelBorderColor`, `sourceLabelBorderWidth`, `sourceLabelFontSize`, `sourceLabelFontWeight`, `sourceLabelFontStyle`, `sourceLabelOpacity`, `sourceLabelAutoPosition`, `sourceLabelDistance`, `sourceLabelMaxDistance`, `sourceLabelSideOffset`, `sourceLabelZIndex`, `targetLabel`, `targetLabelColor`, `targetLabelBackgroundColor`, `targetLabelBorderColor`, `targetLabelBorderWidth`, `targetLabelFontSize`, `targetLabelFontWeight`, `targetLabelFontStyle`, `targetLabelOpacity`, `targetLabelAutoPosition`, `targetLabelDistance`, `targetLabelMaxDistance`, `targetLabelSideOffset`, `targetLabelZIndex`, `sourceLabelXOffset`, `sourceLabelYOffset`, `targetLabelXOffset`, `targetLabelYOffset`, `endpointLabelAutoPosition`, `endpointLabelDistance`, `endpointLabelMaxDistance`, `endpointLabelSideOffset`, `endpointLabelOverlayLayer`, `sourceLabelOverlayLayer`, `targetLabelOverlayLayer`, `interactive`, `interactionWidth`, `labelInteractive`, `display`, `opacity`, `zIndex`.
-- `linkDirection` selectors reuse the link stroke, arrow, label, display, opacity, and z-index keys for source-to-target and target-to-source directional lanes.
-- Path keys: `labelXOffset`, `labelYOffset`, `label`, `lineColor`, `lineWidth`, `lineStyle`, `lineDashPattern`, `lineDashOffset`, `lineCap`, `lineOpacity`, `curveStyle`, `anchor`, `controlPointStepSize`, `controlPointDistance`, `controlPointWeight`, `edgeDistances`, `segmentDistances`, `segmentWeights`, `taxiDirection`, `taxiTurn`, `taxiTurnMinDistance`, `arrowColor`, `targetArrowShape`, `targetArrowColor`, `targetArrowBorderColor`, `targetArrowBorderWidth`, `targetArrowSize`, `targetArrowOffset`, `sourceArrowShape`, `sourceArrowColor`, `sourceArrowBorderColor`, `sourceArrowBorderWidth`, `sourceArrowSize`, `sourceArrowOffset`, `edgeLabelColor`, `labelColor`, `labelFontSize`, `labelFontWeight`, `labelFontStyle`, `labelCollisionPolicy`, `labelZIndex`, `sourceLabel`, `sourceLabelZIndex`, `targetLabel`, `targetLabelZIndex`, `sourceLabelXOffset`, `sourceLabelYOffset`, `targetLabelXOffset`, `targetLabelYOffset`, `laneWidth`, `laneGap`, `pipe`, `pipeWidth`, `pipeFill`, `pipeBorderColor`, `pipeBorderWidth`, `pipeOpacity`, `animated`, `interactive`, `display`, `opacity`, `zIndex`.
-- Region keys: `shape`, `backgroundColor`, `borderColor`, `borderWidth`, `labelPosition`, `labelMargin`, `labelColor`, `labelBackgroundColor`, `labelFontSize`, `labelFontWeight`, `labelZIndex`, `labelCollisionPolicy`, `width`, `height`, `padding`, `paddingX`, `paddingY`, `headerPadding`, `nodeWidth`, `nodeHeight`, `minWidth`, `minHeight`, `parentPadding`, `parentPaddingX`, `parentPaddingY`, `draggable`, `selectable`, `opacity`, `zIndex`.
-- Diagram shape keys: `shape`, `fill`, `stroke`, `strokeWidth`, `backgroundColor`, `borderColor`, `borderWidth`, `rotation`, `boxShadow`, `width`, `height`, `display`, `draggable`, `selectable`, `opacity`, `zIndex`, `labelZIndex`.
-- Callout keys: `backgroundColor`, `borderColor`, `borderWidth`, `color`, `titleColor`, `titleBackgroundColor`, `titleFontSize`, `titleFontWeight`, `bodyColor`, `bodyFontSize`, `bodyFontWeight`, `bodyLineHeight`, `textAlign`, `borderRadius`, `boxShadow`, `width`, `height`, `display`, `draggable`, `selectable`, `opacity`, `zIndex`, `labelZIndex`.
-- Text keys: `color`, `backgroundColor`, `borderColor`, `borderWidth`, `borderRadius`, `fontFamily`, `fontSize`, `fontWeight`, `fontStyle`, `lineHeight`, `textAlign`, `verticalAlign`, `padding`, `rotation`, `width`, `height`, `display`, `draggable`, `selectable`, `opacity`, `zIndex`.
+Use the generated [Stylesheet Reference](./stylesheet-reference.md) for the
+complete key tables, accepted values, defaults, and target-specific notes.
+Keeping that contract in one place avoids a second manual list drifting from
+the renderer.
 
 ## Common Recipes
 
@@ -479,8 +485,10 @@ stylesheet:
       lineStyle: dashed
 ```
 
-Use direction labels for the value carried by the vector. Use endpoint labels
-for the ports attached to the nodes:
+Use direction labels for the value carried by the vector. This
+**topology.yaml fragment** adds endpoint port names and direction labels to an
+existing link. It assumes nodes `spine1` and `leaf1` and the `physical` layer
+already exist:
 
 ```yaml
 graph:
@@ -488,6 +496,7 @@ graph:
     - id: spine1-leaf1
       source: spine1
       target: leaf1
+      layers: [physical]
       sourceLabel: e1-1
       targetLabel: e1-49
       directions:
@@ -499,6 +508,6 @@ graph:
 
 ## Detailed Reference
 
-Use [Stylesheet Reference](./stylesheet-reference.md) for the generated key table with data types, accepted values, defaults, and target-specific usage. That page is generated from the canonical runtime style defaults registry, so it is the source to use when authoring exact YAML keys.
+Use [Stylesheet Reference](./stylesheet-reference.md) for the generated key table with data types, accepted values, defaults, and target-specific usage. That page is generated from the canonical runtime style defaults registry and schema constraints, so it is the source to use when authoring exact YAML keys.
 
 ## Related Examples

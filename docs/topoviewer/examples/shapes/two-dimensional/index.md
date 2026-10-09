@@ -5,22 +5,17 @@ hide:
 
 # Two-dimensional shapes
 
-## What This Demonstrates
-
 2D shapes are annotation primitives. They remain separate from graph nodes, while topology labels provide stable selector facts and the stylesheet owns visual geometry and dimensions.
 
 ## Expected Result
 
-The live viewport should render "Two-dimensional shapes" without blocking diagnostics. It should show: 2D geometry primitives are diagram objects, not graph facts. The test metadata expects `shapes`: `14`.
+2D geometry primitives are diagram objects, not graph facts.
 
-## What To Inspect
+## Try It
 
-- Inspect `diagram.shapes` and confirm they are visual explanation objects, not graph facts.
-- Check shape geometry, fill, stroke, z-index, and label behavior.
-
-## Use When
-
-Use this pattern when adding visual explanation objects around a graph.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `shape`.
+2. Change its `borderWidth` from `2` to `4`, then reload your page. Compare the stroke thickness of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

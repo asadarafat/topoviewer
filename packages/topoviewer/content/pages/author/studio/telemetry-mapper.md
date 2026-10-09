@@ -2,74 +2,85 @@
 
 **Support status:** Beta Preview
 
-`mapper.yaml` binds runtime samples to stable topology objects. It is optional
-and belongs to the same portable project as topology and style.
+`mapper.yaml` connects telemetry samples to stable topology IDs. It is optional:
+opening **Telemetry rules** does not create a file; **Create rule** creates the
+first rule and the file together.
 
-Select the topology object to bind, then open **Telemetry rules** from project
-source. Studio opens Mapper Visual in the preview-local drawer and derives the
-target kind from canvas selection instead of asking you to repeat it in a form.
-A node selection creates node rules, a link or direction selection creates the
-corresponding edge rule, and no selection uses whole-graph context. Mixed or
-unsupported selections are rejected explicitly.
+## Create And Check A Node Rule
 
-Enter the metric and common join or state fields, then choose **Create rule**.
-For a project without `mapper.yaml`, that first commit creates the document and
-rule in one undoable transaction. Merely opening Mapper does not add a file or
-change the project.
+Use the two-router project from [First Project](first-project.md), where the
+router labelled `Edge A` has ID `router-1`.
 
-The rule form and common generated fields remain visible together. Choose
-**View More** for less-common contract fields. Search always covers the complete
-installed mapper metadata, including fields that are not currently expanded.
-Whole-file export and removal remain under **Mapper actions** so routine rule
-authoring is not crowded by project-level commands.
+1. Select `Edge A`, then open **Telemetry rules** under Authoring in project
+   source. Check that **Mapper context** identifies node `router-1`.
+2. On **Rules**, enter metric `node_health`, keep join label `node_id`, and
+   choose **Create rule**. A rule appears and `mapper.yaml` becomes available
+   in project source.
+3. Select the **Coverage** tab. Under **Local samples**, paste this into
+   **Sample JSON**, then choose **Analyze samples**:
 
-## Visual And Source
-
-Mapper has two representations of the same optional document:
-
-- **Visual** creates rules, edits common and generated fields, configures state
-  styles, analyzes local samples, and reports coverage.
-- the shared source workspace edits the complete `mapper.yaml` contract with
-  diagnostics, source navigation, Apply, and Revert.
-
-Selecting optional `mapper.yaml` before it exists offers mapper setup without
-silently mutating the project. Create the first rule in Visual to create
-`mapper.yaml`, then select the file in project source for fields or structures
-that are not yet exposed by the form. Switching between source and preview
-preserves the active mapper rule and any unapplied draft. Invalid YAML remains
-isolated while preview and Visual continue to use the last valid mapper.
-
-The question-mark command in the shared YAML toolbar uses the same
-schema-derived assistance as topology and stylesheet source. Invoke it on a
-known field for documentation or at an insertion point for compatible mapper
-fields, values, and topology IDs.
-
-## Analyze Local Samples
-
-Paste bounded generic JSON or Grafana-like data-frame JSON into the sample
-workspace. Studio does not contact a telemetry endpoint. It classifies samples
-as resolved, unresolved, ambiguous, duplicate, or ignored and links findings
-back to rules and topology objects.
-
-Drag a discovered metric onto a topology object to propose a rule. Studio uses
-stable IDs and compatible labels or data keys; ambiguous joins require an
-explicit choice.
-
-Coverage analysis above the small interactive threshold runs in a worker so the
-canvas remains responsive. Sample input is bounded by count and byte limits and
-is not stored as topology identity.
-
-## Keep Stable And Runtime Policy Separate
-
-```text
-topology.yaml    stable object identity
-stylesheet.yaml  stable visual policy
-mapper.yaml      runtime sample binding and state overrides
+```json
+[
+  {
+    "metric": "node_health",
+    "value": 1,
+    "labels": { "node_id": "router-1" }
+  }
+]
 ```
 
-Use mapper style fields for values that change with runtime state, such as link
-color, width, status, badge, or direction label. Keep normal icons, labels,
-geometry, and layout in the stylesheet.
+**Check:** the summary shows one resolved sample. Its finding links to
+`router-1`; choosing that object selects `Edge A` on the canvas. Change
+`node_id` to `missing-router` and analyze again to see an unresolved finding.
+Restore `router-1` to confirm that the join is working.
 
-The Grafana export action validates that a mapper exists and packages canonical
-`*.topo.tv.yaml`, `*.style.tv.yaml`, and `*.mapper.tv.yaml` files.
+The join uses the stable ID, not the visible label `Edge A`. Generic sample JSON
+puts the metric at `metric`, the reading at `value`, and join keys inside
+`labels`. Putting `node_id` at the record's top level does not supply that label.
+
+For a link rule with a reusable example bundle, follow the
+[Studio portable-bundle example](../../examples/use-cases/topoviewer-studio.md#try-the-authoring-loop).
+It includes a complete link-health sample and expected coverage.
+
+## Find Rules, Coverage, And Advanced Fields
+
+- **Rules** creates and selects rules and edits their state styles. A node,
+  link, or link-direction selection supplies its target kind; no selection
+  uses the whole graph. Mixed or unsupported selections cannot create a rule.
+- **Coverage** accepts pasted JSON or **Choose JSON** files, shows discovered
+  metrics, and links resolved, unresolved, ambiguous, duplicate, ignored, and
+  invalid findings back to rules and objects.
+- **Advanced** exposes generated mapper fields. Use search to find a field;
+  **View more** reveals less-common fields. Source links open the owning YAML.
+
+Select `mapper.yaml` in project source to edit the complete document. Use
+**Apply** and **Revert** there; switching tabs or files does not discard pending
+text. Pending or invalid mapper source protects that document from conflicting
+visual edits. See the [draft and save rules](yaml-recovery.md#draft-and-save-rules).
+
+Whole-file **Export mapper** and **Remove mapper** are under **Mapper actions**.
+Export requires resolved source drafts. Removal is an undoable project change
+and asks for confirmation.
+
+## Work With Larger Samples
+
+Studio analyzes local samples; it does not connect to a telemetry endpoint.
+Sample input is limited to 2 MiB and a bounded number of records. If analysis
+reports truncation, reduce the sample set before using it to judge coverage.
+Grafana data-frame JSON and Prometheus result JSON are also accepted.
+
+Drag a discovered metric onto a topology object, or select an object and activate
+its discovered metric, to propose a rule. Review the proposed join; ambiguous
+matches require you to choose a candidate before **Create proposed rule**.
+
+Coverage checks which objects samples resolve to. It does not turn the local
+sample panel into a live telemetry feed or prove the runtime state styling.
+Test state-dependent colors and labels in the consuming application with its
+actual data frames.
+
+## Keep Normal Appearance Separate From Runtime State
+
+Use `stylesheet.yaml` for normal icons, labels, shape, and layout. Use mapper
+state styles for values that change with telemetry, such as a link's color or
+width. See [Style Provenance](style-provenance.md) for precedence and
+[Grafana export](export.md#grafana-bundle) for packaging the accepted mapper.

@@ -5,22 +5,18 @@ hide:
 
 # Force layout
 
-## What This Demonstrates
-
 Force layout is auto-layout assistance. It is useful when topology data exists but the author does not want to maintain coordinates by hand.
 
 ## Expected Result
 
-The live viewport should render "Force layout" without blocking diagnostics. It should show: Force layout computes positions when the author omits coordinates. The test metadata expects `graphNodes`: `5`, `minVisibleEdges`: `5`.
+Force layout computes positions when the author omits coordinates.
 
-## What To Inspect
+## Try It
 
-- Inspect `layout` options and node positions.
-- Check whether positions are authored manually, inferred, or preserved by layout settings.
-
-## Use When
-
-Use this pattern when positions should be repeatable, inferred, or constrained by topology structure.
+1. Copy the two YAML tabs into your own project.
+2. In stylesheet.yaml, change `layout.linkDistance` from `130` to `210`.
+3. Reload and compare the recomputed node spacing. Reload once more without another edit: the same input should produce the same layout.
+4. Restore the original settings and reload to compare with the starting view.
 
 === "Live Viewport"
 

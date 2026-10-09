@@ -5,8 +5,6 @@ hide:
 
 # Directional link strokes
 
-## What This Demonstrates
-
 Directional link strokes model two operational directions on one physical link.
 Use them when one adjacency has independent telemetry for each direction and
 duplicate links would misrepresent the topology.
@@ -23,16 +21,13 @@ label placement pass so dense operational diagrams remain inspectable.
 
 ## Expected Result
 
-The live viewport should render "Directional link strokes" without blocking diagnostics. It should show: One physical link can show two independently styled traffic directions. The test metadata expects `graphNodes`: `2`, `minVisibleEdges`: `1`.
+One physical link can show two independently styled traffic directions.
 
-## What To Inspect
+## Try It
 
-- Inspect `graph.links` for endpoint IDs and labels.
-- Compare line, arrow, label, and curve style keys in the stylesheet.
-
-## Use When
-
-Use this pattern when link readability, routing, arrowheads, or edge labels matter.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `linkDirection[direction = "targetToSource"]`.
+2. Change its `lineColor` from `"#ff9800"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

@@ -5,8 +5,6 @@ hide:
 
 # CLOS layout
 
-## What This Demonstrates
-
 CLOS layout infers staged placement from graph structure.
 
 This example intentionally uses generic node names and directed links:
@@ -21,16 +19,14 @@ operator-approved, use `manual`.
 
 ## Expected Result
 
-The live viewport should render "CLOS layout" without blocking diagnostics. It should show: CLOS layout infers staged placement from graph structure. The test metadata expects `graphNodes`: `6`, `minVisibleEdges`: `8`.
+CLOS layout infers staged placement from graph structure.
 
-## What To Inspect
+## Try It
 
-- Inspect `layout` options and node positions.
-- Check whether positions are authored manually, inferred, or preserved by layout settings.
-
-## Use When
-
-Use this pattern when positions should be repeatable, inferred, or constrained by topology structure.
+1. Copy the two YAML tabs into your own project.
+2. In stylesheet.yaml, change `layout.clos.direction` from `topToBottom` to `leftToRight`.
+3. Reload. The stages or hierarchy turn to the new orientation while node IDs and link endpoints stay the same.
+4. Restore the original settings and reload to compare with the starting view.
 
 === "Live Viewport"
 

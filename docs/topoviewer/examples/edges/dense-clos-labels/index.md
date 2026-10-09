@@ -5,8 +5,6 @@ hide:
 
 # Dense CLOS labels
 
-## What This Demonstrates
-
 Dense CLOS labels show the label-placement problem that appears in operational
 fabric dashboards: region names, node names, node metadata, endpoint port
 labels, and bidirectional bandwidth values all want space around the same small
@@ -20,16 +18,13 @@ collision policy so labels can move without changing node or link geometry.
 
 ## Expected Result
 
-The live viewport should render "Dense CLOS labels" without blocking diagnostics. It should show: Show region, node, metadata, endpoint port, and bidirectional bandwidth labels in one compact CLOS fabric. The test metadata expects `graphNodes`: `5`, `minVisibleEdges`: `6`.
+Show region, node, metadata, endpoint port, and bidirectional bandwidth labels in one compact CLOS fabric.
 
-## What To Inspect
+## Try It
 
-- Inspect `graph.links` for endpoint IDs and labels.
-- Compare line, arrow, label, and curve style keys in the stylesheet.
-
-## Use When
-
-Use this pattern when link readability, routing, arrowheads, or edge labels matter.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `linkDirection[direction = "targetToSource"]`.
+2. Change its `lineColor` from `"#4caf50"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

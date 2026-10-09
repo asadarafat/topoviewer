@@ -1,25 +1,20 @@
 # Edges
 
-These examples document the edges behaviors from the canonical TopoViewer test-case catalog. Each section is generated from one test case and keeps the live viewport, topology YAML, and stylesheet YAML together.
+Explore edges behavior with a live diagram and its two source files. Each example includes an edit to try in your own copy.
 
 ## Edge curve styles
-
-### What This Demonstrates
 
 Curve styles are presentation choices. The graph still says A connects to B/C/D/E; the stylesheet controls whether that relationship renders as straight, taxi, smooth-taxi, or unbundled-bezier.
 
 ### Expected Result
 
-The live viewport should render "Edge curve styles" without blocking diagnostics. It should show: Different `curveStyle` values produce different edge routing models. The test metadata expects `graphNodes`: `5`, `minVisibleEdges`: `4`.
+Different `curveStyle` values produce different edge routing models.
 
-### What To Inspect
+### Try It
 
-- Inspect `graph.links` for endpoint IDs and labels.
-- Compare line, arrow, label, and curve style keys in the stylesheet.
-
-### Use When
-
-Use this pattern when link readability, routing, arrowheads, or edge labels matter.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link[labels.curve = "unbundled-bezier"]`.
+2. Change its `lineColor` from `"#c084fc"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 
@@ -46,22 +41,17 @@ Use this pattern when link readability, routing, arrowheads, or edge labels matt
 
 ## Arrows, dashes, and labels
 
-### What This Demonstrates
-
 Arrows, dashes, and labels are edge styling. The request and reply links use the same `lineDashPattern` but different `lineDashOffset` values, so the rendered dash cadence is visibly phase-shifted. Endpoint labels make it clear that `sourceLabel` follows the edge source and `targetLabel` follows the edge target.
 
 ### Expected Result
 
-The live viewport should render "Arrows, dashes, and labels" without blocking diagnostics. It should show: Edges can carry labels, arrows, dash patterns, and dash offsets without changing topology semantics. The test metadata expects `graphNodes`: `2`, `minVisibleEdges`: `2`.
+Edges can carry labels, arrows, dash patterns, and dash offsets without changing topology semantics.
 
-### What To Inspect
+### Try It
 
-- Inspect `graph.links` for endpoint IDs and labels.
-- Compare line, arrow, label, and curve style keys in the stylesheet.
-
-### Use When
-
-Use this pattern when link readability, routing, arrowheads, or edge labels matter.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link[labels.direction = "reply"]`.
+2. Change its `lineColor` from `"#38bdf8"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 
@@ -88,8 +78,6 @@ Use this pattern when link readability, routing, arrowheads, or edge labels matt
 
 ## Endpoint label controls
 
-### What This Demonstrates
-
 Use endpoint labels when the two ends of an edge need visible port names. This
 example keeps circle and square arrow markers as geometry only, then renders
 `sourceLabel` and `targetLabel` as styled endpoint annotations with automatic
@@ -104,16 +92,13 @@ text independently.
 
 ### Expected Result
 
-The live viewport should render "Endpoint label controls" without blocking diagnostics. It should show: Endpoint labels can show physical ports while arrow markers remain pure geometry. The test metadata expects `graphNodes`: `3`, `minVisibleEdges`: `2`.
+Endpoint labels can show physical ports while arrow markers remain pure geometry.
 
-### What To Inspect
+### Try It
 
-- Inspect `graph.links` for endpoint IDs and labels.
-- Compare line, arrow, label, and curve style keys in the stylesheet.
-
-### Use When
-
-Use this pattern when link readability, routing, arrowheads, or edge labels matter.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link[labels.class = "silver"]`.
+2. Change its `lineColor` from `"#64748b"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 
@@ -140,22 +125,17 @@ Use this pattern when link readability, routing, arrowheads, or edge labels matt
 
 ## Endpoint spacing and routing
 
-### What This Demonstrates
-
 Endpoint spacing moves the visible line inward from node boundaries. Segment controls make manual bend points explicit, while taxi controls create deterministic right-angled routes without relying on automatic layout guesses.
 
 ### Expected Result
 
-The live viewport should render "Endpoint spacing and routing" without blocking diagnostics. It should show: Endpoint spacing, segment controls, and taxi controls make edge routes explicit. The test metadata expects `graphNodes`: `4`, `minVisibleEdges`: `2`.
+Endpoint spacing, segment controls, and taxi controls make edge routes explicit.
 
-### What To Inspect
+### Try It
 
-- Inspect `graph.links` for endpoint IDs and labels.
-- Compare line, arrow, label, and curve style keys in the stylesheet.
-
-### Use When
-
-Use this pattern when link readability, routing, arrowheads, or edge labels matter.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link[labels.route = "taxi"]`.
+2. Change its `lineColor` from `"#f97316"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 
@@ -182,22 +162,17 @@ Use this pattern when link readability, routing, arrowheads, or edge labels matt
 
 ## Gradient and interaction flags
 
-### What This Demonstrates
-
 Linear gradients are useful for directional utilization, ownership, or state transitions. `interactive: false` leaves a reference edge visible while removing edge click handling, and `labelInteractive: false` keeps labels from taking pointer events.
 
 ### Expected Result
 
-The live viewport should render "Gradient and interaction flags" without blocking diagnostics. It should show: Linear gradients and interaction flags can be declared directly on edge style rules. The test metadata expects `graphNodes`: `4`, `minVisibleEdges`: `2`.
+Linear gradients and interaction flags can be declared directly on edge style rules.
 
-### What To Inspect
+### Try It
 
-- Inspect `graph.links` for endpoint IDs and labels.
-- Compare line, arrow, label, and curve style keys in the stylesheet.
-
-### Use When
-
-Use this pattern when link readability, routing, arrowheads, or edge labels matter.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link[labels.mode = "reference"]`.
+2. Change its `lineColor` from `"#94a3b8"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 
@@ -224,22 +199,17 @@ Use this pattern when link readability, routing, arrowheads, or edge labels matt
 
 ## Floating anchors
 
-### What This Demonstrates
-
 Floating anchors are the default edge behavior. The renderer computes a boundary attachment point from the node geometry so the line does not terminate at the node center.
 
 ### Expected Result
 
-The live viewport should render "Floating anchors" without blocking diagnostics. It should show: Floating anchors connect to the nearest point on each node boundary. The test metadata expects `graphNodes`: `2`, `minVisibleEdges`: `1`.
+Floating anchors connect to the nearest point on each node boundary.
 
-### What To Inspect
+### Try It
 
-- Inspect `graph.links` for endpoint IDs and labels.
-- Compare line, arrow, label, and curve style keys in the stylesheet.
-
-### Use When
-
-Use this pattern when link readability, routing, arrowheads, or edge labels matter.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link`.
+2. Change its `lineColor` from `"#22c55e"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 
@@ -266,22 +236,17 @@ Use this pattern when link readability, routing, arrowheads, or edge labels matt
 
 ## Parent link pipe
 
-### What This Demonstrates
-
 Parent links let an overlay relationship ride inside a carrier relationship. The service still connects child endpoints, but the visual lane follows the parent transport pipe. Parent links, their carrier links, and links styled as pipes remain independent from attention-based parallel-link grouping because they describe containment rather than parallel capacity.
 
 ### Expected Result
 
-The live viewport should render "Parent link pipe" without blocking diagnostics. It should show: A child link can be visually carried inside a parent transport link. The test metadata expects `graphNodes`: `4`, `minVisibleEdges`: `1`.
+A child link can be visually carried inside a parent transport link.
 
-### What To Inspect
+### Try It
 
-- Inspect `graph.links` for endpoint IDs and labels.
-- Compare line, arrow, label, and curve style keys in the stylesheet.
-
-### Use When
-
-Use this pattern when link readability, routing, arrowheads, or edge labels matter.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link[labels.link = "service"]`.
+2. Change its `lineColor` from `"#22c55e"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 
@@ -308,8 +273,6 @@ Use this pattern when link readability, routing, arrowheads, or edge labels matt
 
 ## Directional link strokes
 
-### What This Demonstrates
-
 Directional link strokes model two operational directions on one physical link.
 Use them when one adjacency has independent telemetry for each direction and
 duplicate links would misrepresent the topology.
@@ -326,16 +289,13 @@ label placement pass so dense operational diagrams remain inspectable.
 
 ### Expected Result
 
-The live viewport should render "Directional link strokes" without blocking diagnostics. It should show: One physical link can show two independently styled traffic directions. The test metadata expects `graphNodes`: `2`, `minVisibleEdges`: `1`.
+One physical link can show two independently styled traffic directions.
 
-### What To Inspect
+### Try It
 
-- Inspect `graph.links` for endpoint IDs and labels.
-- Compare line, arrow, label, and curve style keys in the stylesheet.
-
-### Use When
-
-Use this pattern when link readability, routing, arrowheads, or edge labels matter.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `linkDirection[direction = "targetToSource"]`.
+2. Change its `lineColor` from `"#ff9800"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 
@@ -362,8 +322,6 @@ Use this pattern when link readability, routing, arrowheads, or edge labels matt
 
 ## Dense CLOS labels
 
-### What This Demonstrates
-
 Dense CLOS labels show the label-placement problem that appears in operational
 fabric dashboards: region names, node names, node metadata, endpoint port
 labels, and bidirectional bandwidth values all want space around the same small
@@ -377,16 +335,13 @@ collision policy so labels can move without changing node or link geometry.
 
 ### Expected Result
 
-The live viewport should render "Dense CLOS labels" without blocking diagnostics. It should show: Show region, node, metadata, endpoint port, and bidirectional bandwidth labels in one compact CLOS fabric. The test metadata expects `graphNodes`: `5`, `minVisibleEdges`: `6`.
+Show region, node, metadata, endpoint port, and bidirectional bandwidth labels in one compact CLOS fabric.
 
-### What To Inspect
+### Try It
 
-- Inspect `graph.links` for endpoint IDs and labels.
-- Compare line, arrow, label, and curve style keys in the stylesheet.
-
-### Use When
-
-Use this pattern when link readability, routing, arrowheads, or edge labels matter.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `linkDirection[direction = "targetToSource"]`.
+2. Change its `lineColor` from `"#4caf50"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

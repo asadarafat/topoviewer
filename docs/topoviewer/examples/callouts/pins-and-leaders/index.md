@@ -5,22 +5,17 @@ hide:
 
 # Pins and leaders
 
-## What This Demonstrates
-
 Pins give leaders exact attachment points. This matters when a diagram has bars, ports, SAPs, or physical slots where center-point attachment is misleading.
 
 ## Expected Result
 
-The live viewport should render "Pins and leaders" without blocking diagnostics. It should show: Leaders can attach to named pins instead of object centers. The test metadata expects `graphNodes`: `1`, `shapes`: `1`, `visibleCallouts`: `1`, `minVisibleEdges`: `2`.
+Leaders can attach to named pins instead of object centers.
 
-## What To Inspect
+## Try It
 
-- Inspect `diagram.callouts` for visual notes that do not change graph semantics.
-- Check the stylesheet rule that controls callout color, border, and text treatment.
-
-## Use When
-
-Use this pattern when the diagram needs explanatory annotations without changing graph semantics.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `shape`.
+2. Change its `borderWidth` from `2` to `4`, then reload your page. Compare the stroke thickness of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

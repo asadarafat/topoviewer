@@ -1,6 +1,15 @@
 # Reference Model
 
-TopoViewer is a declarative graph renderer with an optional diagram primitive layer. The graph model is semantic first; visual primitives exist to explain the graph, not to replace it.
+Use this reference for document ownership, required fields, and relationships.
+For help choosing an object, read [Topology Model](./topology-model.md). For a
+complete runnable bundle, start with [Authoring Model](../author/authoring-model.md).
+The generated [Object Attribute Reference](./object-attributes.md) lists all
+schema fields; [Stylesheet Reference](./stylesheet-reference.md) lists visual
+keys and their accepted values.
+
+YAML blocks on this page are **fragments**, not complete files. Place `links`
+and `paths` under `graph` in topology YAML. Their referenced nodes and layers
+must already exist in that document.
 
 ## Document
 
@@ -30,7 +39,7 @@ Common graph entity fields:
 | `id` | string | Required unique identity, reference key, and default rendered text. |
 | `labels` | object of string, number, or boolean values | Optional display alias at `labels.name` plus low-cardinality classifier fields for selectors and filtering. |
 | `data` | object | Arbitrary facts such as metrics, severity, inventory IDs, counters, or addresses. |
-| `layers` | string array | Visibility layers that include this object. |
+| `layers` | string array | Declared visibility layers that include this object. An empty or omitted list leaves it hidden. |
 
 Canonical topology objects do not accept generic `name`, generic `label`,
 inline `style`, or object-level `icon`. Use `labels.name` for an optional visible
@@ -43,7 +52,7 @@ A `node` is a semantic thing: router, switch, service endpoint, application, sit
 
 Required: `id`
 
-Recommended: `labels`, `layers`
+For visibility: nonempty `layers` containing a selected layer. `labels` is optional.
 
 | Field | Values | Use |
 |---|---|---|
@@ -57,7 +66,7 @@ A `link` is a direct relationship between two nodes. It is not necessarily physi
 
 Required: `id`, `source`, `target`
 
-Recommended: `labels`, `layers`
+For visibility: nonempty `layers` containing a selected layer and both endpoint nodes visible. `labels` is optional.
 
 `parent` on a link means the child link is visually carried by another link. The child keeps its real `source` and `target`, but renders as a lane inside the parent link.
 
@@ -76,6 +85,7 @@ links:
   - id: leaf1-spine1
     source: leaf1
     target: spine1
+    layers: [physical]
     directions:
       sourceToTarget:
         label: 3.2 Gbps
@@ -108,6 +118,7 @@ paths:
     labels:
       name: AGG transport carrier
     sequence: [AGG1, PE1, P, PE2, AGG2]
+    layers: [transport]
 ```
 
 Stitched child path:
@@ -120,6 +131,7 @@ paths:
     source: services-a
     target: services-j
     parent: transport-agg1-agg2
+    layers: [transport]
 ```
 
 A stitched child path renders as:
@@ -216,7 +228,9 @@ Layers are author-controlled visibility groups. They are not fixed to networking
 - `observability`
 - `failure-domain`
 
-Objects may belong to multiple layers.
+Objects may belong to multiple layers. At least one must be selected for an
+object to render; omitting membership does not create a default layer. Links
+also require both endpoints to be visible.
 
 | Field | Values | Use |
 |---|---|---|
@@ -266,30 +280,10 @@ Generic CLOS options:
 | `pinnedNodeIds` | string array | Node IDs whose positions should be preserved. |
 | `stageGap`, `nodeGap`, `groupGap` | number | Spacing controls. |
 
-`clos` is generic. It does not require data-center-specific roles. Use
-`layout.inferLabelRole` when labels/data should explicitly override fuzzy
-inference; it is not enabled by default. Without explicit hints, directed
-`source` -> `target` links define the root-to-leaf order when they form a clear
-hierarchy, and low endpoint count is used as a fuzzy fallback when direction is
-not usable. Use `layout.clos.stageKey`, `stageOrder`, and `groupKey` when the
-topology has a direct stage field or authored taxonomy should control stage and
-group order.
-
-Practical rules:
-
-- Generic stage-like fields such as `labels.stage`, `data.stage`, `labels.tier`,
-  and `labels.level` may be used as direct stage hints.
-- `labels.node`, `labels.role`, and similar labels are classifiers for selectors
-  and filters. They do not control CLOS stages unless referenced by `stageKey`
-  or mapped through `inferLabelRole`.
-- The automatic root side is inferred from directed hierarchy first. A node with
-  many downstream links can still be placed below a lower-degree upstream node
-  when link direction makes that hierarchy clear.
-- TopoViewer does not use a `rootNodeIds` YAML field for CLOS layout. If the
-  automatic hierarchy is not enough, author a stage field and use `stageKey` or
-  switch to `manual`.
-- Use `force` for organic meshes and cyclic graphs where staged rows would imply
-  a false hierarchy.
+CLOS does not require data-center role names. Classifiers such as `labels.role`
+affect stage placement only when mapped through `stageKey` or `inferLabelRole`.
+For examples, pinning, inference behavior, and force-layout bounds, see
+[Layout](../author/layout.md).
 
 Tree options:
 
@@ -317,11 +311,11 @@ control built-in viewer behavior.
 | Field | Values | Use |
 |---|---|---|
 | `toggles[].id` | string | Stable toggle ID. |
-| `toggles[].name` | string | Reader-facing toggle name. |
+| `toggles[].labels.name` | string | Optional reader-facing alias; falls back to the toggle ID. |
 | `toggles[].default` | boolean | Initial toggle state. |
 | `showRegions` | boolean | Runtime toggle for region hull visibility. |
 | `showChildNodesInsideParents` | boolean | Runtime toggle for parent-child node rendering. |
-| `showServicesInsideNodes` | boolean | Runtime toggle for service-like child content. |
+| `showServicesInsideNodes` | boolean | Historical alias for `showChildNodesInsideParents`. |
 | `showEdgeLabels` | boolean | Runtime toggle for edge labels. |
 
 ## Limits
@@ -372,7 +366,7 @@ Icons are reusable named assets referenced by node stylesheet rules.
 one reserved optional display alias. Keep other labels short, stable, and
 low-cardinality.
 
-Good:
+An object-level `labels` fragment:
 
 ```yaml
 labels:
@@ -403,7 +397,12 @@ aggregate, group, or prioritize labels in dense topologies.
 | `attention.aggregate.expandedGroupIds` | string array | Aggregate groups expanded by default. |
 | `attention.aggregate.expandOnClick` | boolean | Expand collapsed groups when clicked. |
 | `attention.aggregate.viewport` | viewport policy | Optional zoom/viewport policy for aggregate behavior. |
-| `attention.links.grouping` | link grouping options | Summarize parallel links by endpoint, layer, or authored keys, optionally limited by a link selector. |
+| `attention.links.grouping` | link grouping options | Summarize parallel links with `by: [endpoints, layer]`, optionally limited by a link selector. |
+
+Attention indexes graph nodes, links, link directions, paths, and regions.
+Diagram shapes, callouts, connectors, and text are not focus-query targets.
+See [Attention](../author/attention.md) for runnable queries and the direct-member
+behavior of region focus and aggregation.
 
 Keep attention defaults practical. Object focus with dimmed context is the
 default authoring expectation; more advanced aggregate and link grouping should

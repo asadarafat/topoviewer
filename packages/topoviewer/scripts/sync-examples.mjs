@@ -244,8 +244,8 @@ function generatedCatalog(catalog) {
 function renderBlock(example, expected, markdownFile = pageFile(example)) {
   if (expected.renderable === false) {
     return [
-      '!!! warning "Non-renderable validation fixture"',
-      '    This test case intentionally violates semantic validation. It is documented so the linter behavior is testable and stable.'
+      '!!! warning "Intentional validation failure"',
+      '    This source is deliberately invalid. Copy the two YAML tabs and run the linked validator to see the diagnostic before repairing it.'
     ].join('\n');
   }
 
@@ -323,104 +323,165 @@ function exampleTabsMarkdown(example, expected, markdownFile) {
   return tabs.join('\n');
 }
 
-function featureInspectHints(feature) {
-  const hints = {
-    attention: [
-      'Review the attention state in the live viewport and compare it with the optional Attention YAML tab.',
-      'Check which objects stay prominent and which objects are dimmed, collapsed, or summarized.'
-    ],
-    callouts: [
-      'Inspect `diagram.callouts` for visual notes that do not change graph semantics.',
-      'Check the stylesheet rule that controls callout color, border, and text treatment.'
-    ],
-    edges: [
-      'Inspect `graph.links` for endpoint IDs and labels.',
-      'Compare line, arrow, label, and curve style keys in the stylesheet.'
-    ],
-    graph: [
-      'Inspect `graph.nodes`, `graph.links`, and object labels.',
-      'Check how the stylesheet turns semantic facts into visual presentation.'
-    ],
-    authoring: [
-      'Use the example as an authoring template in TopoViewer Studio.',
-      'Apply changes and confirm the rendered viewport stays in sync with the source bundle.'
-    ],
-    layout: [
-      'Inspect `layout` options and node positions.',
-      'Check whether positions are authored manually, inferred, or preserved by layout settings.'
-    ],
-    nodes: [
-      'Inspect node labels, data, icon definitions, and body shape settings.',
-      'Compare label, badge, status, icon, border, and underlay style keys.'
-    ],
-    paths: [
-      'Inspect `graph.paths` and the nodes or links they traverse.',
-      'Check lane, pipe, label, and arrow styling for service-path readability.'
-    ],
-    regions: [
-      'Inspect `graph.regions` membership and label placement.',
-      'Check padding and region style keys that prevent overlap with member nodes.'
-    ],
-    shapes: [
-      'Inspect `diagram.shapes` and confirm they are visual explanation objects, not graph facts.',
-      'Check shape geometry, fill, stroke, z-index, and label behavior.'
-    ],
-    text: [
-      'Inspect `diagram.texts` for standalone labels and explanatory copy that do not change graph semantics.',
-      'Check text alignment, typography, background, border, rotation, and layer membership.'
-    ],
-    styling: [
-      'Inspect selector order and the style keys applied by each rule.',
-      'Compare broad defaults with more specific label or data selectors.'
-    ],
-    validation: [
-      'Inspect the invalid or edge-case YAML and the expected diagnostic behavior.',
-      'Use this example to understand what CI should reject.'
-    ]
-  };
-  return hints[feature] || [
-    'Inspect the topology YAML for semantic objects.',
-    'Inspect the stylesheet YAML for the visual contract.'
+function exampleExperiment(example, expected, markdownFile) {
+  const validationGuide = relativeFromMarkdownFile(markdownFile, 'topoviewer/author/validate-yaml.md');
+  if (expected.renderable === false) {
+    const codes = expected.semantic?.errors || [];
+    return [
+      `Copy the two YAML tabs into local files and [run the file validator](${validationGuide}) with those paths. It should exit with an error.`,
+      codes.length ? `Find the diagnostic ${codes.map((code) => `\`${code}\``).join(', ')} and locate the offending source field.` : 'Locate the reported diagnostic and the source field it names.',
+      `Correct that field in a local copy, then [validate the same files again](${validationGuide}). The intended failure should disappear before you publish the diagram.`
+    ];
+  }
+  const setup = ['Copy the two YAML tabs into your own project.'];
+  if (example.render?.attention) {
+    setup.push('Copy the Attention YAML tab into your `topoviewer` fence too; focus and collapse settings are separate from the two source files.');
+  }
+  if (example.render?.selectedLayerIds) {
+    setup.push(`Select the same layers in the viewer: ${example.render.selectedLayerIds.map((id) => `\`${id}\``).join(', ')}.`);
+  }
+  const stylesheet = readYaml(exampleSourceFile(example, 'stylesheet.yaml'));
+  const topology = readYaml(exampleSourceFile(example, 'topology.yaml'));
+  const recipe = (...steps) => [setup.join(' '), ...steps, 'Restore the original settings and reload to compare with the starting view.'];
+  if (example.feature === 'layout') {
+    const layout = stylesheet.layout || {};
+    if (layout.mode === 'manual') {
+      const node = topology.graph.nodes.find((candidate) => Array.isArray(candidate.position));
+      const moved = [node.position[0], node.position[1] + 100];
+      return recipe(
+        `In topology.yaml, change node \`${node.id}\`'s \`position\` from \`${JSON.stringify(node.position)}\` to \`${JSON.stringify(moved)}\`.`,
+        'Reload. That node moves down relative to the other authored positions, and its connected links follow it.'
+      );
+    }
+    if (layout.mode === 'force') {
+      return recipe(
+        `In stylesheet.yaml, change \`layout.linkDistance\` from \`${layout.linkDistance}\` to \`${layout.linkDistance + 80}\`.`,
+        'Reload and compare the recomputed node spacing. Reload once more without another edit: the same input should produce the same layout.'
+      );
+    }
+    if (layout.mode === 'clos' || layout.mode === 'tree') {
+      const direction = layout[layout.mode]?.direction || 'topToBottom';
+      const next = direction === 'leftToRight' ? 'topToBottom' : 'leftToRight';
+      return recipe(
+        `In stylesheet.yaml, change \`layout.${layout.mode}.direction\` from \`${direction}\` to \`${next}\`.`,
+        'Reload. The stages or hierarchy turn to the new orientation while node IDs and link endpoints stay the same.'
+      );
+    }
+  }
+  if (example.feature === 'attention') {
+    const attention = example.render?.attention || topology.attention || {};
+    const location = example.render?.attention ? 'the Attention YAML block in your page' : 'topology.yaml';
+    if (attention.query?.mode === 'hide-context') {
+      return recipe(
+        `In ${location}, change \`attention.query.mode\` from \`hide-context\` to \`dim-context\`.`,
+        'Reload. The same PE nodes remain focused, while the previously hidden core nodes and links return as muted context.'
+      );
+    }
+    if (attention.query?.dependency) {
+      return recipe(
+        `In ${location}, change \`attention.query.dependency.depth\` from \`${attention.query.dependency.depth}\` to \`1\`.`,
+        'Reload. The seed and its immediate downstream neighbors remain emphasized; the access nodes two hops away return to dimmed context.'
+      );
+    }
+    if (attention.query?.changes) {
+      return recipe(
+        `In ${location}, change \`attention.query.changes.since\` to \`"2026-06-16T00:00:00Z"\`, after this example's recorded changes.`,
+        'Reload. CORE-1 and the degraded core link are no longer matched by the change query; their stored timestamps and status stay unchanged.'
+      );
+    }
+    if (attention.query?.regionIds) {
+      const regionId = attention.query.regionIds[0];
+      const region = topology.graph.regions.find((candidate) => candidate.id === regionId);
+      const member = region.members.at(-1);
+      return recipe(
+        `In topology.yaml, remove \`${member}\` only from region \`${regionId}\`'s \`members\` list. Keep the node and its links.`,
+        'Reload. That node becomes dimmed context instead of a focused region member, and the auto-fit hull adjusts to its remaining members.'
+      );
+    }
+    if (attention.query) {
+      return recipe(
+        `In ${location}, replace the entire \`attention.query\` value with \`{ ids: [NOC], mode: dim-context }\`. Remove its other criteria; focus criteria are combined.`,
+        'Reload. NOC is the only focused object, while the previous role, severity, and fiber-link matches return to context.'
+      );
+    }
+    if (example.id === 'attention-aggregate-badge-status') {
+      return recipe(
+        'Keep the Access region summary collapsed. In topology.yaml, change ACC-2\'s data.severity from critical to normal.',
+        'Reload. The summary\'s worst severity changes from critical to major because AGG-1 is still major. Its member-count badge remains 3.'
+      );
+    }
+    if (attention.aggregate?.viewport) {
+      return recipe(
+        `In ${location}, set \`attention.aggregate.viewport.collapseBelowZoom: 0.7\` and \`expandAboveZoom: 1.0\`.`,
+        'Reload, then use the zoom controls to move below 0.7: both metros collapse. Zoom above 1.0: their member nodes return. Cross each threshold without clicking summaries so the zoom policy drives this comparison.'
+      );
+    }
+    if (attention.aggregate?.groups?.length) {
+      const group = attention.aggregate.groups[0];
+      return recipe(
+        `In ${location}, add \`expandedGroupIds: [${group.id}]\` under \`attention.aggregate\`, alongside \`groups\`.`,
+        `Reload. \`${group.label || group.id}\` starts expanded into its member nodes; other configured groups remain collapsed. This sets the initial view without a click.`
+      );
+    }
+    if (attention.links?.grouping) {
+      return recipe(
+        `In ${location}, change \`attention.links.grouping.threshold\` from \`${attention.links.grouping.threshold}\` to \`4\`.`,
+        'Reload. These three parallel links no longer meet the threshold, so they render individually instead of as one counted summary.'
+      );
+    }
+    if (attention.interactive) {
+      const node = topology.graph.nodes[0];
+      return recipe(
+        `In ${location}, change \`attention.clickMode\` from \`dim-context\` to \`hide-context\`.`,
+        `Reload, then click node \`${node.id}\`. Unrelated objects disappear instead of dimming. Click empty viewport space to restore the starting topology.`
+      );
+    }
+  }
+  if (example.feature === 'regions') {
+    if (example.id === 'regions-draggable-regions') {
+      return recipe(
+        'Drag the Site A hull by its label or border and observe both member nodes moving with it. Reload to reset the temporary movement.',
+        'In stylesheet.yaml, set draggable: false on the region rule. Reload and drag the same hull again: it stays fixed, while individual node dragging remains available.'
+      );
+    }
+    if (example.id === 'regions-region-label-placement') {
+      return recipe(
+        'In stylesheet.yaml, find `region[labels.placement = "side"]` and change `labelPosition` from `rightCenter` to `leftCenter`.',
+        'Reload. That region\'s label moves to the opposite side; its member nodes and membership stay unchanged.'
+      );
+    }
+    const regionId = example.id === 'regions-overlapping-regions' ? 'isis-l2' : 'isis-l1';
+    return recipe(
+      `In topology.yaml, remove \`R05\` only from region \`${regionId}\`'s \`members\` list. Keep R05 itself and its membership in every other region.`,
+      `Reload. The \`${regionId}\` hull contracts around its remaining member. R05 and its links remain visible; the outer AS region still contains it.`
+    );
+  }
+  const fields = ['lineColor', 'borderColor', 'backgroundColor', 'lineWidth', 'borderWidth', 'labelFontSize'];
+  for (const rule of [...(stylesheet.stylesheet || [])].reverse()) {
+    const field = fields.find((key) => rule.style?.[key] !== undefined);
+    if (!field) continue;
+    const previous = rule.style[field];
+    const color = field.endsWith('Color');
+    const next = color ? (previous === '#e11d48' ? '#2563eb' : '#e11d48') : Number(previous) + 2;
+    if (!color && !Number.isFinite(next)) continue;
+    const outcome = color ? 'color' : field === 'labelFontSize' ? 'label size' : 'stroke thickness';
+    return [
+      `${setup.join(' ')} In stylesheet.yaml, find selector \`${rule.selector}\`.`,
+      `Change its \`${field}\` from \`${JSON.stringify(previous)}\` to \`${JSON.stringify(next)}\`, then reload your page. Compare the ${outcome} of objects matching that selector; their IDs and relationships should stay unchanged.`,
+      `If another rule masks the edit, check its specificity in the [stylesheet guide](${relativeFromMarkdownFile(markdownFile, 'topoviewer/reference/topoviewer-stylesheet.md')}). Restore the original value to compare the two views.`
+    ];
+  }
+  return [
+    `${setup.join(' ')} Change a displayed object label while keeping its ID.`,
+    `Reload the page, then [validate the files](${validationGuide}). The visible text should change while references to that ID remain valid.`
   ];
-}
-
-function featureUseWhen(feature) {
-  const useWhen = {
-    attention: 'Use this pattern when a dense graph needs focus, dimming, aggregation, or label-priority behavior.',
-    callouts: 'Use this pattern when the diagram needs explanatory annotations without changing graph semantics.',
-    edges: 'Use this pattern when link readability, routing, arrowheads, or edge labels matter.',
-    graph: 'Use this pattern when modeling the core semantic graph.',
-    authoring: 'Use this pattern when building Browser or Desktop Studio authoring workflows.',
-    integration: 'Use this pattern when documenting how TopoViewer fits into another system, dashboard, or operational workflow.',
-    layout: 'Use this pattern when positions should be repeatable, inferred, or constrained by topology structure.',
-    nodes: 'Use this pattern when node identity, iconography, labels, status, or shape treatment matters.',
-    paths: 'Use this pattern when visualizing service paths, dependency paths, or multi-hop routes.',
-    regions: 'Use this pattern when grouping nodes into sites, racks, pods, domains, or ownership boundaries.',
-    shapes: 'Use this pattern when adding visual explanation objects around a graph.',
-    text: 'Use this pattern when the canvas needs editable standalone text instead of a graph node or callout.',
-    styling: 'Use this pattern when building reusable visual rules from labels and data.',
-    validation: 'Use this pattern when documenting lint, schema, or invalid-input behavior.'
-  };
-  return useWhen[feature] || 'Use this pattern when documenting a reusable TopoViewer behavior.';
 }
 
 function expectedResultMarkdown(example, expected) {
   if (expected.renderable === false) {
-    return 'This fixture should not render as a normal topology. It should produce the documented validation behavior without hiding the diagnostic.';
+    return 'This example intentionally produces a validation diagnostic. Inspect the message and source together before trying the repair below.';
   }
-
-  const metadata = compactExpectedMetadata(expected);
-  const details = metadata
-    ? Object.entries(metadata)
-      .map(([key, value]) => `\`${key}\`: \`${JSON.stringify(value)}\``)
-      .join(', ')
-    : undefined;
-
-  return [
-    `The live viewport should render "${example.title}" without blocking diagnostics.`,
-    example.summary ? `It should show: ${example.summary}` : undefined,
-    details ? `The test metadata expects ${details}.` : undefined
-  ].filter(Boolean).join(' ');
+  return example.summary || `The viewport shows ${example.title.toLowerCase()}.`;
 }
 
 function requiredExampleSections(readme) {
@@ -432,36 +493,23 @@ function requiredExampleSections(readme) {
   ].every((heading) => new RegExp(`^#{2,6}\\s+${heading}\\s*$`, 'm').test(readme));
 }
 
-function exampleIntroMarkdown(example, expected, headingLevel = 2) {
+function exampleIntroMarkdown(example, expected, headingLevel = 2, markdownFile = pageFile(example)) {
   const readme = readExampleFile(example, 'README.md').trim();
-  if (example.introMode === 'narrative') {
-    return readme;
-  }
-  if (requiredExampleSections(readme)) {
-    return readme;
-  }
-
+  if (example.introMode === 'narrative' || requiredExampleSections(readme)) return readme;
   const heading = '#'.repeat(headingLevel);
-  const inspect = featureInspectHints(example.feature)
-    .map((hint) => `- ${hint}`)
+  const experiment = exampleExperiment(example, expected, markdownFile)
+    .map((instruction, index) => `${index + 1}. ${instruction}`)
     .join('\n');
-
   return [
-    `${heading} What This Demonstrates`,
-    '',
     readme,
     '',
     `${heading} Expected Result`,
     '',
     expectedResultMarkdown(example, expected),
     '',
-    `${heading} What To Inspect`,
+    `${heading} Try It`,
     '',
-    inspect,
-    '',
-    `${heading} Use When`,
-    '',
-    featureUseWhen(example.feature)
+    experiment
   ].join('\n');
 }
 
@@ -489,13 +537,13 @@ function categoryMarkdown(feature, examples) {
   const lines = [
     `# ${featureTitle(feature)}`,
     '',
-    `These examples document the ${featureTitle(feature).toLowerCase()} behaviors from the canonical TopoViewer test-case catalog. Each section is generated from one test case and keeps the live viewport, topology YAML, and stylesheet YAML together.`,
+    `Explore ${featureTitle(feature).toLowerCase()} behavior with a live diagram and its two source files. Each example includes an edit to try in your own copy.`,
     ''
   ];
 
   for (const example of examples) {
     const expected = readYaml(exampleSourceFile(example, 'expected.yaml'));
-    lines.push(`## ${example.title}`, '', exampleIntroMarkdown(example, expected, 3));
+    lines.push(`## ${example.title}`, '', exampleIntroMarkdown(example, expected, 3, markdownFile));
     if (example.introMode !== 'narrative') {
       lines.push('', exampleTabsMarkdown(example, expected, markdownFile));
     }

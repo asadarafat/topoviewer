@@ -5,22 +5,18 @@ hide:
 
 # Region focus
 
-## What This Demonstrates
-
 Region focus uses `graph.regions[].members` as the declarative grouping source. The attention query focuses the access metro region, so its member nodes become prominent while the PE outside the region and the surrounding links stay as dimmed context.
 
 ## Expected Result
 
-The live viewport should render "Region focus" without blocking diagnostics. It should show: Focus a region and its member nodes while preserving surrounding context. The test metadata expects `graphNodes`: `4`, `minVisibleEdges`: `3`, `minRegions`: `1`.
+Focus a region and its member nodes while preserving surrounding context.
 
-## What To Inspect
+## Try It
 
-- Review the attention state in the live viewport and compare it with the optional Attention YAML tab.
-- Check which objects stay prominent and which objects are dimmed, collapsed, or summarized.
-
-## Use When
-
-Use this pattern when a dense graph needs focus, dimming, aggregation, or label-priority behavior.
+1. Copy the two YAML tabs into your own project.
+2. In topology.yaml, remove `ACC-2` only from region `access-metro`'s `members` list. Keep the node and its links.
+3. Reload. That node becomes dimmed context instead of a focused region member, and the auto-fit hull adjusts to its remaining members.
+4. Restore the original settings and reload to compare with the starting view.
 
 === "Live Viewport"
 

@@ -65,7 +65,14 @@ bandwidth, link state, or status.
 
 ## Quick Start
 
-Start the lab:
+Run this lab from a TopoViewer repository checkout on a Linux host with Docker
+running, Containerlab installed, and permission to create lab network
+namespaces. The repository build requires Node.js 24, npm 11.21.x, and Go
+1.26.9; see the [repository setup](../../maintainers/monorepo.md). First image
+pulls include SR Linux and can be large. Reserve the ports listed below before
+deploying.
+
+From the repository root:
 
 ```bash
 npm ci
@@ -200,16 +207,18 @@ the bundle when you need the panel to reload mounted files.
 The practical workflow is:
 
 1. Open the TopoViewer Studio.
-2. Edit `Topology YAML`, `Stylesheet YAML`, and `Mapper YAML`.
-3. Press `Apply` until the viewport and diagnostics are valid.
-4. Use `Download bundle`.
-5. Mount the exported bundle directory into Grafana.
+2. Select the topology, stylesheet, or mapper document under **Project Source**
+   and edit it in the shared YAML editor.
+3. Press **Apply** for each edited document and resolve its diagnostics.
+4. Open **Export project**, choose **Grafana**, and select **Export Grafana
+   bundle**.
+5. Extract the exported bundle and mount its directory into Grafana.
 6. Select that bundle in the panel options.
 7. Bind Grafana queries so their labels match mapper joins.
 8. Inspect mapper coverage before trusting the visual state.
 
-Studio is the authoring surface. Grafana is the operational rendering
-surface.
+See [Studio export](../../author/studio/export.md) for export requirements.
+Studio authors the files; Grafana renders the mounted files with live telemetry.
 
 ## Demo Scenarios
 
@@ -297,7 +306,9 @@ tests when the topology or panel behavior changes.
 
     Compact link rule:
 
+    <!-- docs-check: mapper -->
     ```yaml
+    version: 1
     rules:
       - id: link-utilization
         metric: interface_utilization_percent
@@ -323,7 +334,9 @@ tests when the topology or panel behavior changes.
 
     Directional link rule:
 
+    <!-- docs-check: mapper -->
     ```yaml
+    version: 1
     rules:
       - id: directional-bandwidth
         metric: interface_direction_bps
@@ -399,15 +412,18 @@ tests when the topology or panel behavior changes.
 
 ## Mapper Recipes
 
-Mapper recipes are useful copy-paste starting points, but they should not be
-the first thing a Grafana adopter reads. Keep them as examples after the panel
-workflow is understood.
+Each block below is a complete mapper document. Copy one into your mapper
+file, then adjust the metric name and join labels to match your queries and
+topology IDs. When combining recipes, keep one `version: 1` and append rules
+under one `rules` sequence; place advanced mappings under `mappings`.
 
 ??? example "Open mapper recipes"
 
     ### Node Health
 
+    <!-- docs-check: mapper -->
     ```yaml
+    version: 1
     rules:
       - id: node-health
         metric: node_health
@@ -429,7 +445,9 @@ workflow is understood.
 
     ### Link State
 
+    <!-- docs-check: mapper -->
     ```yaml
+    version: 1
     rules:
       - id: link-oper-state
         metric: interface_oper_state
@@ -452,7 +470,9 @@ workflow is understood.
 
     ### Bidirectional Utilization
 
+    <!-- docs-check: mapper -->
     ```yaml
+    version: 1
     rules:
       - id: link-direction-utilization
         metric: interface_direction_bps
@@ -478,7 +498,9 @@ workflow is understood.
 
     ### Path SLO
 
+    <!-- docs-check: mapper -->
     ```yaml
+    version: 1
     mappings:
       - id: service-path-latency
         metric: service_path_latency_ms

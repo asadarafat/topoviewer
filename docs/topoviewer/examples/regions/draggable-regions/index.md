@@ -5,22 +5,18 @@ hide:
 
 # Draggable regions
 
-## What This Demonstrates
-
 Regions can be interactive hulls. Setting `draggable: true` and `selectable: true` in the stylesheet makes the region behave like an editable scope object.
 
 ## Expected Result
 
-The live viewport should render "Draggable regions" without blocking diagnostics. It should show: Regions can be selectable and draggable hulls. The test metadata expects `graphNodes`: `2`, `minVisibleEdges`: `1`, `minRegions`: `1`.
+Regions can be selectable and draggable hulls.
 
-## What To Inspect
+## Try It
 
-- Inspect `graph.regions` membership and label placement.
-- Check padding and region style keys that prevent overlap with member nodes.
-
-## Use When
-
-Use this pattern when grouping nodes into sites, racks, pods, domains, or ownership boundaries.
+1. Copy the two YAML tabs into your own project.
+2. Drag the Site A hull by its label or border and observe both member nodes moving with it. Reload to reset the temporary movement.
+3. In stylesheet.yaml, set draggable: false on the region rule. Reload and drag the same hull again: it stays fixed, while individual node dragging remains available.
+4. Restore the original settings and reload to compare with the starting view.
 
 === "Live Viewport"
 

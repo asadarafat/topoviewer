@@ -43,10 +43,14 @@ Use a task guide for the shortest successful path. Put complete attribute
 tables, all enum values, compatibility notes, hardening procedures, and lab
 runbooks in reference-like pages.
 
-Do not add end-of-page wayfinding sections to public docs. The left nav, page
-table of contents, and search are the navigation model.
+Link a guide directly to its prerequisite, worked example, and next useful task.
+The left navigation is a reference map; it does not replace a continuous tutorial.
+Keep onward links short and specific to the task rather than repeating the full
+site navigation.
 
-Public docs paths must mirror the nav section and page label. For example,
+New public docs paths should mirror the nav section and page label. Preserve
+an existing public URL when shortening its title, and record the explicit
+label/path exception in the docs lint check. For example,
 `Start > First Topology` is authored at
 `packages/topoviewer/content/pages/start/first-topology.md` and rendered at
 `docs/topoviewer/start/first-topology.md`.
@@ -82,15 +86,37 @@ try it
 
 ## Example README Contract
 
-Public examples must render these sections:
+Public examples should explain the demonstrated behavior, its expected visible
+result, and one concrete experiment the reader can repeat. Keep topology and
+stylesheet source beside the viewport. Use task-specific prose when a generic
+exercise would be misleading, especially for validation and attention examples.
 
-- `What This Demonstrates`
-- `Expected Result`
-- `What To Inspect`
-- `Use When`
+The generator uses authored README prose and actual stylesheet rules to supply
+a small edit-and-observe exercise for legacy entries. Internal assertion names
+and test counts belong in `expected.yaml`, not in the reader-facing explanation.
 
-The source README may provide all sections manually. If it only provides short
-legacy prose, the generator wraps that prose into the required public structure.
+## Executable Documentation
+
+Write a complete pair when advertising a runnable topology. Label filenames and
+mark the blocks immediately before their fences:
+
+- `<!-- docs-check: topology example-name -->`
+- `<!-- docs-check: stylesheet example-name -->`
+- `<!-- docs-check: viewport example-name -->` for a live fence using that pair.
+- `<!-- docs-check: mapper -->` for a complete mapper document.
+- `<!-- docs-check: validator -->` for the executable JavaScript file validator.
+
+Explicitly label fragments and their prerequisites in the surrounding prose.
+All standalone YAML fences must parse; intentional malformed-YAML demonstrations
+use `<!-- docs-check: invalid-yaml -->` and must continue to fail parsing.
+Use canonical snippet includes when the same file is displayed and rendered.
+
+`npm run docs:examples:check` builds the core package, parses documentation YAML,
+validates marked pairs, checks that they render visible objects, and compares
+marked live sources with displayed source. It also validates complete mapper
+recipes against the schema and runs the documented validator against valid
+files and a broken endpoint. The docs CI lane runs the same check.
+The browser docs smoke also verifies the first and styled tutorial in both hosts.
 
 ## Wording Rules
 
@@ -121,9 +147,9 @@ Run these before publishing docs:
 ```bash
 npm run sync:docs
 npm run docs:lint
+npm run docs:examples:check
 npm run ci:docs
 ```
 
-The docs lint gate checks canonical pages, generated examples, forbidden
-page-local next-step headings, style reference coverage, API reference coverage,
+The docs lint gate checks canonical pages, generated examples, style reference coverage, API reference coverage,
 public links, and route consistency.

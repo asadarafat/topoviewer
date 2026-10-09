@@ -15,18 +15,44 @@ The portable YAML contract supports four modes:
 
 ## Manual Layout
 
-Use manual layout when exact placement matters:
+Layout belongs in **stylesheet.yaml**. Start with this complete manual bundle;
+the automatic-layout examples below replace its stylesheet `layout` block.
 
+**topology.yaml**
+
+<!-- docs-check: topology layout-manual -->
 ```yaml
+version: "0.2"
+graph:
+  layers:
+    - id: physical
+  nodes:
+    - id: spine-1
+      layers: [physical]
+      position: [260, 80]
+    - id: leaf-1
+      layers: [physical]
+      position: [260, 260]
+  links:
+    - id: spine-leaf
+      source: spine-1
+      target: leaf-1
+      layers: [physical]
+```
+
+**stylesheet.yaml**
+
+<!-- docs-check: stylesheet layout-manual -->
+```yaml
+version: "0.2"
 layout:
   mode: manual
   width: 860
   height: 420
-graph:
-  nodes:
-    - id: spine-1
-      position: [260, 80]
 ```
+
+The result contains two nodes and one link. Both the layer declaration and each
+object's layer membership are needed for visibility.
 
 Manual layout is the safest choice for product screenshots, small examples, and
 network diagrams whose placement carries domain meaning.
@@ -34,7 +60,7 @@ network diagrams whose placement carries domain meaning.
 ## Force Layout
 
 Force layout uses a seeded simulation, so the same document and options produce
-stable output:
+stable output. Replace the `layout` block in **stylesheet.yaml** with:
 
 ```yaml
 layout:
@@ -60,8 +86,8 @@ divergent simulations fail with a diagnostic instead of entering the next tick.
 
 ## Generic CLOS Layout
 
-Use CLOS layout when the graph is layered and dense. CLOS options belong under
-`layout.clos`:
+Use CLOS layout when the graph is layered and dense. Replace the stylesheet's
+`layout` block with this fragment; CLOS options belong under `layout.clos`:
 
 ```yaml
 layout:
@@ -80,15 +106,15 @@ Inference prefers graph structure over names. Explicit `stageKey`, `stageOrder`,
 `groupKey`, and `inferLabelRole` values are overrides for topology facts that
 cannot be inferred reliably from connectivity.
 
-Pinned nodes preserve authored positions while the remaining CLOS graph is laid
-out:
+To keep `spine-1` at its authored position, use this alternative stylesheet
+`layout` block. The other node remains automatically placed:
 
 ```yaml
 layout:
   mode: clos
   clos:
     preservePinned: true
-    pinnedNodeIds: [wan]
+    pinnedNodeIds: [spine-1]
 ```
 
 Use pinned nodes for clouds, external systems, or manually positioned service
@@ -98,7 +124,7 @@ endpoints.
 
 Tree layout follows directed links from roots to children. Ordering is based on
 stable IDs and links, not input-array order, so equivalent documents produce the
-same result:
+same result. Replace the stylesheet's `layout` block with:
 
 ```yaml
 layout:
@@ -133,16 +159,34 @@ portable bundle.
 
 The root package exposes `BUILT_IN_LAYOUT_PROVIDERS`, `computeLayoutPositions`,
 and the advanced `LayoutProvider` contract. A trusted host can pass a read-only
-registry to `computeLayoutPositions` when it needs a private algorithm:
+registry to `computeLayoutPositions` when it needs private placement behavior.
+This complete TypeScript example overrides `manual` for one direct API call:
 
 ```ts
 import {
   BUILT_IN_LAYOUT_PROVIDERS,
   computeLayoutPositions,
+  type LayoutProvider,
   type LayoutProviderRegistry
 } from 'topoviewer';
 
-const positions = computeLayoutPositions(nodes, links, layout, providers);
+const rowProvider: LayoutProvider = {
+  mode: 'manual',
+  compute: ({ nodes }) => new Map(nodes.map((node, index) => [
+    node.id, { x: 100 + index * 180, y: 100 }
+  ]))
+};
+const providers: LayoutProviderRegistry = new Map([
+  ...BUILT_IN_LAYOUT_PROVIDERS,
+  ['manual', rowProvider]
+]);
+
+const positions = computeLayoutPositions(
+  [{ id: 'edge-a' }, { id: 'edge-b' }],
+  [],
+  { mode: 'manual' },
+  providers
+);
 ```
 
 The JSON Schema still accepts only `manual`, `force`, `clos`, and `tree`.

@@ -5,22 +5,17 @@ hide:
 
 # Image embed callout
 
-## What This Demonstrates
-
 Image embeds are allowed inside markdown when the URL is safe. This lets documentation diagrams include small symbols, screenshots, or badges without creating fake graph nodes.
 
 ## Expected Result
 
-The live viewport should render "Image embed callout" without blocking diagnostics. It should show: Image embeds are allowed when the URL is safe. The test metadata expects `visibleCallouts`: `1`.
+Image embeds are allowed when the URL is safe.
 
-## What To Inspect
+## Try It
 
-- Inspect `diagram.callouts` for visual notes that do not change graph semantics.
-- Check the stylesheet rule that controls callout color, border, and text treatment.
-
-## Use When
-
-Use this pattern when the diagram needs explanatory annotations without changing graph semantics.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `callout`.
+2. Change its `lineColor` from `"rgba(226, 232, 240, 0.72)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

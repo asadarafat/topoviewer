@@ -5,22 +5,18 @@ hide:
 
 # Overlapping regions
 
-## What This Demonstrates
-
 Overlapping regions are important for network diagrams because some routers, such as ABRs, belong to two scopes at once. R05 is intentionally inside both IS-IS L1 and IS-IS L2.
 
 ## Expected Result
 
-The live viewport should render "Overlapping regions" without blocking diagnostics. It should show: A shared node can be a member of multiple regions. The test metadata expects `graphNodes`: `3`, `minVisibleEdges`: `1`, `minRegions`: `3`.
+A shared node can be a member of multiple regions.
 
-## What To Inspect
+## Try It
 
-- Inspect `graph.regions` membership and label placement.
-- Check padding and region style keys that prevent overlap with member nodes.
-
-## Use When
-
-Use this pattern when grouping nodes into sites, racks, pods, domains, or ownership boundaries.
+1. Copy the two YAML tabs into your own project.
+2. In topology.yaml, remove `R05` only from region `isis-l2`'s `members` list. Keep R05 itself and its membership in every other region.
+3. Reload. The `isis-l2` hull contracts around its remaining member. R05 and its links remain visible; the outer AS region still contains it.
+4. Restore the original settings and reload to compare with the starting view.
 
 === "Live Viewport"
 

@@ -2,160 +2,174 @@
 
 **Support status:** Supported
 
-TopoViewer ships a browser embed bundle in:
+Use `mkdocs-topoviewer` to render topology YAML inside Markdown pages. The Python
+package includes the browser JavaScript and CSS; a site author needs Python
+3.9 or newer and MkDocs 1.6 or newer, below 2.0. Installing the plugin installs
+a compatible MkDocs version. Node.js and a TopoViewer repository checkout are
+not required.
 
-- `topoviewer/embed/topoviewer-embed.iife.js`
-- `topoviewer/embed/topoviewer-embed.css`
+## Create A Site
 
-Install the MkDocs adapter from PyPI:
+In a terminal on macOS or Linux:
 
 ```bash
-pip install mkdocs-topoviewer
+mkdir network-docs
+cd network-docs
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install mkdocs-topoviewer==0.5.0
+mkdocs new .
+mkdir -p docs/diagrams
 ```
 
-Enable the plugin:
+On Windows, create the environment with `python -m venv .venv` and activate it
+with `.venv\Scripts\activate` in Command Prompt. Create `docs\diagrams` before
+adding the files below.
+
+Replace `mkdocs.yml` with:
 
 ```yaml
+site_name: Network docs
 plugins:
   - search
   - topoviewer
 ```
 
-## Markdown Authoring
+Your site will contain these files:
+
+```text
+network-docs/
+  mkdocs.yml
+  docs/
+    index.md
+    diagrams/
+      topology.yaml
+      stylesheet.yaml
+```
+
+## Add The Diagram Files
+
+Save the following as `docs/diagrams/topology.yaml`. It is the same R01/R02
+example used in [First Topology](../../start/first-topology.md).
+
+<!-- docs-check: topology mkdocs-first -->
+```yaml
+--8<-- "docs/topoviewer/examples/graph/basic/topology.yaml"
+```
+
+Save the following as `docs/diagrams/stylesheet.yaml`:
+
+<!-- docs-check: stylesheet mkdocs-first -->
+```yaml
+--8<-- "docs/topoviewer/examples/graph/basic/stylesheet.yaml"
+```
+
+Replace `docs/index.md` with:
 
 ````markdown
+# Network
+
 ```topoviewer
-topology: ./topoviewer-topo.yaml
-stylesheet: ./topoviewer-style.yaml
-height: 640px
-title: MV network SR-TE service path
+topology: ./diagrams/topology.yaml
+stylesheet: ./diagrams/stylesheet.yaml
+height: 420px
+title: R01 to R02
 controls: true
-controlsOpen: false
-helperLines: true
-selectedLayerIds: [underlay]
 ```
 ````
 
-The fenced-block options are covered by `schemas/topoviewer-mkdocs-block.schema.json`. Keep the block small; detailed topology and styling belong in external YAML files.
+The file paths in a `topoviewer` fence are relative to the Markdown source
+file. For example, a page at `docs/guides/network.md` would use
+`../diagrams/topology.yaml` and `../diagrams/stylesheet.yaml`.
 
-Options:
+## Preview And Publish
+
+From `network-docs`, with the virtual environment active:
+
+```bash
+mkdocs serve
+```
+
+Open `http://127.0.0.1:8000/`. Expect two nodes labeled **R01** and **R02**,
+a link between them, and a layer control for **Physical**. R02 has the cyan
+style selected by its Cisco vendor label. Edit either YAML file and check the
+preview again.
+
+Build the static site before publishing:
+
+```bash
+mkdocs build --strict
+```
+
+Publish the generated `site/` directory with your usual static hosting process.
+The plugin copies the referenced documents and embed assets into the build.
+Test the page at its final URL, especially when the site is hosted under a
+subpath. If the diagram reports a load error, check the two source file paths
+and the browser's failed requests first.
+
+## Fenced-Block Options
+
+Keep graph objects and style rules in their YAML files. The fence configures
+one viewport:
 
 | Option | Use |
 |---|---|
-| `topology` | Required path to topology YAML, relative to the Markdown file. |
-| `stylesheet` | Optional path to stylesheet YAML, relative to the Markdown file. |
-| `height` | CSS height for the viewport. |
-| `width` | Optional CSS width. Defaults to the available content width. |
-| `title` | Optional caption/title. |
-| `controls` | Show layer/display controls. Defaults to `true`. |
-| `controlsOpen` | Open controls panel initially. Defaults to `false`. |
-| `helperLines` | Drag alignment helper lines are enabled by default in docs embeds and snap on drag stop. Use `false` to start with them off, `snap: false` for guide-only overlays, or `snapMode: live` for live snapping. Readers can toggle them from the viewport settings panel. |
-| `selectedLayerIds` | Initial checked layer IDs for this embed. Defaults to all graph layers. |
-| `attention` | Optional runtime attention override for this specific rendered viewport. |
+| `topology` | Required topology YAML path, relative to the Markdown file. |
+| `stylesheet` | Optional stylesheet YAML path, relative to the Markdown file. |
+| `height` | CSS viewport height, such as `420px`. |
+| `width` | CSS width; defaults to the available content width. |
+| `title` | Optional caption. |
+| `controls` | Show layer/display controls; defaults to `true`. |
+| `controlsOpen` | Open controls initially; defaults to `false`. |
+| `helperLines` | Drag alignment guides and snapping; enabled by default. Set `false` to disable, `{snap: false}` for guides only, or `{snapMode: live}` for live snapping. |
+| `selectedLayerIds` | Initial checked layer IDs; defaults to all graph layers. |
+| `attention` | Runtime attention override for this viewport. |
 
-## Attention Blocks
+For example, add `selectedLayerIds: [physical]` to the first fence to select
+the physical layer explicitly. An attention query must reference objects that
+exist in the topology:
 
-The topology file can include a top-level `attention:` block for its default view. The fenced block can also pass runtime attention state when this specific rendered view should override the topology default.
-
-Object focus:
-
-```yaml
-topology: ./topology.yaml
-stylesheet: ./stylesheet.yaml
+````markdown
+```topoviewer
+topology: ./diagrams/topology.yaml
+stylesheet: ./diagrams/stylesheet.yaml
+height: 420px
 attention:
   query:
-    pathIds: [critical-path]
+    ids: [R02]
     mode: dim-context
 ```
+````
 
-Change focus:
+See [Topology attention](../../author/attention.md) and the
+[attention examples](../attention/index.md) for paths, change focus, and
+collapsed regions. For a page outside MkDocs, use the
+[static HTML / Zensical adapter](static-html-zensical-adapter.md).
 
-```yaml
-topology: ./topology.yaml
-stylesheet: ./stylesheet.yaml
-attention:
-  query:
-    changes:
-      since: "2026-06-10T00:00:00Z"
-    mode: dim-context
-```
+## Repository Maintainers: Rebuild The Packaged Assets
 
-Collapsed region:
-
-```yaml
-topology: ./topology.yaml
-stylesheet: ./stylesheet.yaml
-attention:
-  aggregate:
-    groups:
-      - id: access-metro
-        by: region
-        regionId: access-metro
-        label: Access metro
-    expandOnClick: true
-```
-
-See [Topology attention](../../author/attention.md) for the complete attention block reference, [Authoring for attention](../../author/authoring-model.md#authoring-for-attention) for what to declare in topology YAML, and [Attention examples](../attention/index.md) for live examples with topology and stylesheet source.
-
-## Asset Sync
-
-From the repository root:
+This section applies when changing TopoViewer itself. A site installed from
+PyPI already has the assets it needs. Follow the repository
+[tooling prerequisites](../../maintainers/monorepo.md) before running these
+commands from the TopoViewer repository root:
 
 ```bash
 npm run build
 npm run sync:mkdocs
 ```
 
-This copies the built embed files into the sibling Python package:
+The embed files are copied to
+`packages/mkdocs-topoviewer/mkdocs_topoviewer/assets/`. To refresh only those
+files, run `npm run sync:mkdocs-assets`. To regenerate this project's public
+documentation from `packages/topoviewer/content/`, run `npm run sync:docs`.
 
-```text
-../mkdocs-topoviewer/mkdocs_topoviewer/assets/
-```
-
-It also syncs canonical feature examples from `packages/topoviewer/content/examples/` into the configured MkDocs docs tree. The default target is this repository's `docs/` tree. Override it with `--docs-root` or `TOPOVIEWER_DOCS_ROOT` when syncing into another MkDocs workspace:
-
-```text
-TOPOVIEWER_DOCS_ROOT=../my-mkdocs-site/docs npm run sync:mkdocs
-```
-
-Use `--docs-root` when generating docs somewhere else:
+The example projection script can also target a separate docs tree:
 
 ```bash
-node scripts/sync-examples.mjs --docs-root ./docs
+node packages/topoviewer/scripts/sync-examples.mjs --docs-root /path/to/site/docs
 ```
 
-Run `npm run sync:mkdocs-assets` when only the embed bundle changed, or `npm run sync:docs` when content pages, example YAML, README prose, internal expected assertions, or generated docs pages changed. Run `npm run check:examples` in CI to verify the generated docs files have not drifted from `packages/topoviewer/content/**`. The internal `expected.yaml` files stay in the package example projection and are not published as MkDocs or Zensical page tabs.
-
-## MkDocs Plugin Behavior
-
-The plugin:
-
-- Rewrites fenced `topoviewer` blocks into `<div class="topoviewer-embed topoviewer-parity-theme">` containers.
-- Resolves topology and stylesheet files relative to the Markdown page.
-- Injects the embed CSS and JavaScript.
-- Uses the canonical TopoViewer viewport theme so rendered diagrams match the TopoViewer Studio, MkDocs, and Zensical surfaces.
-
-If the topology or stylesheet YAML cannot be loaded, the embed renders a visible error block instead of failing silently.
-
-## Direct HTML Embed
-
-For non-MkDocs pages, include the bundle and add a container:
-
-```html
-<link rel="stylesheet" href="/assets/topoviewer/topoviewer-embed.css">
-<script defer src="/assets/topoviewer/topoviewer-embed.iife.js"></script>
-
-<div
-  class="topoviewer-embed topoviewer-parity-theme"
-  data-topology="/diagrams/topology.yaml"
-  data-stylesheet="/diagrams/stylesheet.yaml"
-  data-controls="true"
-  style="height: 640px"
-></div>
-```
-
-The bundle mounts all `.topoviewer-embed` containers on page load. If content is injected after page load, call:
-
-```js
-window.TopoViewerEmbed.mountAll();
-```
+This writes TopoViewer's example catalog into that tree; it is not needed to
+embed your own YAML. `TOPOVIEWER_DOCS_ROOT` is the equivalent environment
+override. Use `npm run check:content` and `npm run check:examples` to check
+repository projection drift.

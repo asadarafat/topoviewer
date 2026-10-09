@@ -1,25 +1,20 @@
 # Shapes
 
-These examples document the shapes behaviors from the canonical TopoViewer test-case catalog. Each section is generated from one test case and keeps the live viewport, topology YAML, and stylesheet YAML together.
+Explore shapes behavior with a live diagram and its two source files. Each example includes an edit to try in your own copy.
 
 ## Two-dimensional shapes
-
-### What This Demonstrates
 
 2D shapes are annotation primitives. They remain separate from graph nodes, while topology labels provide stable selector facts and the stylesheet owns visual geometry and dimensions.
 
 ### Expected Result
 
-The live viewport should render "Two-dimensional shapes" without blocking diagnostics. It should show: 2D geometry primitives are diagram objects, not graph facts. The test metadata expects `shapes`: `14`.
+2D geometry primitives are diagram objects, not graph facts.
 
-### What To Inspect
+### Try It
 
-- Inspect `diagram.shapes` and confirm they are visual explanation objects, not graph facts.
-- Check shape geometry, fill, stroke, z-index, and label behavior.
-
-### Use When
-
-Use this pattern when adding visual explanation objects around a graph.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `shape`.
+2. Change its `borderWidth` from `2` to `4`, then reload your page. Compare the stroke thickness of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 
@@ -46,22 +41,17 @@ Use this pattern when adding visual explanation objects around a graph.
 
 ## Three-dimensional shapes
 
-### What This Demonstrates
-
 3D shapes cover the common diagram metaphors: cube, cuboid, sphere, cone, cylinder, pyramid, and prism. Topology labels classify each primitive and stylesheet selectors own its geometry and dimensions. Use callouts when text needs to sit near them.
 
 ### Expected Result
 
-The live viewport should render "Three-dimensional shapes" without blocking diagnostics. It should show: 3D geometry primitives are available for common diagram metaphors. The test metadata expects `shapes`: `7`.
+3D geometry primitives are available for common diagram metaphors.
 
-### What To Inspect
+### Try It
 
-- Inspect `diagram.shapes` and confirm they are visual explanation objects, not graph facts.
-- Check shape geometry, fill, stroke, z-index, and label behavior.
-
-### Use When
-
-Use this pattern when adding visual explanation objects around a graph.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `shape`.
+2. Change its `borderWidth` from `2` to `4`, then reload your page. Compare the stroke thickness of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 
@@ -88,22 +78,17 @@ Use this pattern when adding visual explanation objects around a graph.
 
 ## Shape rotation
 
-### What This Demonstrates
-
 Shape geometry, dimensions, and rotation are stylesheet policy. The topology keeps stable shape identity, position, layers, and selector labels; text remains a separate annotation concern.
 
 ### Expected Result
 
-The live viewport should render "Shape rotation" without blocking diagnostics. It should show: Shape geometry can be rotated directly or through a stylesheet rule. The test metadata expects `shapes`: `3`.
+Shape geometry can be rotated directly or through a stylesheet rule.
 
-### What To Inspect
+### Try It
 
-- Inspect `diagram.shapes` and confirm they are visual explanation objects, not graph facts.
-- Check shape geometry, fill, stroke, z-index, and label behavior.
-
-### Use When
-
-Use this pattern when adding visual explanation objects around a graph.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `shape`.
+2. Change its `borderWidth` from `2` to `4`, then reload your page. Compare the stroke thickness of objects matching that selector; their IDs and relationships should stay unchanged.
+3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
 

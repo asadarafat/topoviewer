@@ -1,25 +1,21 @@
 # Layout
 
-These examples document the layout behaviors from the canonical TopoViewer test-case catalog. Each section is generated from one test case and keeps the live viewport, topology YAML, and stylesheet YAML together.
+Explore layout behavior with a live diagram and its two source files. Each example includes an edit to try in your own copy.
 
 ## Manual layout
-
-### What This Demonstrates
 
 Manual layout means the author supplies coordinates. This is the right mode for diagrams where placement carries meaning.
 
 ### Expected Result
 
-The live viewport should render "Manual layout" without blocking diagnostics. It should show: Manual layout preserves authored positions. The test metadata expects `graphNodes`: `3`, `minVisibleEdges`: `2`.
+Manual layout preserves authored positions.
 
-### What To Inspect
+### Try It
 
-- Inspect `layout` options and node positions.
-- Check whether positions are authored manually, inferred, or preserved by layout settings.
-
-### Use When
-
-Use this pattern when positions should be repeatable, inferred, or constrained by topology structure.
+1. Copy the two YAML tabs into your own project.
+2. In topology.yaml, change node `A`'s `position` from `[120,140]` to `[120,240]`.
+3. Reload. That node moves down relative to the other authored positions, and its connected links follow it.
+4. Restore the original settings and reload to compare with the starting view.
 
 === "Live Viewport"
 
@@ -46,22 +42,18 @@ Use this pattern when positions should be repeatable, inferred, or constrained b
 
 ## Force layout
 
-### What This Demonstrates
-
 Force layout is auto-layout assistance. It is useful when topology data exists but the author does not want to maintain coordinates by hand.
 
 ### Expected Result
 
-The live viewport should render "Force layout" without blocking diagnostics. It should show: Force layout computes positions when the author omits coordinates. The test metadata expects `graphNodes`: `5`, `minVisibleEdges`: `5`.
+Force layout computes positions when the author omits coordinates.
 
-### What To Inspect
+### Try It
 
-- Inspect `layout` options and node positions.
-- Check whether positions are authored manually, inferred, or preserved by layout settings.
-
-### Use When
-
-Use this pattern when positions should be repeatable, inferred, or constrained by topology structure.
+1. Copy the two YAML tabs into your own project.
+2. In stylesheet.yaml, change `layout.linkDistance` from `130` to `210`.
+3. Reload and compare the recomputed node spacing. Reload once more without another edit: the same input should produce the same layout.
+4. Restore the original settings and reload to compare with the starting view.
 
 === "Live Viewport"
 
@@ -88,8 +80,6 @@ Use this pattern when positions should be repeatable, inferred, or constrained b
 
 ## CLOS layout
 
-### What This Demonstrates
-
 CLOS layout infers staged placement from graph structure.
 
 This example intentionally uses generic node names and directed links:
@@ -104,16 +94,14 @@ operator-approved, use `manual`.
 
 ### Expected Result
 
-The live viewport should render "CLOS layout" without blocking diagnostics. It should show: CLOS layout infers staged placement from graph structure. The test metadata expects `graphNodes`: `6`, `minVisibleEdges`: `8`.
+CLOS layout infers staged placement from graph structure.
 
-### What To Inspect
+### Try It
 
-- Inspect `layout` options and node positions.
-- Check whether positions are authored manually, inferred, or preserved by layout settings.
-
-### Use When
-
-Use this pattern when positions should be repeatable, inferred, or constrained by topology structure.
+1. Copy the two YAML tabs into your own project.
+2. In stylesheet.yaml, change `layout.clos.direction` from `topToBottom` to `leftToRight`.
+3. Reload. The stages or hierarchy turn to the new orientation while node IDs and link endpoints stay the same.
+4. Restore the original settings and reload to compare with the starting view.
 
 === "Live Viewport"
 
@@ -140,8 +128,6 @@ Use this pattern when positions should be repeatable, inferred, or constrained b
 
 ## Tree layout
 
-### What This Demonstrates
-
 Tree layout arranges a directed hierarchy into deterministic levels without
 requiring authored positions.
 
@@ -158,16 +144,14 @@ reviewed artifact.
 
 ### Expected Result
 
-The live viewport should render "Tree layout" without blocking diagnostics. It should show: Tree layout computes deterministic levels for directed hierarchies and disconnected components. The test metadata expects `graphNodes`: `6`, `minVisibleEdges`: `4`.
+Tree layout computes deterministic levels for directed hierarchies and disconnected components.
 
-### What To Inspect
+### Try It
 
-- Inspect `layout` options and node positions.
-- Check whether positions are authored manually, inferred, or preserved by layout settings.
-
-### Use When
-
-Use this pattern when positions should be repeatable, inferred, or constrained by topology structure.
+1. Copy the two YAML tabs into your own project.
+2. In stylesheet.yaml, change `layout.tree.direction` from `leftToRight` to `topToBottom`.
+3. Reload. The stages or hierarchy turn to the new orientation while node IDs and link endpoints stay the same.
+4. Restore the original settings and reload to compare with the starting view.
 
 === "Live Viewport"
 

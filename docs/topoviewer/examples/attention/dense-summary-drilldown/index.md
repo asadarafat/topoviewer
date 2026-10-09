@@ -5,22 +5,18 @@ hide:
 
 # Dense summary drill-down
 
-## What This Demonstrates
-
 Dense summary drill-down keeps a busy topology useful without making zoom decide what the operator meant. The overview shows one summary per metro, including hidden node count, link count, and worst severity. The PE full mesh between metros is represented as counted aggregate links instead of a pile of individual transport links. Click a metro summary to inspect that region while the rest of the topology stays compressed; drag the expanded region hull to reposition its members, or click the hull to collapse it again.
 
 ## Expected Result
 
-The live viewport should render "Dense summary drill-down" without blocking diagnostics. It should show: Keep dense metro topologies readable with summary nodes, counted full-mesh links, and explicit click-to-expand drill-down. The test metadata expects `graphNodes`: `3`, `minVisibleEdges`: `3`, `minRegions`: `0`.
+Keep dense metro topologies readable with summary nodes, counted full-mesh links, and explicit click-to-expand drill-down.
 
-## What To Inspect
+## Try It
 
-- Review the attention state in the live viewport and compare it with the optional Attention YAML tab.
-- Check which objects stay prominent and which objects are dimmed, collapsed, or summarized.
-
-## Use When
-
-Use this pattern when a dense graph needs focus, dimming, aggregation, or label-priority behavior.
+1. Copy the two YAML tabs into your own project.
+2. In topology.yaml, add `expandedGroupIds: [north-metro]` under `attention.aggregate`, alongside `groups`.
+3. Reload. `NORTH metro` starts expanded into its member nodes; other configured groups remain collapsed. This sets the initial view without a click.
+4. Restore the original settings and reload to compare with the starting view.
 
 === "Live Viewport"
 
