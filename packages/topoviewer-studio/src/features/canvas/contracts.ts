@@ -12,7 +12,7 @@ import type {
   TopoViewerSelectionChange
 } from 'topoviewer/authoring';
 import type { StudioSelection, StudioSessionSnapshot } from '../../contracts/project';
-import type { StudioStylesheetCandidateController } from '../../session';
+import type { StudioSourceDraftController, StudioStylesheetCandidateController } from '../../session';
 import type { StudioEdgeAuthoringTemplateId, StudioPaletteTemplateId } from '../palette/types';
 import type { StudioViewportPreferences } from '../viewport/types';
 import type { StudioPreviewMode } from '../workspace/workbenchLayout';
@@ -32,6 +32,7 @@ export interface StudioCanvasModel {
   readonly interactionMode: StudioPreviewMode;
   readonly presentationMode: boolean;
   readonly snapshot: StudioSessionSnapshot;
+  readonly sourceDrafts: StudioSourceDraftController;
   readonly stylesheetCandidate: StudioStylesheetCandidateController;
   readonly viewportInsets: {
     readonly left: number;

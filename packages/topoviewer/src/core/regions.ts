@@ -105,20 +105,57 @@ function regionMemberHeight(node: RegionMemberNode, fallback: number): number {
   return numberOrDefault(node.regionBoundsHeight, fallback);
 }
 
-function regionDepth(region: GraphRegion, regionById: Map<string, GraphRegion>): number {
-  let depth = 0;
-  let current: GraphRegion | undefined = region;
-  const seen = new Set<string>();
+/** Both parent references and region-valued members describe containment. */
+export function regionChildrenById(regions: readonly GraphRegion[]): Map<string, string[]> {
+  const children = new Map(regions.map((region) => [region.id, new Set<string>()]));
+  regions.forEach((region) => {
+    if (region.parent) children.get(region.parent)?.add(region.id);
+    (region.members || []).forEach((memberId) => {
+      if (children.has(memberId)) children.get(region.id)?.add(memberId);
+    });
+  });
+  return new Map([...children].map(([id, ids]) => [id, [...ids]]));
+}
 
-  while (current?.parent && !seen.has(current.parent)) {
-    seen.add(current.parent);
-    const parent = regionById.get(current.parent);
-    if (!parent) break;
-    depth += 1;
-    current = parent;
+function regionTraversal(children: ReadonlyMap<string, readonly string[]>): { order: string[]; cycle?: string[] } {
+  const complete = new Set<string>();
+  const order: string[] = [];
+  for (const rootId of children.keys()) {
+    if (complete.has(rootId)) continue;
+    const active = new Map<string, number>([[rootId, 0]]);
+    const stack = [{ id: rootId, next: 0 }];
+    while (stack.length) {
+      const current = stack[stack.length - 1];
+      const childIds = children.get(current.id) || [];
+      if (current.next < childIds.length) {
+        const childId = childIds[current.next++];
+        const cycleStart = active.get(childId);
+        if (cycleStart !== undefined) {
+          return { order, cycle: [...stack.slice(cycleStart).map((entry) => entry.id), childId] };
+        }
+        if (!complete.has(childId)) {
+          active.set(childId, stack.length);
+          stack.push({ id: childId, next: 0 });
+        }
+      } else {
+        active.delete(current.id);
+        complete.add(current.id);
+        order.push(current.id);
+        stack.pop();
+      }
+    }
   }
+  return { order };
+}
 
-  return depth;
+export function regionContainmentCycle(regions: readonly GraphRegion[]): string[] | undefined {
+  return regionTraversal(regionChildrenById(regions)).cycle;
+}
+
+export function regionContainmentOrder(children: ReadonlyMap<string, readonly string[]>): string[] {
+  const result = regionTraversal(children);
+  if (result.cycle) throw new Error(`Region containment cycle: ${result.cycle.join(' -> ')}.`);
+  return result.order;
 }
 
 export function resolveExplicitRegionBounds(region: GraphRegion, style: RegionBoundsStyle = {}): Bounds | null {
@@ -137,7 +174,7 @@ export function resolveExplicitRegionBounds(region: GraphRegion, style: RegionBo
 function regionBounds(
   region: GraphRegion,
   nodeById: Map<string, RegionMemberNode>,
-  regions: GraphRegion[],
+  hasChildRegions: boolean,
   style: RegionBoundsStyle
 ): Bounds | null {
   const explicitBounds = resolveExplicitRegionBounds(region, style);
@@ -148,10 +185,7 @@ function regionBounds(
 
   if (!nodes.length) return null;
 
-  const policy = resolveRegionBoundsPolicy(
-    style,
-    regions.some((candidate) => candidate.parent === region.id)
-  );
+  const policy = resolveRegionBoundsPolicy(style, hasChildRegions);
   const points = nodes.map((node) => normalizePosition(node.position));
   const xs = points.map((point) => point.x);
   const ys = points.map((point) => point.y);
@@ -176,31 +210,29 @@ function regionBounds(
 
 export function buildRegionBoundsMap(
   regions: GraphRegion[],
-  selectedLayerIds: Set<string>,
+  selectedLayerIds: Set<string> | undefined,
   nodeById: Map<string, RegionMemberNode>,
   styleByRegionId: ReadonlyMap<string, RegionBoundsStyle> = new Map()
 ): Map<string, Bounds> {
-  const visibleRegions = regions.filter((region) => (region.layers || []).some((layerId) => selectedLayerIds.has(layerId)));
+  const visibleRegions = selectedLayerIds
+    ? regions.filter((region) => (region.layers || []).some((layerId) => selectedLayerIds.has(layerId)))
+    : regions;
   const regionById = new Map(visibleRegions.map((region) => [region.id, region]));
-  const childrenByParentId = visibleRegions.reduce((children, region) => {
-    if (!region.parent) return children;
-    const current = children.get(region.parent) || [];
-    current.push(region.id);
-    children.set(region.parent, current);
-    return children;
-  }, new Map<string, string[]>());
+  const childrenByParentId = regionChildrenById(visibleRegions);
   const boundsById = new Map<string, Bounds>();
-  const deepestFirst = [...visibleRegions].sort((a, b) => regionDepth(b, regionById) - regionDepth(a, regionById));
+  const deepestFirst = regionContainmentOrder(childrenByParentId);
 
-  deepestFirst.forEach((region) => {
+  deepestFirst.forEach((regionId) => {
+    const region = regionById.get(regionId)!;
     const style = styleByRegionId.get(region.id) || {};
     const explicitBounds = resolveExplicitRegionBounds(region, style);
     if (explicitBounds) {
       boundsById.set(region.id, explicitBounds);
       return;
     }
-    const ownBounds = regionBounds(region, nodeById, regions, style);
-    const childBounds = (childrenByParentId.get(region.id) || []).map((childId) => boundsById.get(childId));
+    const childIds = childrenByParentId.get(region.id) || [];
+    const ownBounds = regionBounds(region, nodeById, childIds.length > 0, style);
+    const childBounds = childIds.map((childId) => boundsById.get(childId));
     const mergedBounds = unionBounds([ownBounds, ...childBounds]);
     if (!mergedBounds) return;
     const policy = resolveRegionBoundsPolicy(style, childBounds.some(Boolean));

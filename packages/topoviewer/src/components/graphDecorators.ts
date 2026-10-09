@@ -189,6 +189,16 @@ function resizableObjectKind(compiledNode: Record<string, unknown>): 'node' | 'r
   return String(compiledNode.type || '') === 'network' ? 'node' : undefined;
 }
 
+export function withRuntimeNodeDragging(
+  nodes: CompiledGraph['nodes'],
+  nodesDraggable: boolean | undefined
+): CompiledGraph['nodes'] {
+  // React Flow's node.draggable overrides its global nodesDraggable option.
+  return nodesDraggable === false
+    ? nodes.map((node) => node.draggable === false ? node : { ...node, draggable: false })
+    : nodes;
+}
+
 export function withRuntimeResizeHandlers(
   nodes: CompiledGraph['nodes'],
   nodesResizable: boolean | undefined,

@@ -1,8 +1,64 @@
 import { describe, expect, it } from 'vitest';
 import { buildAttentionIndex, deriveAggregateGraph, type TopoDocument } from '../../src';
 import { attentionFixture } from './attention-fixture';
+import { compileTopoGraph } from '../../src/core/compiler';
 
 describe('deriveAggregateGraph', () => {
+  it('preserves distinct link layer memberships and counts when collapsing nodes', () => {
+    const document: TopoDocument = {
+      layout: { mode: 'manual' },
+      graph: {
+        layers: [{ id: 'physical' }, { id: 'service' }],
+        nodes: ['a', 'b', 'c'].map((id, index) => ({ id, layers: ['physical', 'service'], position: [index * 100, 0] })),
+        regions: [{ id: 'site', members: ['a', 'b'], layers: ['physical', 'service'] }],
+        links: [
+          { id: 'physical-a', source: 'a', target: 'c', layers: ['physical'] },
+          { id: 'service-a', source: 'a', target: 'c', layers: ['service'] },
+          { id: 'physical-b', source: 'b', target: 'c', layers: ['physical'] },
+          { id: 'shared-a', source: 'a', target: 'c', layers: ['physical', 'service'] },
+          { id: 'shared-b', source: 'b', target: 'c', layers: ['service', 'physical'] },
+          { id: 'unlayered', source: 'b', target: 'c', layers: [] }
+        ]
+      }
+    };
+    const options = { groups: [{ id: 'site', by: 'region' as const, regionId: 'site' }] };
+    const result = deriveAggregateGraph(document, buildAttentionIndex(document), options).document;
+    const links = result.graph!.links!;
+    expect(links).toHaveLength(4);
+    expect(new Set(links.map((link) => link.id)).size).toBe(4);
+    expect(links.map((link) => ({ layers: link.layers, members: link.data?.members }))).toEqual([
+      { layers: ['physical'], members: ['physical-a', 'physical-b'] },
+      { layers: ['service'], members: ['service-a'] },
+      { layers: ['physical', 'service'], members: ['shared-a', 'shared-b'] },
+      { layers: [], members: ['unlayered'] }
+    ]);
+    expect(compileTopoGraph(result, ['service']).edges.map((edge) => edge.data?.members)).toEqual([
+      ['service-a'], ['shared-a', 'shared-b']
+    ]);
+    expect(compileTopoGraph(result, ['physical']).edges.map((edge) => edge.data?.members)).toEqual([
+      ['physical-a', 'physical-b'], ['shared-a', 'shared-b']
+    ]);
+    const reversed = { ...document, graph: { ...document.graph, links: [...document.graph!.links!].reverse() } };
+    expect(deriveAggregateGraph(reversed, buildAttentionIndex(reversed), options).document.graph!.links!.map((link) => link.id).sort())
+      .toEqual(links.map((link) => link.id).sort());
+  });
+
+  it('retains all layers when parallel grouping explicitly combines layers', () => {
+    const document: TopoDocument = {
+      graph: {
+        nodes: [{ id: 'a' }, { id: 'b' }],
+        links: [
+          { id: 'physical', source: 'a', target: 'b', layers: ['physical'] },
+          { id: 'service', source: 'a', target: 'b', layers: ['service'] }
+        ]
+      }
+    };
+    const result = deriveAggregateGraph(document, buildAttentionIndex(document), { groups: [], linkGrouping: { by: ['endpoints'] } });
+    expect(result.document.graph?.links).toEqual([expect.objectContaining({
+      layers: ['physical', 'service'], data: expect.objectContaining({ count: 2, members: ['physical', 'service'] })
+    })]);
+  });
+
   it('collapses region members into an aggregate node without mutating the source document', () => {
     const document = attentionFixture();
     const before = JSON.stringify(document);

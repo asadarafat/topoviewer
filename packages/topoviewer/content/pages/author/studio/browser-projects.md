@@ -40,6 +40,10 @@ deterministic `.tvstudio` archive containing source, metadata, and local assets.
 **Open archive** validates all entries before creating a project. Duplicate
 project IDs receive a new browser ID.
 
+Highly compressible files are stored uncompressed inside the archive when needed
+to satisfy the import expansion-ratio limit. Source text, including a UTF-8 BOM,
+round-trips unchanged. Size limits include the manifest as well as project files.
+
 Browsers with the File System Access API may expose **Open folder**. Studio asks
 for explicit read/write permission and keeps access inside the selected
 directory. The folder handle is stored in IndexedDB and restored after reload;

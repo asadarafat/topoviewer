@@ -724,17 +724,7 @@ func (s *ProjectService) stageWrites(root string, writes []CommitWrite) ([]*stag
 			return nil, NewServiceError(ErrorPermissionDenied, "Studio cannot stage a project file.", true, nil)
 		}
 		entry.stage = stage.Name()
-		if err := stage.Chmod(entry.mode); err == nil {
-			_, err = stage.Write(write.Bytes)
-		}
-		if err == nil {
-			err = stage.Sync()
-		}
-		closeErr := stage.Close()
-		if err == nil {
-			err = closeErr
-		}
-		if err != nil {
+		if err := WriteAndCloseStagedFile(stage, entry.mode, write.Bytes); err != nil {
 			s.cleanupWrites(append(staged, entry))
 			return nil, NewServiceError(ErrorPermissionDenied, "Studio cannot flush a staged project file.", true, nil)
 		}
@@ -1080,17 +1070,7 @@ func (s *ProjectService) writePrivateFile(group, name string, value []byte) erro
 	}
 	stageName := staged.Name()
 	defer os.Remove(stageName)
-	if err := staged.Chmod(0o600); err == nil {
-		_, err = staged.Write(value)
-	}
-	if err == nil {
-		err = staged.Sync()
-	}
-	closeErr := staged.Close()
-	if err == nil {
-		err = closeErr
-	}
-	if err != nil {
+	if err := WriteAndCloseStagedFile(staged, 0o600, value); err != nil {
 		return NewServiceError(ErrorPermissionDenied, "Studio cannot flush private application state.", true, nil)
 	}
 	if err := os.Rename(stageName, filepath.Join(directory, name)); err != nil {

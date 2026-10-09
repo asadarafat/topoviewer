@@ -234,11 +234,14 @@ Default limits are intentionally conservative:
 | Limit | Default |
 |---|---:|
 | Nodes | 1200 |
+| Regions | 250 |
+| Pins, including absolute connector/callout anchors | 1200 |
 | Edges | 2400 |
 | Path segments | 1600 |
 | Labels | 2000 |
 | Callouts | 250 |
 | Shapes | 500 |
+| Text objects | 500 |
 | Embedded image bytes | 750000 |
 
 Override only when the target environment is known:
@@ -249,6 +252,13 @@ limits:
   maxEdges: 4000
   maxPathSegments: 2400
 ```
+
+`maxNodes` counts graph nodes. `maxRegions` and `maxPins` separately bound the
+extra React Flow nodes created for regions and anchors. Path limits include all
+segments inherited by child paths. Hosts accepting imported documents should
+apply their own fixed ceilings before compilation; document-authored limits are
+configuration, not a security boundary. Force simulation iterations are always
+bounded to 1–1000, including trusted runtime overrides.
 
 If a use case has thousands of repeated services, model them as aggregate objects with `data.serviceCount`; do not render thousands of individual lanes by default.
 

@@ -54,6 +54,21 @@ function setValueCommand(id: string, path: Array<string | number>, value: unknow
 }
 
 describe('Studio command dispatcher', () => {
+  it('retains undo for projects whose assets are larger than the history budget', () => {
+    const withAsset = project();
+    withAsset.assets = [{ path: 'assets/large.png', mediaType: 'image/png', size: 5 * 1024 * 1024, contentHash: 'large-image' }];
+    const session = createStudioDocumentSession(withAsset);
+    const dispatcher = createStudioCommandDispatcher(session);
+    dispatcher.dispatch(setValueCommand('move-a', ['graph', 'nodes', 0, 'position', 0], 220));
+    expect(dispatcher.canUndo()).toBe(true);
+    expect(dispatcher.historyState().estimatedBytes).toBeLessThan(10_000);
+    dispatcher.undo();
+    expect(session.snapshot().project.documents.topology.text).toBe(topology);
+    expect(session.snapshot().project.assets).toEqual(withAsset.assets);
+    dispatcher.redo();
+    expect(session.snapshot().projection.document.graph?.nodes?.[0].position).toEqual([220, 100]);
+  });
+
   it('executes, reports source changes, and restores selection through undo and redo', () => {
     const session = createStudioDocumentSession(project());
     const dispatcher = createStudioCommandDispatcher(session, { clock: () => '2026-07-09T00:00:00.000Z' });
@@ -77,7 +92,7 @@ describe('Studio command dispatcher', () => {
     expect(session.snapshot().selection).toEqual([{ id: 'A', kind: 'node' }]);
   });
 
-  it('preserves an invalid draft until source explicitly replaces or removes it', () => {
+  it('preserves an invalid draft until source is explicitly applied', () => {
     const session = createStudioDocumentSession(project());
     const dispatcher = createStudioCommandDispatcher(session);
     const invalidText = 'graph:\n  nodes: [';
@@ -96,6 +111,7 @@ describe('Studio command dispatcher', () => {
     expect(session.snapshot().project.documents.topology.text).toBe(topology);
 
     dispatcher.dispatch({
+      appliesSourceDraft: 'topology',
       id: 'correct-topology-source',
       label: 'Correct topology source',
       execute: () => ({
@@ -109,6 +125,11 @@ describe('Studio command dispatcher', () => {
         summary: 'Corrected topology source'
       })
     });
+    expect(session.snapshot().invalidDrafts.topology).toBeUndefined();
+    expect(session.snapshot().project.documents.topology.text).toContain('Source rename');
+    dispatcher.undo();
+    expect(session.snapshot().invalidDrafts.topology?.text).toBe(invalidText);
+    dispatcher.redo();
     expect(session.snapshot().invalidDrafts.topology).toBeUndefined();
     expect(session.snapshot().project.documents.topology.text).toContain('Source rename');
   });

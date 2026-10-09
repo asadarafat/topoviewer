@@ -34,6 +34,13 @@ stylesheet candidate controller owns unapplied stylesheet text. Applying or
 reverting transfers or clears ownership explicitly, and recovery serializes
 each owner without making the editor component a document store.
 
+Unapplied topology and mapper drafts block other commands and history actions
+that would change the same document. Explicit Apply may replace its own draft;
+an atomic rename still respects drafts in other affected documents. Canvas
+authoring pauses while topology source is pending or invalid, subscribing only
+to the draft's presence so further keystrokes do not rebuild the canvas. Every
+export entry point rejects pending or invalid topology and mapper source.
+
 ## ADR-003: Lossless Source Editing
 
 YAML syntax trees and source ranges are authoritative for structured edits.
@@ -46,6 +53,8 @@ Unknown fields and unsupported future extensions are retained.
 Every source mutation is an explicit command. Pointer-time state remains in the
 renderer interaction path. A completed gesture commits one command, validation,
 persistence request, and history entry. Multi-document operations are atomic.
+History budgets count source text and asset metadata; asset binaries remain
+owned by the host and are not retained by command snapshots.
 
 ## ADR-005: Pure Authoring Metadata
 

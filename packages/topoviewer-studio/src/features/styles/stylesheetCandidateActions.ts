@@ -359,7 +359,7 @@ export function createStudioCandidateStyleActions({ announce, candidate, execute
       if (identityChange.status === 'rename') {
         try {
           const rename = createStudioCanonicalRenameCommand(session, identityChange.selection, identityChange.nextId, text);
-          const applied = execute(rename.command, 'rebase');
+          const applied = execute({ ...rename.command, appliesSourceDraft: 'topology' }, 'rebase');
           if (applied) {
             announce(
               rename.risks.length
@@ -388,6 +388,7 @@ export function createStudioCandidateStyleActions({ announce, candidate, execute
     }
     session.discardInvalidDraft(document);
     return execute({
+      appliesSourceDraft: document,
       id: `apply-${document}-source`,
       label: `Apply ${document} YAML`,
       execute: () => ({

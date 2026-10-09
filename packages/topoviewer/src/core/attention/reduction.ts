@@ -169,7 +169,10 @@ function remapLinks(links: readonly GraphLink[], memberToAggregate: Map<string, 
     if (source === target) return;
 
     if (source !== link.source || target !== link.target) {
-      const key = `${source}->${target}`;
+      // Layer membership is part of a link's visibility, even after its nodes
+      // collapse. Keep distinct layer sets separate and ignore their order.
+      const layers = [...new Set(link.layers || [])].sort();
+      const key = JSON.stringify([source, target, layers]);
       const current = aggregateLinks.get(key);
       if (current) {
         const count = Number(current.data.count || 1) + 1;
@@ -179,11 +182,11 @@ function remapLinks(links: readonly GraphLink[], memberToAggregate: Map<string, 
         return;
       }
       const aggregateLink = {
-        id: `aggregate-link:${source}:${target}`,
+        id: `aggregate-link:${encodeURIComponent(key)}`,
         source,
         target,
         labels: { aggregate: 'true' as Scalar, name: countLabel(1, 'link') },
-        layers: link.layers ? [...link.layers] : ['physical'],
+        layers,
         data: {
           isAggregate: true,
           count: 1,
@@ -234,7 +237,7 @@ function createLinkAggregateLink(
   keys: readonly LinkGroupingKey[]
 ): GraphLink {
   const first = entries[0];
-  const layers = linkLayers(first);
+  const layers = [...uniqueIds(entries.flatMap((entry) => linkLayers(entry)))];
   return {
     id: `aggregate-link-group:${id}`,
     source: first.source,

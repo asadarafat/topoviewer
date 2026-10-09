@@ -140,6 +140,10 @@ A stitched child path renders as:
 A `region` is membership and scope: AS, IGP area, site, rack, cloud region, tenant, failure domain, or ownership boundary.
 
 `members` can contain node IDs and region IDs. `parent` creates region hierarchy.
+Both forms of nesting contribute child bounds to the enclosing hull and move
+descendant regions and member nodes together. Repeating the same containment
+through both fields does not duplicate movement. Containment must be acyclic;
+lint reports cycles and rendering or region movement rejects them.
 
 | Field | Values | Use |
 |---|---|---|
@@ -238,7 +242,7 @@ Common layout fields:
 |---|---|---|
 | `mode` | `manual`, `force`, `clos`, `tree` | Selects the layout engine. |
 | `width`, `height` | number | Viewport coordinate space used by layout and examples. |
-| `iterations` | number | Force layout iteration count. |
+| `iterations` | integer, 1–1000 | Force layout iteration count; defaults to 180. |
 | `linkDistance` | number | Force layout preferred edge length. |
 | `chargeStrength` | number | Force layout repulsion strength. |
 | `collideRadius` | number | Force layout collision radius. |
@@ -329,11 +333,14 @@ Renderer limits fail early before a diagram becomes unsafe or unusable.
 | Field | Values | Use |
 |---|---|---|
 | `maxNodes` | number | Maximum graph nodes. |
+| `maxRegions` | number | Maximum regions; default 250. |
+| `maxPins` | number | Maximum declared pins and absolute connector/callout anchors; default 1200. |
 | `maxEdges` | number | Maximum rendered links/path segments. |
-| `maxPathSegments` | number | Maximum path segments. |
+| `maxPathSegments` | number | Maximum expanded path segments, including segments inherited by child paths. |
 | `maxLabels` | number | Maximum rendered labels. |
 | `maxCallouts` | number | Maximum diagram callouts. |
 | `maxShapes` | number | Maximum diagram shapes. |
+| `maxTexts` | number | Maximum diagram text objects. |
 | `maxImageBytes` | number | Maximum embedded image/SVG payload size. |
 
 ## Icons

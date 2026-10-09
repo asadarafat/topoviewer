@@ -138,11 +138,15 @@ function CanvasSurfaceComponent({ actions, model }: CanvasSurfaceProps) {
     interactionMode,
     presentationMode,
     snapshot: appliedSnapshot,
+    sourceDrafts,
     stylesheetCandidate,
     viewportInsets,
     viewportPreferences
   } = model;
-  const editable = !presentationMode && interactionMode === 'edit';
+  const hasTopologySourceDraft = useCallback(() => sourceDrafts.getSnapshot().drafts.topology !== undefined, [sourceDrafts]);
+  const topologySourceDraftOpen = useSyncExternalStore(sourceDrafts.subscribe, hasTopologySourceDraft, hasTopologySourceDraft);
+  const topologyDraftOpen = topologySourceDraftOpen || Boolean(appliedSnapshot.invalidDrafts.topology);
+  const editable = !presentationMode && interactionMode === 'edit' && !topologyDraftOpen;
   const studioPalette = theme.vars?.palette ?? theme.palette;
   const themeBackgroundColor = studioPalette.background.default;
   const themeGridColor = studioPalette.divider;
@@ -181,6 +185,7 @@ function CanvasSurfaceComponent({ actions, model }: CanvasSurfaceProps) {
   const viewportRef = useRef({ x: 0, y: 0, zoom: 1 });
   const reportedZoomRef = useRef(100);
   const [fitViewRequestId, setFitViewRequestId] = useState(0);
+  const [rendererResetRevision, setRendererResetRevision] = useState(0);
   const requestedFitViewId =
     workbenchFitViewRequestId || fitViewRequestId
       ? `${workbenchFitViewRequestId}:${fitViewRequestId}`
@@ -274,10 +279,17 @@ function CanvasSurfaceComponent({ actions, model }: CanvasSurfaceProps) {
         if (commit.projectId !== activeProjectIdRef.current) return;
         if (moveObjectsRef.current(commit.changes)) {
           performance.mark('topoviewer-studio-drag-commit');
+        } else {
+          // An in-flight gesture can finish after the source becomes blocked.
+          // Recreate the renderer from accepted source, preserving the viewport.
+          setRendererResetRevision((revision) => revision + 1);
         }
       });
     });
   }, []);
+  const commitResize = useCallback((change: Parameters<StudioCanvasActions['resizeObject']>[0]) => {
+    if (!resizeObject(change)) setRendererResetRevision((revision) => revision + 1);
+  }, [resizeObject]);
 
   useEffect(() => {
     if (presentationMode) setOverlaysOpen(false);
@@ -609,6 +621,7 @@ function CanvasSurfaceComponent({ actions, model }: CanvasSurfaceProps) {
       data-format-painter={formatPainterActive || undefined}
       data-render-count={renderCount.current}
       data-testid="studio-canvas"
+      data-source-edit-blocked={topologyDraftOpen ? 'topology' : undefined}
       data-viewport-culling={useViewportCulling}
       data-edge-authoring-mode={edgeAuthoringTemplate}
       style={
@@ -642,6 +655,14 @@ function CanvasSurfaceComponent({ actions, model }: CanvasSurfaceProps) {
       <Typography className="studio-visually-hidden" component="span" id="studio-canvas-keyboard-help">
         Use V for the Select and lasso tool or H for the Pan tool. Drag a selection box to select multiple objects, then drag any selected object to move the group. Arrow keys move the selection, Alt plus arrow keys resize one selected object, L connects two selected nodes, standard copy, cut, and paste shortcuts edit the selection, and Shift F10 opens selection actions.
       </Typography>
+      {topologyDraftOpen && !presentationMode ? (
+        <Paper
+          role="status"
+          sx={{ left: '50%', p: studioSpace.space8, pointerEvents: 'none', position: 'absolute', top: 8, transform: 'translateX(-50%)', zIndex: 20 }}
+        >
+          <Typography variant="caption">Apply or revert the topology YAML draft to edit the canvas.</Typography>
+        </Paper>
+      ) : null}
       <StudioPopover
         anchorEl={overlaysAnchor}
         anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
@@ -692,8 +713,9 @@ function CanvasSurfaceComponent({ actions, model }: CanvasSurfaceProps) {
 
       <TopoViewer
         {...interactionPreset}
+        key={rendererResetRevision}
         document={topologyDocument}
-        fitViewOnInit={fitViewOnInit}
+        fitViewOnInit={fitViewOnInit && rendererResetRevision === 0}
         fitViewRequestId={requestedFitViewId}
         grid={
           viewportPreferences.gridVisible
@@ -705,7 +727,7 @@ function CanvasSurfaceComponent({ actions, model }: CanvasSurfaceProps) {
             : false
         }
         helperLines={helperLineConfiguration}
-        initialViewport={fitViewOnInit ? undefined : viewportRef.current}
+        initialViewport={fitViewOnInit && rendererResetRevision === 0 ? undefined : viewportRef.current}
         miniMap={viewportPreferences.miniMapVisible}
         onlyRenderVisibleElements={useViewportCulling}
         panOnDrag={presentationMode || canvasTool === 'pan' ? true : [1, 2]}
@@ -731,7 +753,7 @@ function CanvasSurfaceComponent({ actions, model }: CanvasSurfaceProps) {
               }
             : undefined
         }
-        onNodeResizeChange={editable ? resizeObject : undefined}
+        onNodeResizeChange={editable ? commitResize : undefined}
         onObjectClick={handleObjectClick}
         onObjectDoubleClick={editable ? openQuickEditor : undefined}
         onObjectContextMenu={editable ? openContextMenu : undefined}
@@ -934,6 +956,8 @@ function sameCanvasModel(previous: StudioCanvasModel, next: StudioCanvasModel) {
     && previous.interactionMode === next.interactionMode
     && previous.presentationMode === next.presentationMode
     && previous.snapshot.project.id === next.snapshot.project.id
+    && previous.snapshot.invalidDrafts.topology === next.snapshot.invalidDrafts.topology
+    && previous.sourceDrafts === next.sourceDrafts
     && previous.stylesheetCandidate === next.stylesheetCandidate
     && previous.viewportInsets.left === next.viewportInsets.left
     && previous.viewportInsets.right === next.viewportInsets.right

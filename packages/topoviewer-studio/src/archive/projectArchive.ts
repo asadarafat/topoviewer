@@ -1,11 +1,11 @@
-import { strFromU8, strToU8, unzipSync, zipSync } from 'fflate';
+import { strToU8, unzipSync, zipSync, type Zippable } from 'fflate';
 import type { StudioAssetContent } from '../contracts/host';
 import type { StudioDocumentKind, StudioProject, StudioProjectMetadata } from '../contracts/project';
 import { validateStudioAssetContent } from '../security/assetSecurity';
 import { studioSecurityLimits } from '../security/limits';
 import { canonicalStudioPath } from '../security/pathSecurity';
 import { validateStudioProjectContent } from '../security/projectSecurity';
-import { stableTextHash } from '../session/hash';
+import { stableBytesHash } from '../session/hash';
 
 const archiveFormat = 'topoviewer-studio-project';
 const archiveVersion = 1;
@@ -85,7 +85,7 @@ export function canonicalArchivePath(path: string): string {
 }
 
 export function fileHash(bytes: Uint8Array): string {
-  return `fnv1a-${stableTextHash(strFromU8(bytes, true))}`;
+  return `fnv1a-${stableBytesHash(bytes)}`;
 }
 
 function manifestText(manifest: ArchiveManifest): string {
@@ -106,6 +106,7 @@ function validateSource(kind: StudioDocumentKind, path: string, text: string) {
 }
 
 function assertArchivePayload(files: ArchiveInputFile[]) {
+  if (files.some((file) => file.path === 'manifest.json')) throw new Error('Project file path "manifest.json" is reserved for the archive manifest.');
   if (files.length + 1 > studioSecurityLimits.archiveFiles) throw new Error('Archive contains too many files.');
   const expandedBytes = files.reduce((total, file) => total + file.bytes.byteLength, 0);
   if (expandedBytes > studioSecurityLimits.archiveExpandedBytes) throw new Error('Archive exceeds the expanded-size limit.');
@@ -143,8 +144,26 @@ export function encodeStudioProjectArchive(project: StudioProject, assets: Studi
     project: projectIdentity(project),
     version: archiveVersion
   };
-  const entries = Object.fromEntries([['manifest.json', strToU8(manifestText(manifest))], ...files.map((file) => [file.path, file.bytes] as const)]);
-  const archive = zipSync(entries, { level: 6, mtime: fixedZipTime });
+  const manifestBytes = strToU8(manifestText(manifest));
+  if (manifestBytes.byteLength > studioSecurityLimits.archiveManifestBytes) throw new Error('Archive manifest exceeds the size limit.');
+  if (manifestBytes.byteLength + files.reduce((total, file) => total + file.bytes.byteLength, 0) > studioSecurityLimits.archiveExpandedBytes) {
+    throw new Error('Archive exceeds the expanded-size limit including its manifest.');
+  }
+  const entries: Zippable = Object.fromEntries([['manifest.json', manifestBytes], ...files.map((file) => [file.path, file.bytes] as const)]);
+  let archive = zipSync(entries, { level: 6, mtime: fixedZipTime });
+  let requiresStoredEntries = false;
+  // Inspect ZIP metadata without inflating. Store overly compressible entries
+  // uncompressed so our own exports obey the same anti-bomb policy as imports.
+  unzipSync(archive, {
+    filter(file) {
+      if (file.originalSize / Math.max(1, file.size) > studioSecurityLimits.archiveMaximumCompressionRatio) {
+        entries[file.name] = [entries[file.name] as Uint8Array, { level: 0 }];
+        requiresStoredEntries = true;
+      }
+      return false;
+    }
+  });
+  if (requiresStoredEntries) archive = zipSync(entries, { level: 6, mtime: fixedZipTime });
   if (archive.byteLength > studioSecurityLimits.archiveCompressedBytes) throw new Error('Archive exceeds the compressed-size limit.');
   return archive;
 }
@@ -238,7 +257,7 @@ function sourceDocument(manifest: ArchiveManifest, files: Record<string, Uint8Ar
   if (!bytes) throw new Error(`Archive source "${entry.path}" is missing.`);
   let text: string;
   try {
-    text = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+    text = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(bytes);
   } catch {
     throw new Error(`Archive source "${entry.path}" is not valid UTF-8.`);
   }

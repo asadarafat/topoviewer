@@ -63,6 +63,13 @@ The public API that new consumers should start from is deliberately small:
 | Validate schema-level document shape | `validateTopoDocument(document)` |
 | Validate semantic graph references and renderer limits | `lintTopoDocument(document)` |
 
+Source object IDs remain the document identities used by interaction callbacks.
+Generated runtime IDs for pins, regions, path segments, and callout leaders retain
+their familiar spelling when unambiguous. If a source ID or another generated
+object collides, the compiler assigns a deterministic disambiguated runtime ID.
+Use callback `id`/compiled `data.id` for source identity and treat `runtimeId` as
+opaque. Duplicate source IDs and duplicate pins on one owner fail compilation.
+
 Everything else is supporting model/types, advanced compiler/layout control,
 export helpers, or experimental integration surface. Pre-1.0 releases may still
 refine advanced and experimental contracts, but this minimal API is the

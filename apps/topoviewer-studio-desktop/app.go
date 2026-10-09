@@ -572,17 +572,7 @@ func writeExport(path string, bytes []byte) error {
 	}
 	stageName := staged.Name()
 	defer os.Remove(stageName)
-	if err := staged.Chmod(0o600); err == nil {
-		_, err = staged.Write(bytes)
-	}
-	if err == nil {
-		err = staged.Sync()
-	}
-	closeErr := staged.Close()
-	if err == nil {
-		err = closeErr
-	}
-	if err != nil {
+	if err := native.WriteAndCloseStagedFile(staged, 0o600, bytes); err != nil {
 		return err
 	}
 	return os.Rename(stageName, path)

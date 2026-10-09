@@ -1,9 +1,9 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { createStudioCommandDispatcher } from '../../commands';
 import type { StudioProject, StudioRecoverySnapshot } from '../../contracts/project';
-import { createStudioDocumentSession, type StudioNormalizationReview } from '../../session';
+import { createStudioDocumentSession, type StudioNormalizationReview, type StudioSourceDraftController } from '../../session';
 
-export function useStudioSessionState(project: StudioProject, recovery?: StudioRecoverySnapshot) {
+export function useStudioSessionState(project: StudioProject, recovery?: StudioRecoverySnapshot, sourceDrafts?: StudioSourceDraftController) {
   const session = useMemo(() => {
     const next = createStudioDocumentSession(project);
     if (recovery) next.setStatus('recovery');
@@ -15,7 +15,9 @@ export function useStudioSessionState(project: StudioProject, recovery?: StudioR
     }
     return next;
   }, [project, recovery]);
-  const dispatcher = useMemo(() => createStudioCommandDispatcher(session), [session]);
+  const dispatcher = useMemo(() => createStudioCommandDispatcher(session, {
+    sourceDrafts: () => sourceDrafts?.getSnapshot().drafts || {}
+  }), [session, sourceDrafts]);
   const [snapshot, setSnapshot] = useState(session.snapshot());
   const [commandError, setCommandError] = useState<string>();
   const [announcement, setAnnouncement] = useState('Studio ready');

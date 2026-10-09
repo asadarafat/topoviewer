@@ -4,6 +4,8 @@ interface SelectorCondition {
   field: string;
   op: '=' | '~=';
   value: string;
+  start: number;
+  end: number;
 }
 
 interface ParsedSelector {
@@ -18,41 +20,65 @@ export interface SelectorObjectIdReference {
 
 function selectorSpecificity(selector: string): number {
   const parsed = parseSelector(selector);
-  return parsed.conditions.reduce((score, condition) => (
+  return parsed?.conditions.reduce((score, condition) => (
     score + (condition.field === 'id' && condition.op === '=' ? 1000 : 10)
-  ), 0);
+  ), 0) ?? 0;
 }
 
-function parseSelector(selector = ''): ParsedSelector {
-  const trimmed = selector.trim();
-  const kind = trimmed.match(/^[a-zA-Z][\w-]*/)?.[0] || '';
-  const conditions: SelectorCondition[] = [];
-  const conditionPattern = /\[\s*([\w.-]+)\s*(=|~=)\s*(?:"([^"]*)"|'([^']*)'|([^\]]+?))\s*\]/g;
-  let match;
+const selectorKinds = new Set(['node', 'link', 'linkDirection', 'path', 'region', 'shape', 'callout', 'connector', 'text']);
 
-  while ((match = conditionPattern.exec(trimmed)) !== null) {
+function quotedValue(value: string): string {
+  const escapes: Record<string, string> = { b: '\b', f: '\f', n: '\n', r: '\r', t: '\t' };
+  return value.replace(/\\(u[\da-fA-F]{4}|["'\\/bfnrt])/g, (_match, escaped: string) => (
+    escaped.startsWith('u') ? String.fromCharCode(parseInt(escaped.slice(1), 16)) : escapes[escaped] ?? escaped
+  ));
+}
+
+function parseSelector(selector = ''): ParsedSelector | undefined {
+  const subject = selector.match(/^\s*([a-zA-Z][\w-]*)/);
+  if (!subject || !selectorKinds.has(subject[1])) return undefined;
+  const kind = subject[1];
+  const conditions: SelectorCondition[] = [];
+  const conditionPattern = /\[\s*([\w.-]+)\s*(=|~=)\s*(?:"((?:\\(?:u[\da-fA-F]{4}|["'\\/bfnrt])|[^"\\])*)"|'((?:\\(?:u[\da-fA-F]{4}|["'\\/bfnrt])|[^'\\])*)'|([^[\]"'=~!<>]+?))\s*\]/y;
+  let cursor = subject[0].length;
+
+  while (cursor < selector.length) {
+    if (/\s/.test(selector[cursor])) {
+      cursor += 1;
+      continue;
+    }
+    conditionPattern.lastIndex = cursor;
+    const match = conditionPattern.exec(selector);
+    if (!match || (match[5] !== undefined && !match[5].trim())) return undefined;
     conditions.push({
       field: match[1],
       op: match[2] as '=' | '~=',
-      value: (match[3] ?? match[4] ?? match[5] ?? '').trim()
+      value: match[5] !== undefined ? match[5].trim() : quotedValue(match[3] ?? match[4]),
+      start: cursor,
+      end: conditionPattern.lastIndex
     });
+    cursor = conditionPattern.lastIndex;
   }
 
   return { kind, conditions };
 }
 
+export function selectorIsValid(selector: string): boolean {
+  return parseSelector(selector) !== undefined;
+}
+
 export function selectorObjectIdReferences(selector: string): SelectorObjectIdReference[] {
   const parsed = parseSelector(selector);
-  if (!parsed.kind) return [];
+  if (!parsed) return [];
   return parsed.conditions.flatMap((condition) => (
     condition.field === 'id' && condition.op === '=' ? [{ id: condition.value, kind: parsed.kind }] : []
   ));
 }
 
 export function selectorReferencesField(selector: string, field: string): boolean {
-  return parseSelector(selector).conditions.some((condition) => (
+  return parseSelector(selector)?.conditions.some((condition) => (
     condition.field === field || condition.field.startsWith(`${field}.`)
-  ));
+  )) ?? false;
 }
 
 export function rewriteSelectorFieldValue(
@@ -63,18 +89,12 @@ export function rewriteSelectorFieldValue(
   nextId: string
 ): string {
   const parsed = parseSelector(selector);
-  if ((kind && parsed.kind !== kind) || !parsed.conditions.some((condition) => (
+  if (!parsed || (kind && parsed.kind !== kind)) return selector;
+  return parsed.conditions.reduceRight((result, condition) => (
     condition.field === targetField && condition.value === previousId
-  ))) return selector;
-
-  return selector.replace(
-    /\[\s*([\w.-]+)\s*(=|~=)\s*(?:"([^"]*)"|'([^']*)'|([^\]]+?))\s*\]/g,
-    (condition, fieldName: string, operator: string, doubleQuoted: string | undefined, singleQuoted: string | undefined, bare: string | undefined) => {
-      const value = (doubleQuoted ?? singleQuoted ?? bare ?? '').trim();
-      if (fieldName !== targetField || value !== previousId) return condition;
-      return `[${fieldName} ${operator} ${JSON.stringify(nextId)}]`;
-    }
-  );
+      ? result.slice(0, condition.start) + `[${condition.field} ${condition.op} ${JSON.stringify(nextId)}]` + result.slice(condition.end)
+      : result
+  ), selector);
 }
 
 export function rewriteSelectorObjectId(
@@ -112,7 +132,7 @@ function conditionMatches(entity: Record<string, unknown>, condition: SelectorCo
 
 export function selectorMatches(kind: string, entity: GraphEntity, selector: string): boolean {
   const parsed = parseSelector(selector);
-  if (parsed.kind !== kind) return false;
+  if (!parsed || parsed.kind !== kind) return false;
   return parsed.conditions.every((condition) => conditionMatches(styleSubject(entity), condition));
 }
 

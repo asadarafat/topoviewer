@@ -45,7 +45,7 @@ export function useStudioController({ host, onReload, project, recovery }: UseSt
     setNormalizationReview,
     setSnapshot,
     snapshot
-  } = useStudioSessionState(project, recovery);
+  } = useStudioSessionState(project, recovery, sourceDrafts);
   const style = useStudioStyleCapability({
     announce: setAnnouncement,
     dispatcher,
@@ -79,6 +79,7 @@ export function useStudioController({ host, onReload, project, recovery }: UseSt
     applyStylesheetCandidate,
     host,
     session,
+    sourceDrafts,
     setError: setCommandError
   });
   const projectCapability = createStudioProjectCapability({

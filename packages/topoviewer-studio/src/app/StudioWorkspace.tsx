@@ -586,17 +586,13 @@ export function StudioWorkspace({ forceEditorFailure, forceOptionalSurfaceFailur
   }
 
   function openExportPanel() {
-    const sourceDraftDocument = (['topology', 'mapper'] as const).find((document) => controller.sourceDrafts.getSnapshot().drafts[document] !== undefined);
-    if (sourceDraftDocument) {
-      openCodeDocument(sourceDraftDocument);
-      controller.announce('Apply or revert the source draft before exporting');
-      return;
-    }
-    if (controller.applyStylesheetCandidate()) {
+    if (controller.prepareExport()) {
       setExportOpen(true);
       return;
     }
-    openCodeDocument('stylesheet');
+    const current = controller.snapshot;
+    const sourceDraftDocument = (['topology', 'mapper'] as const).find((document) => controller.sourceDrafts.getSnapshot().drafts[document] !== undefined || current.invalidDrafts[document]);
+    openCodeDocument(sourceDraftDocument || 'stylesheet');
   }
 
   async function continuePendingProjectAction(discard: boolean) {
@@ -713,6 +709,7 @@ export function StudioWorkspace({ forceEditorFailure, forceOptionalSurfaceFailur
       interactionMode: renderedPreviewMode,
       presentationMode,
       snapshot,
+      sourceDrafts: controller.sourceDrafts,
       stylesheetCandidate: controller.stylesheetCandidate,
       viewportInsets,
       viewportPreferences
@@ -723,6 +720,7 @@ export function StudioWorkspace({ forceEditorFailure, forceOptionalSurfaceFailur
       controller.canPaste,
       controller.canSaveSelectionAsPreset,
       controller.stylesheetCandidate,
+      controller.sourceDrafts,
       canvasFitViewRequestId,
       edgeAuthoringTemplate,
       formatPainterSource,

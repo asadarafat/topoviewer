@@ -1,4 +1,4 @@
-import type { StudioDocumentKind, StudioProject, StudioSelection, StudioSessionSnapshot } from './project';
+import type { StudioDocumentKind, StudioProject, StudioSelection, StudioSessionSnapshot, StudioSourceDraftDocument, StudioSourceDraftRecovery } from './project';
 
 export interface StudioSourceChange {
   after?: string;
@@ -75,6 +75,8 @@ export interface StudioCommandPlan {
 }
 
 export interface StudioCommand {
+  /** Only the explicit YAML Apply action may replace its own unapplied source. */
+  readonly appliesSourceDraft?: StudioSourceDraftDocument;
   readonly coalescingKey?: string;
   readonly id: string;
   readonly label: string;
@@ -118,6 +120,7 @@ export interface StudioCommandDispatcherOptions {
   clock?: () => string;
   maxBytes?: number;
   maxEntries?: number;
+  sourceDrafts?: () => StudioSourceDraftRecovery;
 }
 
 export interface StudioHistoryState {

@@ -8,6 +8,7 @@ const contentPagesRoot = path.join(repoRoot, 'packages/topoviewer/content/pages'
 const docsRoot = path.resolve(process.env.TOPOVIEWER_DOCS_ROOT || path.join(repoRoot, 'docs'));
 const targetDocsRoot = path.join(docsRoot, 'topoviewer');
 const projectionManifestPath = path.join(targetDocsRoot, '.content-projection-manifest.json');
+const checkOnly = process.argv.includes('--check');
 
 function readText(filePath) {
   return fs.readFileSync(filePath, 'utf8');
@@ -16,6 +17,10 @@ function readText(filePath) {
 function writeTextIfChanged(filePath, content) {
   const existing = fs.existsSync(filePath) ? readText(filePath) : undefined;
   if (existing === content) return false;
+  if (checkOnly) {
+    console.error(`docs projection is out of sync: ${path.relative(repoRoot, filePath)}`);
+    return true;
+  }
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
   fs.writeFileSync(filePath, content);
   return true;
@@ -79,6 +84,10 @@ function writeProjectionManifest(contentPages) {
 
 function removeFileIfExists(filePath) {
   if (!fs.existsSync(filePath)) return false;
+  if (checkOnly) {
+    console.error(`stale docs projection: ${path.relative(repoRoot, filePath)}`);
+    return true;
+  }
   fs.rmSync(filePath, { recursive: true, force: true });
   return true;
 }
@@ -174,7 +183,7 @@ function pruneStaleContentPages(contentPages) {
   for (const relativePath of stalePaths) {
     changed = removeFileIfExists(path.join(targetDocsRoot, relativePath)) || changed;
   }
-  removeEmptyDirectories(targetDocsRoot);
+  if (!checkOnly) removeEmptyDirectories(targetDocsRoot);
   return changed;
 }
 
@@ -183,4 +192,13 @@ const docsChanged = copyMarkdownDocs(contentPages);
 const prunedStale = pruneStaleContentPages(contentPages);
 const manifestChanged = writeProjectionManifest(contentPages);
 const changed = docsChanged || prunedStale || manifestChanged;
-console.log(changed ? `synced docs site into ${docsRoot}` : `docs site already synced at ${docsRoot}`);
+if (checkOnly) {
+  if (changed) {
+    console.error('Run npm run sync:docs and commit the generated documentation.');
+    process.exitCode = 1;
+  } else {
+    console.log(`docs site projections are in sync at ${docsRoot}`);
+  }
+} else {
+  console.log(changed ? `synced docs site into ${docsRoot}` : `docs site already synced at ${docsRoot}`);
+}

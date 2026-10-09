@@ -17,8 +17,8 @@ if (Number.parseInt(process.versions.node.split('.')[0] || '0', 10) !== 24) {
 }
 facts.node = process.version;
 
-if (!goDirective || compareVersion(goDirective.slice(1), [1, 25, 0]) < 0) {
-  failures.push('Desktop go.mod must require Go 1.25 or newer.');
+if (!goDirective || compareVersion(goDirective.slice(1), [1, 26, 9]) < 0) {
+  failures.push('Desktop go.mod must require Go 1.26.9 or newer.');
 }
 facts.goDirective = goDirective?.slice(1).filter(Boolean).join('.');
 
@@ -36,8 +36,8 @@ if (!goEnvironment.ok) {
   facts.os = os;
   facts.architecture = architecture;
   const parsed = version?.match(/^go(\d+)\.(\d+)(?:\.(\d+))?/);
-  if (!parsed || compareVersion(parsed.slice(1), [1, 25, 0]) < 0) {
-    failures.push(`Go 1.25 or newer is required; found ${version || 'an unknown version'}.`);
+  if (!parsed || compareVersion(parsed.slice(1), [1, 26, 9]) < 0) {
+    failures.push(`Go 1.26.9 or newer is required; found ${version || 'an unknown version'}.`);
   }
 }
 

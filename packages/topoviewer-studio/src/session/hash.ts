@@ -9,6 +9,15 @@ export function stableTextHash(text: string): string {
   return (hash >>> 0).toString(16).padStart(8, '0');
 }
 
+export function stableBytesHash(bytes: Uint8Array): string {
+  let hash = 0x811c9dc5;
+  for (const byte of bytes) {
+    hash ^= byte;
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return (hash >>> 0).toString(16).padStart(8, '0');
+}
+
 export function stableProjectSourceRevision(project: StudioProject): string {
   const content = (['topology', 'stylesheet', 'mapper'] as const).map((kind) => `${kind}:${project.documents[kind]?.text || ''}`).join('\u0000');
   return `source-${stableTextHash(content)}`;

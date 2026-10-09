@@ -28,6 +28,7 @@ import {
   withRuntimeDirectionHandlers,
   withRuntimeRegionAggregateHandlers,
   withRuntimeLinkAggregateHandlers,
+  withRuntimeNodeDragging,
   withRuntimeResizeHandlers
 } from './graphDecorators';
 import { ViewportControls } from './ViewportControls';
@@ -126,8 +127,11 @@ function TopoFlow({
 }: TopoFlowProps) {
   const decorateRuntimeNodes = useCallback(
     (sourceNodes: ReturnType<typeof compileTopoGraph>['nodes']) =>
-      withRuntimeResizeHandlers(withRuntimeRegionAggregateHandlers(sourceNodes, onRegionAggregateToggle), nodesResizable, onNodeResizeChange),
-    [nodesResizable, onNodeResizeChange, onRegionAggregateToggle]
+      withRuntimeNodeDragging(
+        withRuntimeResizeHandlers(withRuntimeRegionAggregateHandlers(sourceNodes, onRegionAggregateToggle), nodesResizable, onNodeResizeChange),
+        nodesDraggable
+      ),
+    [nodesDraggable, nodesResizable, onNodeResizeChange, onRegionAggregateToggle]
   );
   const runtimeNodes = useMemo(() => decorateRuntimeNodes(compiled.nodes), [compiled.nodes, decorateRuntimeNodes]);
   const hasCollisionManagedLabels = useMemo(() => runtimeNodesHaveCollisionManagedLabels(runtimeNodes), [runtimeNodes]);
@@ -187,9 +191,10 @@ function TopoFlow({
     []
   );
   const appliedCompileTokenRef = useRef<object>();
+  const appliedNodeDecoratorRef = useRef(decorateRuntimeNodes);
   useEffect(() => {
-    const activeDragRuntimeIds = activeDragRuntimeIdsRef.current;
-    if (positionOnlyCompile && appliedCompileTokenRef.current === compileToken) {
+    const activeDragRuntimeIds = nodesDraggable === false ? new Set<string>() : activeDragRuntimeIdsRef.current;
+    if (positionOnlyCompile && appliedCompileTokenRef.current === compileToken && appliedNodeDecoratorRef.current === decorateRuntimeNodes) {
       const nextById = new Map(runtimeNodes.map((node) => [String(node.id || ''), node]));
       setNodes((currentNodes) => {
         let changed = false;
@@ -209,6 +214,7 @@ function TopoFlow({
       return;
     }
     appliedCompileTokenRef.current = compileToken;
+    appliedNodeDecoratorRef.current = decorateRuntimeNodes;
     const selected = new Set(selectedObjectIdsRef.current || []);
     const nextEdges = decorateRuntimeEdges(compiled.edges) as unknown as RuntimeObject[];
     setEdges(applyRuntimeEdgeSelection(nextEdges, selected).values as never[]);
@@ -234,7 +240,7 @@ function TopoFlow({
     activeHelperLineStateRef.current = emptyHelperLineState;
     helperLineCandidateIndexRef.current = undefined;
     clearHelperLines();
-  }, [clearHelperLines, compiled, compileToken, decorateRuntimeEdges, decorateSelectedRuntimeNode, positionOnlyCompile, runtimeNodes, setEdges, setNodes]);
+  }, [clearHelperLines, compiled, compileToken, decorateRuntimeEdges, decorateRuntimeNodes, decorateSelectedRuntimeNode, nodesDraggable, positionOnlyCompile, runtimeNodes, setEdges, setNodes]);
   useEffect(() => {
     if (activeDragRuntimeIdsRef.current.size) return undefined;
     if (!nodesInitialized) return undefined;

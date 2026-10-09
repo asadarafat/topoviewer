@@ -140,6 +140,10 @@ A stitched child path renders as:
 A `region` is membership and scope: AS, IGP area, site, rack, cloud region, tenant, failure domain, or ownership boundary.
 
 `members` can contain node IDs and region IDs. `parent` creates region hierarchy.
+Both forms of nesting contribute child bounds to the enclosing hull and move
+descendant regions and member nodes together. Repeating the same containment
+through both fields does not duplicate movement. Containment must be acyclic;
+lint reports cycles and rendering or region movement rejects them.
 
 | Field | Values | Use |
 |---|---|---|

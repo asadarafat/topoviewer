@@ -1,5 +1,6 @@
 import type { GraphEntity, StyleRule, StylesheetDocument } from './types';
 import type { StyleTargetKind } from './styleDefaults';
+import { selectorIsValid } from './selector';
 
 const styleTargets = new Set<StyleTargetKind>([
   'node',
@@ -59,18 +60,7 @@ export function styleSelectorTarget(selector: string): StyleTargetKind | undefin
 }
 
 export function styleSelectorIsValid(selector: string): boolean {
-  const trimmed = selector.trim();
-  const target = styleSelectorTarget(trimmed);
-  if (!target) return false;
-  const remainder = trimmed.slice(target.length);
-  const conditionPattern = /\[\s*[\w.-]+\s*(?:=|~=)\s*(?:"[^"]*"|'[^']*'|[^\]]+?)\s*\]/g;
-  let cursor = 0;
-  let match: RegExpExecArray | null;
-  while ((match = conditionPattern.exec(remainder)) !== null) {
-    if (remainder.slice(cursor, match.index).trim()) return false;
-    cursor = match.index + match[0].length;
-  }
-  return remainder.slice(cursor).trim() === '';
+  return !!styleSelectorTarget(selector) && selectorIsValid(selector);
 }
 
 export function styleRulesForTarget(

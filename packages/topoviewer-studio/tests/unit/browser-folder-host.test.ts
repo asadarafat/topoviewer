@@ -130,6 +130,25 @@ async function folderFixture(beforeCommit?: (operation: string) => void) {
 }
 
 describe('BrowserStudioHost folder capability', () => {
+  it('opens and saves a folder with an image larger than the JavaScript argument limit', async () => {
+    const { directory, options } = await folderFixture();
+    const bytes = new Uint8Array(256 * 1024);
+    bytes.set([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+    new DataView(bytes.buffer).setUint32(16, 64);
+    new DataView(bytes.buffer).setUint32(20, 64);
+    directory.entriesByName.set('diagram.png', new FakeFileHandle('diagram.png', bytes, 'image/png'));
+    const host = new BrowserStudioHost(options);
+    const loaded = await host.openProjectFolder();
+    expect(loaded.ok).toBe(true);
+    if (!loaded.ok) throw new Error(loaded.error.message);
+    expect(loaded.value.project.assets[0].size).toBe(bytes.byteLength);
+    const project = structuredClone(loaded.value.project);
+    project.documents.topology.text += '# edit with image\n';
+    expect((await host.saveProject({ expectedRevision: project.revision, project })).ok).toBe(true);
+    const assets = await host.readProjectAssets({ id: project.id });
+    expect(assets.ok && assets.value[0].bytes).toEqual(bytes);
+  });
+
   it('round-trips BOM-prefixed YAML without reporting an external folder edit', async () => {
     const directory = new FakeDirectoryHandle('bom-project');
     const sources = {

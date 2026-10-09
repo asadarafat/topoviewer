@@ -1,5 +1,5 @@
 import type { StudioCommandDispatcher, StudioCommandDispatcherOptions, StudioCommandPlan, StudioCommandResult, StudioCommandState, StudioSourceChange, StudioTransactionRecord } from '../contracts/commands';
-import type { StudioSessionSnapshot } from '../contracts/project';
+import type { StudioDocumentKind, StudioSessionSnapshot, StudioSourceDraftDocument } from '../contracts/project';
 import type { StudioDocumentSession, StudioNormalizationReview } from '../session';
 
 interface HistoryEntry {
@@ -56,7 +56,8 @@ function sourceChanges(before: StudioSessionSnapshot, after: StudioSessionSnapsh
 
 function estimatedSnapshotBytes(snapshot: StudioSessionSnapshot): number {
   const sourceBytes = (['topology', 'stylesheet', 'mapper'] as const).reduce((total, kind) => total + (snapshot.project.documents[kind]?.text.length || 0) * 2, 0);
-  return sourceBytes + snapshot.project.assets.reduce((total, asset) => total + asset.size, 0) + 512;
+  // Snapshots retain asset metadata; the host owns the binary content separately.
+  return sourceBytes + JSON.stringify(snapshot.project.assets).length * 2 + 512;
 }
 
 function transactionRecord(entry: HistoryEntry): StudioTransactionRecord {
@@ -101,7 +102,37 @@ export function createStudioCommandDispatcher(session: StudioDocumentSession, op
     while (undoEntries.length > 0 && totalBytes() > maxBytes) undoEntries.shift();
   }
 
-  function applyPlan(plan: StudioCommandPlan) {
+  function requireNoSourceDraft(documents: StudioDocumentKind[], applying?: StudioSourceDraftDocument, historyBaseline?: StudioSessionSnapshot) {
+    const drafts = options.sourceDrafts?.();
+    const invalidDrafts = session.snapshot().invalidDrafts;
+    const blocked = documents.find((document): document is StudioSourceDraftDocument => {
+      if (document === 'stylesheet' || document === applying) return false;
+      const invalidDraft = invalidDrafts[document];
+      const changedInvalidDraft = invalidDraft && invalidDraft.text !== historyBaseline?.invalidDrafts[document]?.text;
+      return drafts?.[document] !== undefined || Boolean(changedInvalidDraft);
+    });
+    if (blocked) {
+      const pending = drafts?.[blocked] !== undefined ? `unapplied ${blocked} source` : `invalid ${blocked} draft`;
+      throw new StudioCommandExecutionError(`Apply or revert the ${pending} before changing ${blocked} with another action.`);
+    }
+  }
+
+  function requireSafeHistoryRestore(target: StudioSessionSnapshot, baseline: StudioSessionSnapshot) {
+    const current = session.snapshot();
+    requireNoSourceDraft(sourceChanges(current, target).map((change) => change.document), undefined, baseline);
+    // History restores a whole session, including invalid drafts in documents
+    // whose accepted source is unchanged by the transaction.
+    const overwritten = (['topology', 'stylesheet', 'mapper'] as const).find((document) => {
+      const draft = current.invalidDrafts[document];
+      return draft && draft.text !== target.invalidDrafts[document]?.text && draft.text !== baseline.invalidDrafts[document]?.text;
+    });
+    if (overwritten) {
+      throw new StudioCommandExecutionError(`Apply or revert the invalid ${overwritten} draft before changing history.`);
+    }
+  }
+
+  function applyPlan(plan: StudioCommandPlan, applying?: StudioSourceDraftDocument) {
+    requireNoSourceDraft(plan.mutations.map((mutation) => mutation.document), applying);
     const snapshot = session.snapshot();
     const blockedMutation = plan.mutations.find(
       (mutation) =>
@@ -221,9 +252,9 @@ export function createStudioCommandDispatcher(session: StudioDocumentSession, op
       let plan: StudioCommandPlan;
       try {
         plan = command.plan ?? command.execute(commandState(before));
-        applyPlan(plan);
+        applyPlan(plan, command.appliesSourceDraft);
       } catch (error) {
-        session.restore(before);
+        if (session.snapshot() !== before) session.restore(before);
         throw error instanceof StudioCommandExecutionError ? error : new StudioCommandExecutionError(error instanceof Error ? error.message : String(error));
       }
       const after = session.snapshot();
@@ -273,16 +304,20 @@ export function createStudioCommandDispatcher(session: StudioDocumentSession, op
     }),
     redo() {
       requireNoActiveHistoryAction('redo');
-      const next = redoEntries.pop();
+      const next = redoEntries.at(-1);
       if (!next) return undefined;
+      requireSafeHistoryRestore(next.afterSnapshot, next.beforeSnapshot);
+      redoEntries.pop();
       session.restore(next.afterSnapshot);
       undoEntries.push(next);
       return transactionRecord(next);
     },
     undo() {
       requireNoActiveHistoryAction('undo');
-      const next = undoEntries.pop();
+      const next = undoEntries.at(-1);
       if (!next) return undefined;
+      requireSafeHistoryRestore(next.beforeSnapshot, next.afterSnapshot);
+      undoEntries.pop();
       session.restore(next.beforeSnapshot);
       redoEntries.push(next);
       return transactionRecord(next);

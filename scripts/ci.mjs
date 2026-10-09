@@ -100,6 +100,7 @@ const laneDefinitions = {
     step('report environment', 'node', ['scripts/report-ci-environment.mjs'])
   ],
   generated: [
+    step('test read-only documentation projection checks', 'node', ['--test', 'scripts/tests/content-projections.test.mjs']),
     step('check release documentation screenshots', 'npm', ['run', 'docs:screenshots:check']),
     step('sync docs', 'npm', ['run', 'sync:docs']),
     checkGeneratedStep('check generated docs are committed', GENERATED_DOC_PATHS, {

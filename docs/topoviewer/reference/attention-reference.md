@@ -44,6 +44,12 @@ Use this page when you need the exact attention contract. Use [Topology Attentio
 
 Attention-derived aggregate objects expose stable label and data fields for styling, export, and host integrations.
 
+Collapsing nodes keeps links with different layer memberships separate. Each
+aggregate link's count and members describe that layer set, so switching layers
+preserves the original connectivity. Layer order does not create a separate
+group. Parallel link grouping also separates layers by default; explicitly
+using `by: [endpoints]` combines them and exposes the union of their layers.
+
 | Namespace | Example keys | Use |
 |---|---|---|
 | `labels.*` | `aggregate`, `aggregateBy`, `nodes`, `links`, `severity`, severity counts | At-a-glance styling, badges, selectors, and visible metadata. |

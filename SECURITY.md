@@ -92,6 +92,20 @@ same advisories. The policy records an owner and expiry; a new advisory,
 different dependency version/path, or expired exception requires a fresh review.
 Run `npm run dependency:advisories:test` to exercise these failure cases offline.
 
+### Grafana Image Status (2026-10-09)
+
+The lab and image scan use `grafana/grafana:13.2.3`. A Trivy 0.75.0 scan of
+the Linux AMD64 image, repository digest
+`sha256:b28bae15e219c998fb0e0424ed724930cc61b1f61fb404d47c862f9a23f9e572`,
+reports eight HIGH occurrences and no CRITICAL findings. The four unique CVEs
+are CVE-2026-84304 and CVE-2026-84445 in bundled datasource gRPC dependencies,
+and CVE-2026-21728 and CVE-2026-28377 in the bundled Tempo dependency.
+These are component scan findings; vulnerable-function reachability has not
+been established. Grafana 13.2.3 is the latest published patch on the scan date,
+and its bundled plugins still require upstream fixes. Scheduled/manual image
+scans remain blocking, with no severity downgrade or new ignore entry.
+Track resolution in [issue #131](https://github.com/asadarafat/topoviewer/issues/131).
+
 ## Automated Security Monitoring
 
 The repository uses scheduled and pull-request security automation as an early

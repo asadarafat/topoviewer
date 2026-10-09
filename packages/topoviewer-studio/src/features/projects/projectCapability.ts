@@ -61,6 +61,23 @@ export function createStudioProjectCapability({
   stylesheetCandidate,
   synchronizeAfterHistory
 }: StudioProjectCapabilityOptions) {
+  function moveHistory(direction: 'undo' | 'redo') {
+    const before = session.snapshot();
+    try {
+      const result = dispatcher[direction]();
+      if (result) {
+        setError(undefined);
+        announce(`${direction === 'undo' ? 'Undid' : 'Redid'} ${result.summary}`);
+        synchronizeAfterHistory(before, session.snapshot());
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      setError(message);
+      announce(message);
+    }
+    refresh();
+  }
+
   async function saveProject() {
     if (sourceDrafts.getSnapshot().dirty) {
       setError('Apply or revert the unapplied topology or mapper source before saving.');
@@ -134,13 +151,7 @@ export function createStudioProjectCapability({
       refresh();
     },
     redo() {
-      const before = session.snapshot();
-      const result = dispatcher.redo();
-      if (result) {
-        announce(`Redid ${result.summary}`);
-        synchronizeAfterHistory(before, session.snapshot());
-      }
-      refresh();
+      moveHistory('redo');
     },
     reload: onReload,
     renameProject(name: string) {
@@ -155,13 +166,7 @@ export function createStudioProjectCapability({
       return pending;
     },
     undo() {
-      const before = session.snapshot();
-      const result = dispatcher.undo();
-      if (result) {
-        announce(`Undid ${result.summary}`);
-        synchronizeAfterHistory(before, session.snapshot());
-      }
-      refresh();
+      moveHistory('undo');
     }
   };
 }

@@ -71,7 +71,7 @@
     "sync:object-reference": "node scripts/sync-object-reference.mjs",
     "check:object-reference": "node scripts/sync-object-reference.mjs --check",
     "sync:content": "node scripts/sync-object-reference.mjs && node scripts/sync-content.mjs",
-    "check:content": "node scripts/sync-object-reference.mjs --check && node scripts/sync-content.mjs --check",
+    "check:content": "node scripts/sync-object-reference.mjs --check && node scripts/sync-content.mjs --check && node scripts/sync-docs-site.mjs --check",
     "pages:redirects": "node scripts/write-pages-redirects.mjs",
     "sync:examples": "npm --workspace topoviewer run sync:examples",
     "sync:docs": "npm run sync:content && node scripts/sync-docs-site.mjs && npm run sync:examples",

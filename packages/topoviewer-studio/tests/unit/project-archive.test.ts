@@ -29,6 +29,14 @@ function rewriteManifest(archive: Uint8Array, change: (manifest: Record<string, 
 }
 
 describe('Studio project archive', () => {
+  it('can import its own export when valid source is highly compressible', () => {
+    const project = createStarterProject({ id: 'compressible', name: 'Repeated source' });
+    project.documents.topology.text = `\uFEFF# ${'a'.repeat(300_000)}\n${project.documents.topology.text}`;
+    const bytes = encodeStudioProjectArchive(project);
+    expect(decodeStudioProjectArchive(bytes).project.documents.topology.text).toBe(project.documents.topology.text);
+    expect(encodeStudioProjectArchive(project)).toEqual(bytes);
+  });
+
   it('is deterministic and round-trips source comments, mapper, metadata, and assets', () => {
     const project = createStarterProject({ id: 'portable', name: 'Portable topology', now: '2026-07-09T09:00:00.000Z' });
     project.documents.topology.text = `# preserved comment\n${project.documents.topology.text}`;
@@ -65,6 +73,12 @@ describe('Studio project archive', () => {
   it('rejects non-archive and oversized input', () => {
     expect(() => decodeStudioProjectArchive(new Uint8Array([1, 2, 3]))).toThrow();
     expect(() => decodeStudioProjectArchive(new Uint8Array(25 * 1024 * 1024 + 1))).toThrow(/compressed-size limit/);
+  });
+
+  it('rejects a project file that would overwrite the archive manifest', () => {
+    const project = createStarterProject({ id: 'reserved', name: 'Reserved archive path' });
+    project.documents.topology.path = 'manifest.json';
+    expect(() => encodeStudioProjectArchive(project)).toThrow(/reserved for the archive manifest/);
   });
 
   it('rejects traversal paths, excessive expansion, excess files, and oversized entries', () => {

@@ -21,7 +21,7 @@ import { stableProjectSourceRevision } from '../session/hash';
 import { BrowserProjectStore, BrowserProjectStoreError, type BrowserProjectStoreOptions } from './browserProjectStore';
 import { safeReadBrowserPreference, safeWriteBrowserPreference } from './browserPreferences';
 import { createStarterProject } from './starterProject';
-import { stableTextHash } from '../session/hash';
+import { stableBytesHash, stableTextHash } from '../session/hash';
 import { validateStudioAssetContent } from '../security/assetSecurity';
 import { studioSecurityLimits } from '../security/limits';
 import { readDirectoryFiles, requireDirectoryPermission, saveDirectoryProject, withFolderWriteLock } from './browserDirectory';
@@ -337,7 +337,7 @@ export class BrowserStudioHost implements StudioHost {
         throw new BrowserProjectStoreError('invalid-request', error instanceof Error ? error.message : String(error));
       }
       project.assets = assets.map((asset) => ({
-        contentHash: `fnv1a-${stableTextHash(String.fromCharCode(...asset.bytes))}`,
+        contentHash: `fnv1a-${stableBytesHash(asset.bytes)}`,
         mediaType: asset.mediaType,
         path: asset.name,
         size: asset.bytes.byteLength

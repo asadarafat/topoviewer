@@ -14,7 +14,7 @@ Unsigned CI artifacts are internal validation candidates, not public releases.
 
 ## Run From Source
 
-Desktop development requires Node.js 24, Go 1.25 or newer, and the native
+Desktop development requires Node.js 24, Go 1.26.9 or newer, and the native
 toolchain for the host platform. Linux also requires GTK 3 and WebKitGTK 4.1.
 
 ```bash
@@ -45,6 +45,8 @@ operation. Use **Open folder** for an existing bundle.
 Desktop Studio confines every file operation to an approved project token.
 Paths are canonicalized, symlinks and traversal are rejected, source and asset
 sizes are bounded, and coordinated writes either complete or roll back.
+Partial writes, permission failures, and flush failures reject the save before
+replacing existing files. The same checks protect recovery state and exports.
 External changes reload only when the current session is clean; dirty sessions
 receive an explicit conflict instead of being overwritten.
 

@@ -42,7 +42,8 @@ import {
   nodeDashPattern,
 } from './nodeStyle';
 import { regionLabelMargin, regionLabelPositions, normalizeRegionLabelPosition } from './regionStyle';
-import { selectorMatches } from './selector';
+import { regionContainmentCycle } from './regions';
+import { selectorIsValid, selectorMatches } from './selector';
 import { applyStyle } from './style';
 import { canonicalStyleKeyByLowercase, isColorStyleKey } from './styleDefaults';
 import { LINK_DIRECTION_KEYS, type LinkDirectionKey } from './types';
@@ -873,6 +874,12 @@ export function lintTopoDocument(input: TopoDocument, options: LintOptions = {})
     }
   });
 
+  const regionCycle = regionContainmentCycle(graph.regions || []);
+  if (regionCycle) {
+    const index = (graph.regions || []).findIndex((region) => region.id === regionCycle[0]);
+    issues.push(issue('error', 'region-containment-cycle', `Region containment must be acyclic: ${regionCycle.join(' -> ')}.`, `graph.regions[${index}]`));
+  }
+
   (diagram.shapes || []).forEach((shape, index) => {
     addEntity(seenIds, issues, 'shape', shape, `diagram.shapes[${index}]`);
     issues.push(...pinIdentityIssues(shape, `diagram.shapes[${index}]`));
@@ -918,6 +925,10 @@ export function lintTopoDocument(input: TopoDocument, options: LintOptions = {})
   });
 
   (document.stylesheet || []).forEach((rule, index) => {
+    const validSelector = selectorIsValid(rule.selector);
+    if (!validSelector) {
+      issues.push(issue('error', 'invalid-selector', `Stylesheet selector "${rule.selector}" is invalid; use an object kind followed by zero or more [field = value] or [field ~= value] conditions.`, `stylesheet[${index}].selector`));
+    }
     issues.push(...styleKeyIssues(rule.style, `stylesheet[${index}].style`));
     if (selectorKind(rule.selector) === 'node') {
       issues.push(...nodeStyleIssues(rule.style, `stylesheet[${index}].style`));
@@ -929,7 +940,7 @@ export function lintTopoDocument(input: TopoDocument, options: LintOptions = {})
       issues.push(...edgeStyleIssues(rule.style, `stylesheet[${index}].style`));
     }
     if (
-      styleSubjects.length > 0
+      validSelector && styleSubjects.length > 0
       && !selectorIsBareKind(rule.selector)
       && !selectorTargetsGeneratedObject(rule.selector)
       && !selectorHasMatch(rule, document)

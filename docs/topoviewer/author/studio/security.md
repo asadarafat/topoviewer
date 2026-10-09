@@ -11,6 +11,12 @@ asset size, image dimensions, sample count, and renderer cardinality. Archive
 paths are canonicalized and validated before any project is created. SVG and
 image media types are inspected instead of trusting filenames.
 
+Imported YAML cannot raise Studio's own renderer ceilings: 1,500 graph nodes,
+3,000 edges, 1,600 path segments, 1,200 pins, and 250 regions. Lower document
+limits still apply. Force-layout iterations must be a finite integer between
+1 and 1,000. Projects that exceed these limits report diagnostics before the
+canvas compiles them.
+
 The stylesheet candidate uses the same bounded parser, schema, semantic lint,
 asset policy, and renderer limits as applied project source. Invalid candidate
 text is recoverable but cannot be saved or exported as the applied stylesheet.

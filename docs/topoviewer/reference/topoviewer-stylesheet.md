@@ -99,6 +99,8 @@ Supported subject kinds:
 - `region`
 - `shape`
 - `callout`
+- `connector`
+- `text`
 
 Supported conditions:
 
@@ -114,6 +116,13 @@ Supported conditions:
 | `callout[labels.callout = "subscriber-subnet"]` | Style rich callout boxes. |
 | `callout[labels.callout = "srrp"]` | Style line-only callout relationships. |
 | `link[data.metric = "20"]` | Match nested data value. |
+
+Combine conditions by placing brackets next to each other; all conditions must
+match. Values may be bare, single-quoted, or double-quoted. Escape quotes and
+backslashes inside quoted values with a backslash. Comparisons support only `=`
+and `~=`; comma lists, `OR`, and `!=` are unsupported. The entire selector must
+be valid. Malformed selectors match nothing and stylesheet lint reports an
+`invalid-selector` error.
 
 ### Precedence
 

@@ -1,6 +1,6 @@
 import type { GraphNode, GraphRegion, TopoDocument } from './types';
 import type { AuthoringEditPlan, AuthoringValueUpdate } from './authoringTypes';
-import { resolveExplicitRegionBounds, resolveRegionBoundsPolicy } from './regions';
+import { buildRegionBoundsMap, regionChildrenById, regionContainmentOrder, resolveExplicitRegionBounds } from './regions';
 import { applyStyle, compileNodeStyle } from './style';
 
 export interface AuthoringRegionBounds {
@@ -52,40 +52,23 @@ function nodeBounds(node: GraphNode, document: TopoDocument): AuthoringRegionBou
   };
 }
 
-function union(bounds: AuthoringRegionBounds[]): AuthoringRegionBounds | undefined {
-  if (!bounds.length) return undefined;
-  const x = Math.min(...bounds.map((item) => item.x));
-  const y = Math.min(...bounds.map((item) => item.y));
-  const right = Math.max(...bounds.map((item) => item.x + item.width));
-  const bottom = Math.max(...bounds.map((item) => item.y + item.height));
-  return { x, y, width: right - x, height: bottom - y };
+function authoringRegionBoundsMap(document: TopoDocument): Map<string, AuthoringRegionBounds> {
+  const nodeById = new Map(nodes(document).flatMap((node) => {
+    const bounds = nodeBounds(node, document);
+    return bounds ? [[node.id, {
+      id: node.id,
+      position: { x: bounds.x, y: bounds.y },
+      regionBoundsWidth: bounds.width,
+      regionBoundsHeight: bounds.height
+    }] as const] : [];
+  }));
+  const styles = new Map(regions(document).map((region) => [region.id, applyStyle('region', region, document)]));
+  return buildRegionBoundsMap(regions(document), undefined, nodeById, styles);
 }
 
 export function authoringRegionBounds(document: TopoDocument, regionId: string): AuthoringRegionBounds | undefined {
-  const region = regions(document).find((candidate) => candidate.id === regionId);
-  if (!region) return undefined;
-  const style = applyStyle('region', region, document);
-  const direct = resolveExplicitRegionBounds(region, style);
-  if (direct) return direct;
-  const nodeById = new Map(nodes(document).map((node) => [node.id, node]));
-  const memberBounds = (region.members || []).flatMap((memberId) => {
-    const member = nodeById.get(memberId);
-    const bounds = member ? nodeBounds(member, document) : undefined;
-    return bounds ? [bounds] : [];
-  });
-  if (!memberBounds.length) return undefined;
-  const policy = resolveRegionBoundsPolicy(
-    style,
-    regions(document).some((candidate) => candidate.parent === region.id)
-  );
-  const members = union(memberBounds);
-  if (!members) return undefined;
-  return {
-    x: members.x - policy.paddingX,
-    y: members.y - policy.paddingY - policy.headerPadding,
-    width: Math.max(policy.minWidth, members.width + policy.paddingX * 2),
-    height: Math.max(policy.minHeight, members.height + policy.paddingY * 2 + policy.headerPadding)
-  };
+  if (!regions(document).some((region) => region.id === regionId)) return undefined;
+  return authoringRegionBoundsMap(document).get(regionId);
 }
 
 function overlaps(left: AuthoringRegionBounds, right: AuthoringRegionBounds, gap = 12): boolean {
@@ -102,18 +85,20 @@ function containsBounds(parent: AuthoringRegionBounds, child: AuthoringRegionBou
     && child.y + child.height <= parent.y + parent.height - gap;
 }
 
+function authoringRegionDepths(document: TopoDocument): Map<string, number> {
+  const children = regionChildrenById(regions(document));
+  const depths = new Map<string, number>();
+  regionContainmentOrder(children).reverse().forEach((id) => {
+    const depth = depths.get(id) || 0;
+    (children.get(id) || []).forEach((childId) => {
+      depths.set(childId, Math.max(depths.get(childId) || 0, depth + 1));
+    });
+  });
+  return depths;
+}
+
 export function authoringRegionDepth(document: TopoDocument, regionId: string): number {
-  const byId = new Map(regions(document).map((region) => [region.id, region]));
-  const seen = new Set<string>();
-  let current = byId.get(regionId);
-  let depth = 0;
-  while (current?.parent && !seen.has(current.parent)) {
-    seen.add(current.parent);
-    current = byId.get(current.parent);
-    if (!current) break;
-    depth += 1;
-  }
-  return depth;
+  return authoringRegionDepths(document).get(regionId) || 0;
 }
 
 export function authoringRegionPlacement(
@@ -122,12 +107,13 @@ export function authoringRegionPlacement(
 ): { x: number; y: number } {
   const parent = options.parentId ? regions(document).find((region) => region.id === options.parentId) : undefined;
   if (options.parentId && !parent) throw new Error(`Parent region "${options.parentId}" does not exist.`);
-  const parentBounds = parent ? authoringRegionBounds(document, parent.id) : undefined;
+  const boundsById = authoringRegionBoundsMap(document);
+  const parentBounds = parent ? boundsById.get(parent.id) : undefined;
   if (parent && !parentBounds) throw new Error(`Parent region "${parent.id}" has no authoring bounds.`);
   const siblingBounds = regions(document)
     .filter((region) => (region.parent || '') === (options.parentId || ''))
     .flatMap((region) => {
-      const bounds = authoringRegionBounds(document, region.id);
+      const bounds = boundsById.get(region.id);
       return bounds ? [bounds] : [];
     });
   const stepX = options.size.width + 40;
@@ -172,13 +158,15 @@ export function authoringRegionForNodePosition(
   const width = 82;
   const height = 60;
   const point = { x: nextPosition.x + width / 2, y: nextPosition.y + height / 2 };
+  const boundsById = authoringRegionBoundsMap(document);
+  const depths = authoringRegionDepths(document);
   return regions(document)
     .flatMap((region) => {
-      const bounds = authoringRegionBounds(document, region.id);
+      const bounds = boundsById.get(region.id);
       if (!bounds) return [];
       const contains = point.x >= bounds.x && point.x <= bounds.x + bounds.width
         && point.y >= bounds.y && point.y <= bounds.y + bounds.height;
-      return contains ? [{ area: bounds.width * bounds.height, depth: authoringRegionDepth(document, region.id), id: region.id }] : [];
+      return contains ? [{ area: bounds.width * bounds.height, depth: depths.get(region.id) || 0, id: region.id }] : [];
     })
     .sort((left, right) => right.depth - left.depth || left.area - right.area || left.id.localeCompare(right.id))[0]?.id;
 }
@@ -227,14 +215,19 @@ export function planAuthoringNodeMove(
 }
 
 function descendantRegionIds(document: TopoDocument, regionId: string): string[] {
+  const children = regionChildrenById(regions(document));
+  regionContainmentOrder(children);
   const result: string[] = [];
-  const visit = (parentId: string) => {
-    regions(document).filter((region) => region.parent === parentId).forEach((region) => {
-      result.push(region.id);
-      visit(region.id);
+  const visited = new Set([regionId]);
+  const pending = [regionId];
+  for (let index = 0; index < pending.length; index += 1) {
+    (children.get(pending[index]) || []).forEach((childId) => {
+      if (visited.has(childId)) return;
+      visited.add(childId);
+      result.push(childId);
+      pending.push(childId);
     });
-  };
-  visit(regionId);
+  }
   return result;
 }
 
