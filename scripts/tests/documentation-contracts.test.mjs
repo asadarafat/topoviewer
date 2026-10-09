@@ -39,6 +39,15 @@ test('command extraction ignores prose, other package managers and shell/HTML co
   ].join('\n')), [install, `${install} js-yaml`]);
 });
 
+test('ignoring HTML comments never joins command or package fragments', () => {
+  assert.deepEqual(npmInstallCommands('n<!-- note -->pm install topoviewer'), []);
+  const [command] = npmInstallCommands('npm install topoviewer @xyflow/react re<!-- note -->act react-dom');
+  assert.ok(problems(command).includes('Missing required package: react'));
+  const [multiline] = npmInstallCommands('npm install topoviewer<!--\r\neditor note\r\n--> @xyflow/react react react-dom');
+  assert.equal(multiline, 'npm install topoviewer');
+  assert.ok(problems(multiline).includes('Missing required package: @xyflow/react'));
+});
+
 test('missing peers and wrong package names remain errors even when extras are present', () => {
   for (const missing of ['topoviewer', ...requiredPeers]) {
     const command = `npm install ${['topoviewer', ...requiredPeers].filter((name) => name !== missing).join(' ')} js-yaml`;
@@ -106,6 +115,30 @@ test('adoption checks accept editorial rewrites while preserving actionable cont
   const reworded = adoption.replace(/^#+ .+$/gm, '## Reworded section');
   assert.deepEqual(adoptionGuideProblems(reworded), []);
   assert.ok(adoptionGuideProblems('## Why The YAML Bundle Matters\n## Final Position').length);
+});
+
+test('adoption checks ignore commented contracts without joining links or shifting diagnostics', () => {
+  const hidden = adoptionGuideProblems([
+    '<!--',
+    '[Status](integration-roadmap.md)',
+    'topology.yaml',
+    '```topoviewer',
+    'topology: examples/integration/adoption-portability/topology.yaml',
+    'stylesheet: examples/integration/adoption-portability/stylesheet.yaml',
+    '```',
+    '-->'
+  ].join('\n'));
+  assert.ok(hidden.includes('Missing adoption guidance link: integration-roadmap.md'));
+  assert.ok(hidden.includes('Missing portable bundle document: topology.yaml'));
+  assert.ok(hidden.includes('Missing runnable TopoViewer adoption example.'));
+  assert.ok(adoptionGuideProblems(adoption.replace('integration-roadmap.md', 'integration-road<!-- note -->map.md'))
+    .includes('Missing adoption guidance link: integration-roadmap.md'));
+
+  const note = '<!-- editor note\r\nnot a guide\r\n-->\r\n';
+  assert.deepEqual(adoptionGuideProblems(note + adoption), []);
+  const openingLine = adoption.split('\n').indexOf('```topoviewer') + 1;
+  const invalid = adoptionGuideProblems(note + adoption.replace(/^stylesheet: .+$/m, 'style: missing.yaml'));
+  assert.ok(invalid.includes(`Adoption example at line ${openingLine + 3} needs an examples/ YAML stylesheet reference.`));
 });
 
 test('adoption checks reject missing support/trial links and broken runnable examples', () => {

@@ -1,10 +1,16 @@
 import { load } from 'js-yaml';
 import { documentationBlocks } from './docs-code-blocks.mjs';
 
+function withoutDocumentationComments(text) {
+  // Keep token boundaries and diagnostic line numbers when ignoring editorial
+  // comments. This is documentation preprocessing, not HTML sanitization.
+  return text.replace(/<!--[\s\S]*?-->/g, (comment) => comment.replace(/[^\r\n]/g, ' '));
+}
+
 // Check the dependencies a command installs, not their order or an exact prose
 // string. Other packages (for example js-yaml in the validator guide) are valid.
 export function npmInstallCommands(text) {
-  const joined = text.replace(/<!--[\s\S]*?-->/g, '').replace(/\\\r?\n[ \t]*/g, ' ');
+  const joined = withoutDocumentationComments(text).replace(/\\\r?\n[ \t]*/g, ' ');
   return joined.split(/\r?\n/).flatMap((line) => {
     if (/^\s*#/.test(line)) return [];
     return [...line.matchAll(/(?:^|`)[ \t]*(?:\$[ \t]+)?(npm[ \t]+(?:install|i)[ \t]+[^\r\n`]*)/g)]
@@ -52,7 +58,7 @@ const adoptionLinks = [
 // The adoption contract is an actionable trial and honest support/limit links.
 // Editorial headings and paragraph wording are deliberately not an API.
 export function adoptionGuideProblems(markdown, { sourceExists = () => true } = {}) {
-  const text = markdown.replace(/<!--[\s\S]*?-->/g, '');
+  const text = withoutDocumentationComments(markdown);
   const problems = [];
   const links = new Set([...text.matchAll(/(?<!!)\[[^\]]*\]\(([^\s)]+)(?:\s+"[^"]*")?\)/g)]
     .map((match) => match[1].split('#')[0]));
