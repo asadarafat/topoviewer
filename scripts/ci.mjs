@@ -116,6 +116,7 @@ const laneDefinitions = {
   ],
   quality: [
     step('lint and typecheck', 'npm', ['run', 'quality']),
+    step('test documentation and install command contracts', 'node', ['--test', 'scripts/tests/documentation-contracts.test.mjs']),
     step('test dependency audit failures and exceptions', 'npm', ['run', 'dependency:advisories:test'])
   ],
   'studio:quality': [
@@ -123,6 +124,7 @@ const laneDefinitions = {
   ],
   schemas: [
     step('check canonical identity migration', 'npm', ['run', 'migrate:identity']),
+    step('test semantic identity migration checks', 'node', ['--test', 'scripts/tests/migrate-canonical-identity.test.mjs']),
     step('validate schemas', 'npm', ['run', 'validate:schemas']),
     step('validate semantics', 'npm', ['run', 'validate:semantics'])
   ],

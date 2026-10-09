@@ -3,48 +3,63 @@ import path from 'node:path';
 import * as YAML from 'js-yaml';
 import { describe, expect, it } from 'vitest';
 
-function featureTitle(feature: string): string {
-  return feature
-    .split('-')
-    .map((word) => `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
-    .join(' ');
-}
-
 function record(value: unknown): Record<string, unknown> {
   return value && typeof value === 'object' ? value as Record<string, unknown> : {};
 }
 
-function navValue(entry: Record<string, unknown>, key: string): unknown {
-  return Object.prototype.hasOwnProperty.call(entry, key) ? entry[key] : undefined;
+function navigationRoutes(value: unknown): string[] {
+  if (typeof value === 'string') return [value.split('#')[0]];
+  if (Array.isArray(value)) return value.flatMap(navigationRoutes);
+  return Object.values(record(value)).flatMap(navigationRoutes);
+}
+
+function missingRoutes(navigation: unknown, requiredRoutes: string[]): string[] {
+  const actual = new Set(navigationRoutes(navigation));
+  return requiredRoutes.filter((route) => !actual.has(route));
 }
 
 describe('MkDocs navigation', () => {
-  it('lists every public example category in the Examples nav', () => {
+  it('links every public category, featured scenario and integration entrypoint within Examples', () => {
     const packageRoot = process.cwd();
     const repoRoot = path.resolve(packageRoot, '../..');
     const catalog = record(YAML.load(fs.readFileSync(path.join(packageRoot, 'content/examples/catalog.yaml'), 'utf8')));
     const mkdocs = record(YAML.load(fs.readFileSync(path.join(repoRoot, 'mkdocs.yml'), 'utf8')));
 
-    const expectedCategories = new Set(
-      (catalog.examples as Array<{ feature?: string }> | undefined || [])
+    const features = new Set(
+      (catalog.examples as Array<{ feature?: string; publicPage?: boolean }> | undefined || [])
+        .filter((example) => example.publicPage !== false)
         .map((example) => example.feature)
         .filter((feature): feature is string => typeof feature === 'string' && !['harness', 'integration'].includes(feature))
-        .map(featureTitle)
     );
+    const gallery = JSON.parse(fs.readFileSync(path.join(packageRoot, 'content/gallery.json'), 'utf8')) as { featured: Array<{ page: string }> };
+    const requiredRoutes = [
+      'topoviewer/examples/index.md',
+      'topoviewer/examples/use-cases/index.md',
+      ...[...features].map((feature) => `topoviewer/examples/${feature}/index.md`),
+      ...gallery.featured.map((card) => card.page)
+    ];
     const examplesNav = (mkdocs.nav as Array<Record<string, unknown>> | undefined || [])
-      .find((entry) => Object.prototype.hasOwnProperty.call(entry, 'Examples'))?.Examples as Array<Record<string, string>> | undefined;
-    const directExampleCategories = (examplesNav || [])
-      .filter((entry) => {
-        const [label, value] = Object.entries(entry)[0] || [];
-        return typeof label === 'string'
-          && typeof value === 'string'
-          && value === `topoviewer/examples/${label.toLowerCase().replace(/ /g, '-')}/index.md`;
-      });
-    const actualCategories = new Set(directExampleCategories.flatMap((entry) => Object.keys(entry)));
+      .find((entry) => Object.prototype.hasOwnProperty.call(entry, 'Examples'))?.Examples;
 
-    expect([...expectedCategories].filter((category) => !actualCategories.has(category))).toEqual([]);
-    expect(navValue((examplesNav || [])[0] || {}, 'Overview')).toBe('topoviewer/examples/index.md');
-    expect((examplesNav || []).some((entry) => Array.isArray(navValue(entry, 'Use Cases')))).toBe(true);
+    expect(missingRoutes(examplesNav, requiredRoutes)).toEqual([]);
+    const localRoutes = navigationRoutes(examplesNav).filter((route) => route.endsWith('.md') && !/^[a-z]+:/i.test(route));
+    expect(localRoutes.filter((route) => !fs.existsSync(path.join(repoRoot, 'docs', route)))).toEqual([]);
+  });
+
+  it('accepts nested sections and renamed labels while checking actual destinations', () => {
+    const navigation = [{ 'Browse by technique': [{ 'Deeper section': [{ 'Device cards': 'topoviewer/examples/nodes/index.md#cards' }] }] }];
+    expect(missingRoutes(navigation, ['topoviewer/examples/nodes/index.md'])).toEqual([]);
+  });
+
+  it('rejects a missing category or scenario even when its old label remains', () => {
+    const navigation = [{ 'Pattern Library': [{ Nodes: 'topoviewer/examples/edges/index.md' }] }, { 'Guided Scenarios': [] }];
+    expect(missingRoutes(navigation, [
+      'topoviewer/examples/nodes/index.md',
+      'topoviewer/examples/use-cases/service-provider-network.md'
+    ])).toEqual([
+      'topoviewer/examples/nodes/index.md',
+      'topoviewer/examples/use-cases/service-provider-network.md'
+    ]);
   });
 
   it('documents every top-level MkDocs/Zensical embed block option from the schema', () => {
