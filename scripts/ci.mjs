@@ -101,6 +101,7 @@ const laneDefinitions = {
   ],
   generated: [
     step('test read-only documentation projection checks', 'node', ['--test', 'scripts/tests/content-projections.test.mjs']),
+    step('test gallery checks without compiled packages', 'node', ['--test', 'scripts/tests/gallery.test.mjs']),
     step('check release documentation screenshots', 'npm', ['run', 'docs:screenshots:check']),
     step('sync docs', 'npm', ['run', 'sync:docs']),
     checkGeneratedStep('check generated docs are committed', GENERATED_DOC_PATHS, {
@@ -148,6 +149,10 @@ const laneDefinitions = {
     step('lint documentation contract', 'npm', ['run', 'docs:lint']),
     step('test documentation fence extraction', 'node', ['--test', 'scripts/tests/docs-code-blocks.test.mjs']),
     step('validate runnable documentation snippets', 'node', ['scripts/check-docs-examples.mjs']),
+    step('verify gallery previews and source bundles', 'npm', ['run', 'docs:gallery:check']),
+    step('test gallery archive reproducibility', 'node', ['--test', 'scripts/tests/gallery.test.mjs'], { env: { TOPOVIEWER_GALLERY_RUNTIME_TESTS: '1' } }),
+    step('validate showcase runtime models', 'node', ['scripts/check-docs-gallery.mjs', '--runtime']),
+    step('verify Studio archive codec output', 'node', ['scripts/sync-gallery.mjs', '--bundles', '--check']),
     step('build MkDocs site', 'npm', ['run', 'docs:build:fast']),
     step('build Zensical site', 'npm', ['run', 'zensical:build'], { env: { TOPOVIEWER_ZENSICAL_SKIP_VIEWER_BUILD: '1' } }),
     checkGeneratedStep('check Zensical generated config is committed', ZENSICAL_GENERATED_PATHS, {
@@ -159,6 +164,7 @@ const laneDefinitions = {
     step('check authoring surface retirement', 'npm', ['run', 'authoring:retirement:check']),
     step('prune publish-only docs artifacts', 'npm', ['run', 'docs:prune']),
     step('smoke built docs site', 'npm', ['run', 'docs:smoke']),
+    step('exercise gallery scenarios on both hosts', 'npm', ['run', 'docs:gallery:smoke']),
     step('inspect docs artifacts', 'npm', ['run', 'artifact:check:docs'])
   ],
   'render-parity': [

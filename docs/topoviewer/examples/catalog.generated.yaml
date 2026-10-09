@@ -830,3 +830,42 @@ examples:
       minVisibleEdges: 1
       minRegions: 3
     markdown: docs/topoviewer/complete-network-demo/index.md
+  - id: integration-payments-journey
+    title: Payments across three metros
+    feature: integration
+    path: integration/payments-journey
+    page: topoviewer/examples/use-cases/service-provider-network
+    renderable: true
+    topology: docs/topoviewer/examples/integration/payments-journey/topology.yaml
+    stylesheet: docs/topoviewer/examples/integration/payments-journey/stylesheet.yaml
+    expected:
+      graphNodes: 8
+      visibleCallouts: 1
+      minVisibleEdges: 14
+      minRegions: 3
+    readme: docs/topoviewer/examples/integration/payments-journey/README.md
+  - id: integration-fabric-journey
+    title: Follow a packet through the fabric
+    feature: integration
+    path: integration/fabric-journey
+    page: topoviewer/examples/use-cases/follow-a-packet
+    renderable: true
+    topology: docs/topoviewer/examples/integration/fabric-journey/topology.yaml
+    stylesheet: docs/topoviewer/examples/integration/fabric-journey/stylesheet.yaml
+    expected:
+      graphNodes: 10
+      minVisibleEdges: 16
+      minRegions: 4
+    readme: docs/topoviewer/examples/integration/fabric-journey/README.md
+  - id: integration-endpoint-journey
+    title: What sits behind this endpoint?
+    feature: integration
+    path: integration/endpoint-journey
+    page: topoviewer/examples/use-cases/kubernetes-service-map
+    renderable: true
+    topology: docs/topoviewer/examples/integration/endpoint-journey/topology.yaml
+    stylesheet: docs/topoviewer/examples/integration/endpoint-journey/stylesheet.yaml
+    expected:
+      graphNodes: 6
+      minVisibleEdges: 5
+    readme: docs/topoviewer/examples/integration/endpoint-journey/README.md

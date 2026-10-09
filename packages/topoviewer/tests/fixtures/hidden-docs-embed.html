@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Initially hidden documentation embed</title>
+  </head>
+  <body>
+    <button onclick="document.getElementById('tab').style.display='block'">Show diagram</button>
+    <button onclick="document.getElementById('tab').style.display='none'">Hide diagram</button>
+    <section id="tab" style="display: none">
+      <div class="topoviewer-embed" style="width: 688px; height: 640px"
+        data-topology="/initial-visibility/topology.yaml"
+        data-stylesheet="/initial-visibility/stylesheet.yaml"></div>
+    </section>
+    <script type="module" src="../../src/embed.tsx"></script>
+  </body>
+</html>

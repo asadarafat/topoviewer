@@ -1,0 +1,18 @@
+renderable: true
+visualSnapshot: false
+dom:
+  graphNodes: 6
+  minVisibleEdges: 5
+assertions:
+  controls: true
+  expandClickNode: aggregate:managed-runtime
+  expandedGraphNodes: 8
+  expandedMinVisibleEdges: 7
+  expandedMinRegions: 1
+  collapseClickNode: region:managed-runtime
+  collapsedGraphNodes: 6
+  collapsedMinVisibleEdges: 5
+  collapsedRegions: 0
+semantic:
+  errors: []
+  warnings: []

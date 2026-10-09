@@ -1,0 +1,140 @@
+version: "0.2"
+layout:
+  mode: manual
+  width: 940
+  height: 620
+labelFields: []
+icons:
+  fabric-switch:
+    alt: Fabric switch
+    svg: |
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <rect x="3" y="8" width="26" height="16" rx="3" stroke="#cbd5e1" stroke-width="1.6"/>
+        <path d="M8 13h4m4 0h4m4 0h1M8 19h4m4 0h4" stroke="#67e8f9" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+  workload:
+    alt: Workload server
+    svg: |
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <rect x="6" y="4" width="20" height="24" rx="3" stroke="#cbd5e1" stroke-width="1.6"/>
+        <path d="M10 10h12M10 16h12M10 22h5" stroke="#c4b5fd" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+stylesheet:
+  - selector: node
+    style:
+      shape: roundRectangle
+      width: 132
+      height: 54
+      icon: fabric-switch
+      backgroundColor: "#0f172a"
+      borderColor: "#475569"
+      borderWidth: 2
+      labelColor: "#f8fafc"
+      labelFontSize: 14
+      labelFontWeight: 700
+      metaFontSize: 0
+      draggable: false
+      nodeLayout:
+        type: card
+        icon: {placement: left, width: 22, height: 22}
+        content: {align: left, titleField: labels.name}
+  - selector: node[labels.role = "spine"]
+    style:
+      borderColor: "#0891b2"
+      height: 60
+  - selector: node[labels.role = "workload"]
+    style:
+      icon: workload
+      height: 50
+      borderColor: "#64748b"
+  - selector: node[labels.tenant = "42"]
+    style:
+      borderColor: "#8b5cf6"
+      badgeLabel: T42
+      badgeBackgroundColor: "#6d28d9"
+      badgeColor: "#ffffff"
+      badgeBorderColor: "#c4b5fd"
+      badgeFontSize: 12
+      badgePadding: 3
+      badgeOffset: 5
+  - selector: link
+    style:
+      label: ""
+      curveStyle: straight
+      lineColor: "#94a3b8"
+      lineWidth: 2
+      lineOpacity: 0.7
+      targetArrowShape: none
+      endpointLabelAutoPosition: true
+      endpointLabelDistance: 30
+      endpointLabelSideOffset: 10
+      labelFontSize: 12
+      labelFontWeight: 600
+      sourceLabelColor: var(--topoviewer-fg-strong)
+      targetLabelColor: var(--topoviewer-fg-strong)
+      sourceLabelBackgroundColor: var(--topoviewer-edge-label-bg)
+      targetLabelBackgroundColor: var(--topoviewer-edge-label-bg)
+      sourceLabelZIndex: 40
+      targetLabelZIndex: 40
+      labelCollisionPolicy: avoid
+  - selector: link[labels.sample = "utilization"]
+    style:
+      directionalStrokes: true
+      directionOverlayLayer: utilization
+      directionStartGap: 12
+      directionCenterGap: 20
+      directionLabelOffset: 28
+      directionLabelRotation: none
+  - selector: linkDirection
+    style:
+      labelFontSize: 12
+      labelFontWeight: 700
+      labelColor: var(--topoviewer-fg-strong)
+      textBackgroundColor: var(--topoviewer-edge-label-bg)
+      lineColor: "#64748b"
+      lineWidth: 2
+  - selector: linkDirection[direction = "sourceToTarget"]
+    style:
+      targetArrowShape: triangle
+  - selector: linkDirection[direction = "targetToSource"]
+    style:
+      sourceArrowShape: triangle
+      lineStyle: dashed
+  - selector: path
+    style:
+      label: ""
+      curveStyle: straight
+      lineColor: "#0891b2"
+      lineWidth: 4
+      laneWidth: 8
+      laneGap: 8
+      targetArrowShape: triangle
+      targetArrowColor: "#0891b2"
+      animated: true
+      zIndex: 8
+  - selector: region
+    style:
+      backgroundColor: "rgba(15, 23, 42, 0.035)"
+      borderColor: "#cbd5e1"
+      borderWidth: 1
+      labelColor: var(--topoviewer-fg-muted)
+      labelFontSize: 12
+      labelFontWeight: 700
+      labelPosition: topCenter
+      labelMargin: 12
+      headerPadding: 32
+      paddingX: 22
+      paddingY: 22
+      nodeWidth: 132
+      nodeHeight: 54
+      draggable: false
+      zIndex: -20
+  - selector: text
+    style:
+      fontSize: 14
+      fontWeight: 500
+      color: var(--topoviewer-fg-muted)
+      width: 540
+      height: 30
+      textAlign: center
+      draggable: false

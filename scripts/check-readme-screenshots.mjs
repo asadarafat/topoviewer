@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import fs from 'node:fs';
+import { galleryRasterAssets } from './lib/docs-gallery.mjs';
 import {
   absoluteRepoPath,
   canonicalBundle,
@@ -21,6 +22,7 @@ const errors = [];
 const screenshotPaths = new Set(documentationScreenshots.map((asset) => asset.path));
 const ownedPaths = new Set([
   ...screenshotPaths,
+  ...galleryRasterAssets.map((asset) => asset.path),
   ...documentationBrandRasters.map((asset) => asset.path)
 ]);
 

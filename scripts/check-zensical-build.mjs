@@ -102,29 +102,29 @@ for (const needle of [
   }
 }
 
-const realNetworkHtml = fs.readFileSync(serviceProviderNetworkPage, 'utf8');
+const paymentsHtml = fs.readFileSync(serviceProviderNetworkPage, 'utf8');
 for (const needle of [
   'class="topoviewer-embed topoviewer-parity-theme"',
-  'data-topology="../../../../assets/topoviewer/examples/integration/real-network-underlay/topology.yaml"',
-  'data-stylesheet="../../../../assets/topoviewer/examples/integration/real-network-underlay/stylesheet.yaml"',
-  'data-selected-layer-ids="[&quot;underlay&quot;]"',
-  'data-topology="../../../../assets/topoviewer/examples/integration/real-network-bgp/topology.yaml"',
-  'data-selected-layer-ids="[&quot;underlay&quot;,&quot;bgp&quot;]"',
-  'data-topology="../../../../assets/topoviewer/examples/integration/real-network-transport-layer/topology.yaml"',
-  'data-stylesheet="../../../../assets/topoviewer/examples/integration/real-network-transport-layer/stylesheet.yaml"',
-  'data-selected-layer-ids="[&quot;underlay&quot;,&quot;bgp&quot;,&quot;transport&quot;]"',
-  'data-topology="../../../../assets/topoviewer/examples/integration/real-network-service-path/topology.yaml"',
-  'data-selected-layer-ids="[&quot;underlay&quot;,&quot;bgp&quot;,&quot;transport&quot;,&quot;service&quot;]"',
-  'data-topology="../../../../assets/topoviewer/examples/integration/real-network-failure-view/topology.yaml"',
-  'data-selected-layer-ids="[&quot;underlay&quot;,&quot;bgp&quot;,&quot;transport&quot;,&quot;service&quot;,&quot;operations&quot;]"',
-  'data-attention="{&quot;query&quot;:{&quot;pathIds&quot;:[&quot;payments-primary&quot;],&quot;mode&quot;:&quot;dim-context&quot;}}"'
+  'data-topology="../../../../assets/topoviewer/examples/integration/payments-journey/topology.yaml"',
+  'data-topology="../../../../assets/topoviewer/examples/integration/payments-journey/degraded.yaml"',
+  'data-topology="../../../../assets/topoviewer/examples/integration/payments-journey/recovered.yaml"',
+  'data-stylesheet="../../../../assets/topoviewer/examples/integration/payments-journey/stylesheet.yaml"',
+  'data-selected-layer-ids="[&quot;service&quot;,&quot;transport&quot;,&quot;notes&quot;]"'
 ]) {
-  if (!realNetworkHtml.includes(needle)) {
-    fail(`Zensical real network demo page does not include expected content: ${needle}`);
+  if (!paymentsHtml.includes(needle)) {
+    fail(`Zensical payments scenario does not include expected content: ${needle}`);
   }
 }
-if (realNetworkHtml.includes('data-topology="../assets/topoviewer/examples/')) {
-  fail('Zensical real network demo page has root-relative embed paths computed from the Markdown file instead of the generated page directory.');
+const providerRoute = '/topoviewer/examples/use-cases/service-provider-network/';
+const providerLinks = new Set([...paymentsHtml.matchAll(/href="([^"]+)"/g)]
+  .map((match) => new URL(match[1], `https://docs.invalid${providerRoute}`).pathname));
+for (const page of ['underlay', 'bgp', 'transport-layer', 'service-path', 'failure-view']) {
+  if (!providerLinks.has(`${providerRoute}${page}/`)) {
+    fail(`Zensical payments scenario must retain its ${page} detail link.`);
+  }
+}
+if (paymentsHtml.includes('data-topology="../assets/topoviewer/examples/')) {
+  fail('Zensical payments scenario has embed paths computed from the Markdown file instead of the generated page directory.');
 }
 
 const studioHtml = fs.readFileSync(studioUseCasePage, 'utf8');

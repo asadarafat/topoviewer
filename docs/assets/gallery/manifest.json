@@ -1,0 +1,107 @@
+{
+  "version": 1,
+  "generator": "scripts/capture-docs-gallery.mjs",
+  "rendererSha256": "4693caa305ce5948e4db6a5dd827c8a237d08c5a98449f109e0c2e6a4e22951f",
+  "rendererCssSha256": "a983a7e0dd1f6b3120ad3d83726ee90c3fcc250ccfdab2f25a1195b4a5a3b7b6",
+  "generatorFingerprint": "711c070acaceb1ae35acb1199274fd1e4da68f0589331a05f91a9585462ac8bd",
+  "captures": [
+    {
+      "id": "payments",
+      "path": "docs/assets/gallery/payments.png",
+      "width": 1120,
+      "height": 640,
+      "sha256": "87b50e09a8b75e8ff6eb5d9bb44199e51c028b3ff68e14385a86e45d260df9ac",
+      "sourceFingerprint": "8214ed25b4a64171644858d2103e74b79de03042ba01d5765f2c5316ae6f3437"
+    },
+    {
+      "id": "fabric",
+      "path": "docs/assets/gallery/fabric.png",
+      "width": 1120,
+      "height": 620,
+      "sha256": "9df99d518aecaa14a3d7d6facc9a810e4485d66ff4dbe26e4b419aed5ba7db33",
+      "sourceFingerprint": "0c7c6dc1028e2d2e844b5d449218cb40a76a35fff199bef52a34123b8fe8b952"
+    },
+    {
+      "id": "endpoint",
+      "path": "docs/assets/gallery/endpoint.png",
+      "width": 1120,
+      "height": 620,
+      "sha256": "913efd6d3364b4387cf26f2abd30ac81e5e0c4f338ac605d6ce562ccc06746f4",
+      "sourceFingerprint": "f14a97a82e61c1b63d23d870daa93ba93adf1663f1fb53306fb5b17715b302c6"
+    },
+    {
+      "id": "cards",
+      "path": "docs/assets/gallery/cards.png",
+      "width": 1120,
+      "height": 500,
+      "sha256": "d129a42f8406769e60ec55c38c77ff5b2d82da9cbfdd19b82dd186a2d906f5d2",
+      "sourceFingerprint": "a1f6b6ef11930ff531d9ee5aa7c9bc5d457cf3d508978b48f92c2ad05b871030"
+    },
+    {
+      "id": "directions",
+      "path": "docs/assets/gallery/directions.png",
+      "width": 1120,
+      "height": 500,
+      "sha256": "5649302e613717c134423e49343180addca71bcf5c83a792d08b995fc4ebd938",
+      "sourceFingerprint": "23640f8610d9b374612ddbdbaae0e3f515d75c093c349cd82c1a0aca6b605d85"
+    },
+    {
+      "id": "regions",
+      "path": "docs/assets/gallery/regions.png",
+      "width": 1120,
+      "height": 500,
+      "sha256": "f8464faa8c42b58cbbd85881659475a71e8a63abbe675847bb85a26d2e9fa5bb",
+      "sourceFingerprint": "4aeb0b0e314d6a3c0912e8fe59c2e088afc731f17fe94fad3f6d7c1f3390e632"
+    },
+    {
+      "id": "focus",
+      "path": "docs/assets/gallery/focus.png",
+      "width": 1120,
+      "height": 500,
+      "sha256": "87bfb5a8c27b8c30774a0e230b555162cffc39158b6fb9403baae8d26282c398",
+      "sourceFingerprint": "1664af1e1b7554a70410fb6557d0da3f474eeb38aeb3aab94543fe592b6416d4"
+    },
+    {
+      "id": "callouts",
+      "path": "docs/assets/gallery/callouts.png",
+      "width": 1120,
+      "height": 500,
+      "sha256": "be49a5b54effda78e336d7d364ffdca6699f7dd469c1477a40a6851edacb7fd0",
+      "sourceFingerprint": "57e918e986b2ea7376f230beab6f3decd4f2270e934c9ab0851295b5f44e0a4b"
+    },
+    {
+      "id": "layout",
+      "path": "docs/assets/gallery/layout.png",
+      "width": 1120,
+      "height": 500,
+      "sha256": "ec1a8b2b97c99260151b27263526d14496cadc93c7174756a95b3f22e4e992c7",
+      "sourceFingerprint": "ebb2967888d1fd594c9c0452476ef25049105bbd3cedace9672b514f840162a3"
+    }
+  ],
+  "bundles": [
+    {
+      "path": "docs/assets/gallery/payments.zip",
+      "sha256": "cd56217263f46f109756e62ee5e44beba11e282445859a3e556e3434f09982c4"
+    },
+    {
+      "path": "docs/assets/gallery/payments.tvstudio",
+      "sha256": "241ae152476d12669f303466cdaa7386324bc5972ba6cc7630234dd9d35a1d47"
+    },
+    {
+      "path": "docs/assets/gallery/fabric.zip",
+      "sha256": "a778288699e3d6d7992878fb3c53b75f37876545549c5320649919e1db9b9c82"
+    },
+    {
+      "path": "docs/assets/gallery/fabric.tvstudio",
+      "sha256": "e36672eb687490145666d4f57c07bd86d1b6969b013620649733d1384a57bdeb"
+    },
+    {
+      "path": "docs/assets/gallery/endpoint.zip",
+      "sha256": "1f158c4134147be31e946b494c366bcbafe3d4fc6ae3882376f30d2d00f5045f"
+    },
+    {
+      "path": "docs/assets/gallery/endpoint.tvstudio",
+      "sha256": "ac6a397b67c5d9d9ad65b0ecfc209634537d58c373f058de34f582ce911263c7"
+    }
+  ]
+}

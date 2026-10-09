@@ -662,8 +662,17 @@ function checkExamplesNavBoundary() {
   }
 
   const firstEntry = examplesNav[0];
-  if (navEntryValue(firstEntry, 'Overview') !== 'topoviewer/examples/index.md') {
-    fail('MkDocs Examples nav must start with Overview: topoviewer/examples/index.md');
+  if (navEntryValue(firstEntry, 'Gallery') !== 'topoviewer/examples/index.md') {
+    fail('MkDocs Examples nav must start with Gallery: topoviewer/examples/index.md');
+  }
+  const patterns = examplesNav.map((entry) => navEntryValue(entry, 'Pattern Library')).find(Array.isArray) || [];
+  const scenarios = examplesNav.map((entry) => navEntryValue(entry, 'Guided Scenarios')).find(Array.isArray) || [];
+  for (const [label, target] of [
+    ['Payments Across Three Metros', 'topoviewer/examples/use-cases/service-provider-network.md'],
+    ['Follow A Packet', 'topoviewer/examples/use-cases/follow-a-packet.md'],
+    ['Kubernetes Service Map', 'topoviewer/examples/use-cases/kubernetes-service-map/index.md']
+  ]) {
+    if (!scenarios.some((entry) => navEntryValue(entry, label) === target)) fail(`Guided Scenarios is missing ${label}: ${target}`);
   }
 
   const requiredExampleTargets = new Map([
@@ -682,16 +691,16 @@ function checkExamplesNavBoundary() {
   ]);
 
   for (const [label, target] of requiredExampleTargets) {
-    if (!examplesNav.some((entry) => navEntryValue(entry, label) === target)) {
+    if (!patterns.some((entry) => navEntryValue(entry, label) === target)) {
       fail(`MkDocs Examples nav is missing ${label}: ${target}`);
     }
   }
 
   const useCases = examplesNav
-    .map((entry) => navEntryValue(entry, 'Use Cases'))
+    .map((entry) => navEntryValue(entry, 'Integration Guides'))
     .find((value) => Array.isArray(value));
   if (!useCases) {
-    fail('MkDocs Examples nav must include a Use Cases subgroup.');
+    fail('MkDocs Examples nav must include an Integration Guides subgroup.');
     return;
   }
 
@@ -702,14 +711,12 @@ function checkExamplesNavBoundary() {
     ['Static HTML / Zensical Adapter', 'topoviewer/examples/use-cases/static-html-zensical-adapter.md'],
     ['Single Page HTML', 'topoviewer/examples/use-cases/single-page-html.md'],
     ['TopoViewer Studio', 'topoviewer/examples/use-cases/topoviewer-studio.md'],
-    ['Kubernetes Service Map', 'topoviewer/examples/use-cases/kubernetes-service-map/index.md'],
-    ['Service Provider Network', 'topoviewer/examples/use-cases/service-provider-network.md'],
     ['Grafana TopoViewer Panel', 'topoviewer/examples/use-cases/grafana-topoviewer-panel.md']
   ]);
 
   for (const [label, target] of requiredUseCases) {
     if (!useCases.some((entry) => navEntryValue(entry, label) === target)) {
-      fail(`MkDocs Examples > Use Cases nav is missing ${label}: ${target}`);
+      fail(`MkDocs Examples > Integration Guides nav is missing ${label}: ${target}`);
     }
   }
 }
@@ -777,7 +784,9 @@ function checkNavPathAlignment() {
   const mkdocsConfig = readYaml(path.join(repoRoot, 'mkdocs.yml'));
   // Keep published URLs stable when an editorial title becomes shorter.
   const retainedRoutes = new Map([
-    ['topoviewer/evaluate/adopt-topoviewer-or-keep-topology-locked-to-a-surface.md', 'Adoption Guide']
+    ['topoviewer/evaluate/adopt-topoviewer-or-keep-topology-locked-to-a-surface.md', 'Adoption Guide'],
+    ['topoviewer/examples/index.md', 'Gallery'],
+    ['topoviewer/examples/use-cases/service-provider-network.md', 'Payments Across Three Metros']
   ]);
   const sectionSlugs = new Map([
     ['Start', 'start'],
@@ -798,10 +807,14 @@ function checkNavPathAlignment() {
       if (!sectionSlug || !Array.isArray(value)) continue;
 
       visitNavLeaves(value, (label, target, ancestors) => {
+        // Editorial groups organize discovery while published routes stay stable.
+        const routeAncestors = section === 'Examples' && ancestors.length === 1
+          ? ({ 'Guided Scenarios': ['use-cases'], 'Integration Guides': ['use-cases'], 'Pattern Library': [] }[ancestors[0]] ?? ancestors)
+          : ancestors;
         const expectedPrefix = [
           'topoviewer',
           sectionSlug,
-          ...ancestors.map(slugifyNavLabel)
+          ...routeAncestors.map(slugifyNavLabel)
         ].join('/');
         if (!target.startsWith(`${expectedPrefix}/`)) {
           fail(`MkDocs nav path mismatch: ${[section, ...ancestors, label].join(' > ')} points to ${target}; expected ${expectedPrefix}/...`);

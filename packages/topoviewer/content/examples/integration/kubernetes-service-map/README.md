@@ -1,28 +1,111 @@
-## Kubernetes Service Map From A Real Control Plane
+## What Sits Behind This Endpoint?
 
-Kubernetes already gives operators a strong API. `kubectl`, custom-resource
-status, events, logs, and platform-specific UIs can all answer detailed object
-questions. What they do not automatically provide is a compact relationship
-map:
+Start with the browser's entry point, find the workload behind the API service,
+then open the managed runtime. The overview keeps six cards visible until you
+choose to reveal the detail.
 
-```text
-Which service is the entry point, which workloads back it, and how does that
-control plane connect to the topology it manages?
+**Authored walkthrough:** this compact view uses identities and selected
+relationships from the captured EDA example below. It is a saved teaching model,
+not live cluster inventory or an observed request trace.
+
+```topoviewer
+topology: examples/integration/endpoint-journey/topology.yaml
+stylesheet: examples/integration/endpoint-journey/stylesheet.yaml
+height: 620px
+controls: true
+controlsOpen: false
+helperLines: false
+title: What sits behind this endpoint?
 ```
 
-This example uses Nokia EDA as the concrete case study. The pattern is generic
-Kubernetes: collect inventory from the Kubernetes API and domain resources,
-convert stable objects into topology nodes, convert relationships into topology
-links, then render the result with TopoViewer.
+Cyan links explain service entry and routing; teal links explain selectors,
+bindings, and ownership. The dashed indigo branch adds **authored runtime
+context**, not a measured network call. Card subtitles name the object kind;
+colors do not report health.
 
-The flow below is the pattern this page demonstrates. It starts with inventory,
-keeps conversion separate from styling, and ends with a service map that can be
-reviewed, versioned, and rendered in more than one surface.
+## Take The Three-Step Tour
+
+1. **Follow the endpoint.** Read Browser → try-eda → eda-api → API workload.
+   The last edge is a Kubernetes selector relationship. It explains which
+   deployment backs the service; it is not another HTTP hop.
+2. **Expand the managed runtime.** Click the **Managed runtime** summary card.
+   Its badge counts three member objects. The region opens to show **leaf1**
+   (TopoNode), **Simulator** (Deployment), and **leaf1 pod** (Pod), joined
+   by **backed by** and **owns** relationships. Eight cards are now visible.
+3. **Return to the overview.** Click the expanded **Managed runtime** region
+   to collapse it again. Open the viewer controls and turn the **Managed
+   runtime** layer off: only the four endpoint/workload cards remain. Turn it
+   on to restore the branch.
+
+The source IDs remain unchanged while the view expands, collapses, or filters.
+This is the useful distinction between an inventory list and a relationship
+map: you can change the amount of detail without inventing new object identity.
+
+## Use This Example
+
+[Download the YAML bundle](../../../../assets/gallery/endpoint.zip) or
+[open the portable Studio project](../../../../assets/gallery/endpoint.tvstudio)
+by importing the downloaded archive into Studio. The bundle contains the
+**authored overview**; the full captured map is separate below.
+
+??? example "Copy the overview source"
+
+    **topology.yaml**
+
+    ```yaml
+    --8<-- "docs/topoviewer/examples/integration/endpoint-journey/topology.yaml"
+    ```
+
+    **stylesheet.yaml**
+
+    ```yaml
+    --8<-- "docs/topoviewer/examples/integration/endpoint-journey/stylesheet.yaml"
+    ```
+
+## Explore The Full Captured Map
+
+The larger example retains the Kubernetes service surface and topology runtime
+from the curated EDA inventory snapshot. It includes more services, deployments,
+Pods, and domain resources than the overview. The recorded status values describe
+that saved snapshot; they are not a live health feed.
+
+The upper layer is the Kubernetes control-plane view for the EDA system. Service
+nodes represent Kubernetes `Service` objects. Deployment nodes represent
+Kubernetes `Deployment` objects. Pod nodes represent runtime Pods. Green
+selector links show which deployments are selected by services. Blue runtime
+links show service-to-service dependencies that are useful for reading the
+platform flow.
+
+The lower layer is the topology runtime view. The `NetworkTopology` resource
+contains the `TopoNode` objects for `leaf1`, `leaf2`, and `spine1`. Those
+`TopoNode` objects are backed by simulator deployments and pods. NPP pods keep
+control connectivity to the managed nodes.
+
+Regions group the map into API/UI, identity and persistence, control engines,
+applications and bootstrap services, topology runtime, and simulated fabric.
+Expanded regions can be dragged to clean up the view. Clicking a region
+collapses it into a summary node; clicking the summary expands it again.
+
+```topoviewer
+topology: examples/integration/kubernetes-service-map/topology.yaml
+stylesheet: examples/integration/kubernetes-service-map/stylesheet.yaml
+height: 620px
+controls: true
+controlsOpen: true
+title: Kubernetes service map
+```
+
+## Advanced: Build A Map From Your Inventory
+
+The remaining sections show collection and conversion. You need a TopoViewer
+repository checkout to run the bundled scripts, plus `kubectl` access to the
+cluster you intend to inspect. Start with your own operational question and
+review the resulting relationships before publishing them.
 
 ```topoviewer
 topology: examples/integration/kubernetes-service-map/service-map-flow-topology.yaml
 stylesheet: examples/integration/kubernetes-service-map/service-map-flow-stylesheet.yaml
-height: 420px
+height: 360px
 controls: false
 controlsOpen: false
 title: Inventory to service map
@@ -126,7 +209,7 @@ For this example, a converter maps inventory into the topology contract like
 this:
 
 - object identity becomes `graph.nodes[].id`;
-- object names become `graph.nodes[].name`;
+- object names become `graph.nodes[].labels.name`;
 - object family and status become `labels`;
 - ports, selectors, images, readiness, and status details become `data`;
 - selectors, ownership, containment, runtime calls, and control relationships
@@ -159,56 +242,6 @@ service dependency map, a Kubernetes ownership view, a topology runtime view, or
 a Grafana overlay target without rewriting the source inventory. Layer hiding
 uses the generated `graph.layers[]`; collapse and expand behavior uses the
 generated `attention.aggregate` groups.
-
-## Reading The Service Map
-
-The service map is the result of the collection and conversion workflow. It does
-not replace `kubectl`, custom-resource status, logs, or platform operations
-screens. It is a relationship view built from the same inventory an operator
-already trusts.
-
-The upper layer is the Kubernetes control-plane view for the EDA system. Service
-nodes represent Kubernetes `Service` objects. Deployment nodes represent
-Kubernetes `Deployment` objects. Pod nodes represent runtime Pods. Green
-selector links show which deployments are selected by services. Blue runtime
-links show service-to-service dependencies that are useful for reading the
-platform flow.
-
-The lower layer is the topology runtime view. The `NetworkTopology` resource
-contains the `TopoNode` objects for `leaf1`, `leaf2`, and `spine1`. Those
-`TopoNode` objects are backed by simulator deployments and pods. NPP pods keep
-control connectivity to the managed nodes.
-
-Regions group the map into API/UI, identity and persistence, control engines,
-applications and bootstrap services, topology runtime, and simulated fabric.
-Expanded regions can be dragged to clean up the view. Clicking a region
-collapses it into a summary node; clicking the summary expands it again.
-
-```topoviewer
-topology: examples/integration/kubernetes-service-map/topology.yaml
-stylesheet: examples/integration/kubernetes-service-map/stylesheet.yaml
-height: 620px
-controls: true
-controlsOpen: true
-title: Kubernetes service map
-```
-
-## How TopoViewer Helps
-
-Without a topology layer, the same investigation is spread across separate
-commands: inspect a Service, follow selectors to Deployments, inspect Pods,
-check custom resources, then remember how the pieces fit together.
-
-TopoViewer turns that relationship model into a reusable artifact:
-
-- `topology.yaml` records what exists and how objects relate;
-- `stylesheet.yaml` records how object families should be read visually;
-- layers separate the Kubernetes service surface from the topology runtime;
-- regions keep related areas understandable without hiding their members;
-- attention aggregation makes dense areas collapsible without deleting context.
-
-The useful outcome is not a prettier object list. It is a service map that
-explains the platform shape before the reader drills into any single object.
 
 ## Reusing The Pattern
 

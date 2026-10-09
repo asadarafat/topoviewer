@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as yaml from 'js-yaml';
 import '@xyflow/react/dist/style.css';
 import './styles.css';
@@ -134,6 +134,22 @@ function EmbeddedTopoViewer({
   helperLines?: TopoViewerProps['helperLines'];
   initialSelectedLayerIds?: string[];
 }) {
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const [viewportReady, setViewportReady] = useState(false);
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return undefined;
+    const observeSize = () => {
+      if (viewport.clientWidth <= 0 || viewport.clientHeight <= 0) return;
+      observer.disconnect();
+      setViewportReady(true);
+    };
+    const observer = new ResizeObserver(observeSize);
+    observer.observe(viewport);
+    observeSize();
+    return () => observer.disconnect();
+  }, []);
+
   const effectiveAttention = attention || documentSpec.attention;
   const aggregateConfig = effectiveAttention?.aggregate;
   const linkGroupingConfig = effectiveAttention?.links?.grouping;
@@ -282,13 +298,15 @@ function EmbeddedTopoViewer({
 
   return (
     <div className="topoviewer-embed-shell">
-      <div className="topoviewer-embed-viewport">
+      <div className="topoviewer-embed-viewport" ref={viewportRef}>
         {controlsEnabled && controlsOpen ? (
           <div className="topoviewer-embed-controls-overlay">
             {controls}
           </div>
         ) : null}
-        <TopoViewer
+        {/* Initial fit needs real dimensions. Keep the viewer mounted afterward
+            so hiding and reopening a tab preserves the reader's viewport. */}
+        {viewportReady ? <TopoViewer
           document={viewerDocument}
           selectedLayerIds={selectedLayerIds}
           toggles={toggles}
@@ -334,7 +352,7 @@ function EmbeddedTopoViewer({
             open: controlsOpen,
             onToggle: () => setControlsOpen((current) => !current)
           } : undefined}
-        />
+        /> : null}
       </div>
     </div>
   );

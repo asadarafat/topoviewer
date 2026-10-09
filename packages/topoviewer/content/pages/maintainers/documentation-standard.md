@@ -118,6 +118,41 @@ recipes against the schema and runs the documented validator against valid
 files and a broken endpoint. The docs CI lane runs the same check.
 The browser docs smoke also verifies the first and styled tutorial in both hosts.
 
+## Gallery And Guided Scenarios
+
+The Examples landing page is generated from `packages/topoviewer/content/gallery.json`.
+Keep three guided scenarios ahead of the focused pattern library. Each scenario
+starts with an operational question and a live diagram, then gives three actions
+with observable outcomes. Explain authored or captured data before readers
+interpret a status as live telemetry.
+
+Use a consistent visual vocabulary: readable cards, restrained region boundaries,
+cyan/teal paths, and amber/red for warning or failure. Show useful names and status
+first. Keep raw metadata in inspection and make optional ports or utilization
+available through controls. Preserve stable IDs across incident snapshots.
+
+Gallery previews are actual renderer captures. Do not paint substitute diagrams
+or retouch screenshots. Maintain canonical source under `content/examples`, then:
+
+```bash
+npm run sync:docs
+npm run docs:gallery:capture
+npm run docs:gallery:check
+```
+
+`sync:gallery` updates the landing page without requiring a package build.
+`docs:gallery:capture` builds the core library, creates deterministic source ZIPs
+and `.tvstudio` archives using Studio's own encoder and decoder, and captures the
+published embed renderer. Archives open the initial scenario; the ZIP also
+includes alternate states. The gallery manifest records source, renderer, image,
+and download hashes so stale previews and bundles fail CI checks.
+
+After building both documentation hosts, run `npm run docs:gallery:smoke`.
+Review its desktop, light/dark, and narrow-screen captures. Check initial framing,
+node overlap, readable labels, gallery keyboard access, scenario interactions,
+download paths, and Studio imports. Keep small reference examples focused; visual
+showcases should not add unrelated complexity to beginner tutorials.
+
 ## Wording Rules
 
 - Use the exact public support-status labels: `Supported`,

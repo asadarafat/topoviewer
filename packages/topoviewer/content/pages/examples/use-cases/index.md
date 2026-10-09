@@ -1,11 +1,18 @@
-# Use Cases
+# Integration Guides
 
-Use cases are complete workflows. They combine topology facts, stylesheets,
-layouts, attention, generated inventory, mapper YAML, or runtime telemetry into
-something closer to how TopoViewer is used in practice.
+Choose a guide for the application or documentation host that will render your
+topology. Each guide explains that host's setup, files, and runtime responsibilities.
 
-Use the feature-family pages when you need one primitive. Use this page when you
-want to see how the primitives fit together.
+To explore a finished diagram first, try a guided scenario:
+
+- [Payments across three metros](service-provider-network.md): compare an authored
+  circuit failure and service recovery.
+- [Follow a packet through the fabric](follow-a-packet.md): distinguish a selected
+  tenant route from its physical links.
+- [What sits behind this endpoint?](kubernetes-service-map/index.md): unfold a
+  workload and its managed runtime.
+
+The [gallery](../index.md) also links to focused visual patterns.
 
 ## Embed In React
 
@@ -75,14 +82,16 @@ study, but the pattern is generic:
 Use it when a platform team needs a relationship view that is easier to review
 than raw command output.
 
-## Read A Service Provider Network
+## Reuse The Service Provider Examples
 
-[Service Provider Network](service-provider-network.md) uses one compact
-provider topology to answer multiple operational questions: underlay capacity,
-BGP sessions, transport intent, service path, and failure impact.
+[Payments across three metros](service-provider-network.md) compares three
+authored incident snapshots with stable object IDs. Its source ZIP includes
+the normal, degraded, and recovered topologies plus their shared stylesheet.
 
-Use it when one source model needs to produce several network views without
-maintaining separate static diagrams.
+For individual network concepts, the same guide links to the retained
+[provider layer examples](service-provider-network.md#explore-the-provider-layers):
+underlay, BGP, transport, service paths, and failure views. These are separate
+examples, not additional layers in the Payments model.
 
 ## Operate In Grafana
 

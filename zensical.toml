@@ -10,6 +10,7 @@ copyright = "Copyright &copy; 2026 TopoViewer contributors"
 repo_url = "https://github.com/asadarafat/topoviewer"
 repo_name = "asadarafat/topoviewer"
 extra_css = [
+  "assets/topoviewer/gallery.css",
   "assets/topoviewer/topoviewer-embed.css",
   "assets/topoviewer/topoviewer-zensical.css",
 ]
@@ -50,22 +51,29 @@ nav = [
     { "Debug Rendering" = "topoviewer/author/debug-rendering.md" }
   ] },
   { "Examples" = [
-    { "Overview" = "topoviewer/examples/index.md" },
-    { "Graph" = "topoviewer/examples/graph/index.md" },
-    { "Nodes" = "topoviewer/examples/nodes/index.md" },
-    { "Edges" = "topoviewer/examples/edges/index.md" },
-    { "Paths" = "topoviewer/examples/paths/index.md" },
-    { "Attention" = "topoviewer/examples/attention/index.md" },
-    { "Regions" = "topoviewer/examples/regions/index.md" },
-    { "Shapes" = "topoviewer/examples/shapes/index.md" },
-    { "Callouts" = "topoviewer/examples/callouts/index.md" },
-    { "Text" = "topoviewer/examples/text/index.md" },
-    { "Styling" = "topoviewer/examples/styling/index.md" },
-    { "Layout" = "topoviewer/examples/layout/index.md" },
-    { "Authoring" = "topoviewer/examples/authoring/index.md" },
-    { "Object Family Examples" = "topoviewer/examples/object-family-examples.md" },
-    { "Validation" = "topoviewer/examples/validation/index.md" },
-    { "Use Cases" = [
+    { "Gallery" = "topoviewer/examples/index.md" },
+    { "Guided Scenarios" = [
+      { "Payments Across Three Metros" = "topoviewer/examples/use-cases/service-provider-network.md" },
+      { "Follow A Packet" = "topoviewer/examples/use-cases/follow-a-packet.md" },
+      { "Kubernetes Service Map" = "topoviewer/examples/use-cases/kubernetes-service-map/index.md" }
+    ] },
+    { "Pattern Library" = [
+      { "Graph" = "topoviewer/examples/graph/index.md" },
+      { "Nodes" = "topoviewer/examples/nodes/index.md" },
+      { "Edges" = "topoviewer/examples/edges/index.md" },
+      { "Paths" = "topoviewer/examples/paths/index.md" },
+      { "Attention" = "topoviewer/examples/attention/index.md" },
+      { "Regions" = "topoviewer/examples/regions/index.md" },
+      { "Shapes" = "topoviewer/examples/shapes/index.md" },
+      { "Callouts" = "topoviewer/examples/callouts/index.md" },
+      { "Text" = "topoviewer/examples/text/index.md" },
+      { "Styling" = "topoviewer/examples/styling/index.md" },
+      { "Layout" = "topoviewer/examples/layout/index.md" },
+      { "Authoring" = "topoviewer/examples/authoring/index.md" },
+      { "Object Family Examples" = "topoviewer/examples/object-family-examples.md" },
+      { "Validation" = "topoviewer/examples/validation/index.md" }
+    ] },
+    { "Integration Guides" = [
       { "Overview" = "topoviewer/examples/use-cases/index.md" },
       { "React" = "topoviewer/examples/use-cases/react.md" },
       { "MkDocs" = "topoviewer/examples/use-cases/mkdocs.md" },
@@ -73,8 +81,6 @@ nav = [
       { "Single Page HTML" = "topoviewer/examples/use-cases/single-page-html.md" },
       { "TopoViewer Studio" = "topoviewer/examples/use-cases/topoviewer-studio.md" },
       { "Graph Authoring" = "topoviewer/examples/use-cases/graph-authoring.md" },
-      { "Kubernetes Service Map" = "topoviewer/examples/use-cases/kubernetes-service-map/index.md" },
-      { "Service Provider Network" = "topoviewer/examples/use-cases/service-provider-network.md" },
       { "Grafana TopoViewer Panel" = "topoviewer/examples/use-cases/grafana-topoviewer-panel.md" }
     ] }
   ] },

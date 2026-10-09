@@ -1,65 +1,119 @@
-# Examples
+---
+hide:
+  - toc
+---
+<!-- Generated from packages/topoviewer/content/gallery.json by scripts/sync-gallery.mjs. -->
+# Explore what your topology can tell you
 
-This section is the fastest way to see what TopoViewer can render and which
-YAML contract to copy. Read it like a gallery:
+<p class="tv-gallery-intro">Trace a service across a network. Follow a packet through a fabric. Unfold the workloads behind an endpoint. Start with a question, then explore the diagram.</p>
 
-- use the object-family pages when you need a specific primitive;
-- use the use cases when you want a complete applied workflow;
-- use the generated example families when you need exhaustive feature coverage.
+<nav class="tv-gallery-links" aria-label="Browse examples"><a href="#guided-scenarios">Guided scenarios</a><a href="#patterns-to-borrow">Patterns to borrow</a><a href="../start/first-topology/">Build your first diagram</a></nav>
 
-The examples are generated from the same canonical fixtures used by tests. That
-keeps the documentation honest: if an example renders here, the same topology
-and stylesheet are part of the regression surface.
+## Guided Scenarios
 
-## Start Here
+Three small investigations, with live diagrams, things to try, and source files to keep.
 
-Examples are for reusable patterns, not product-positioning walkthroughs. Start
-with the smallest tutorial when you are learning the contract, then use this
-section when you need a concrete primitive or applied workflow.
+<div class="tv-gallery-grid">
+<a class="tv-gallery-card tv-gallery-featured" href="use-cases/service-provider-network/">
+  <img src="../../assets/gallery/payments.png" alt="" width="1120" height="640" loading="eager">
+  <div class="tv-gallery-card-body">
+    <span class="tv-gallery-eyebrow">01 / Service provider</span>
+    <h3>Payments across three metros</h3>
+    <p>A fiber cut. One customer service. Follow the impact and compare the recovery route.</p>
+    <span class="tv-gallery-action">Trace the service <span aria-hidden="true">↗</span></span>
+  </div>
+</a>
+<a class="tv-gallery-card tv-gallery-featured" href="use-cases/follow-a-packet/">
+  <img src="../../assets/gallery/fabric.png" alt="" width="1120" height="620" loading="eager">
+  <div class="tv-gallery-card-body">
+    <span class="tv-gallery-eyebrow">02 / Data center</span>
+    <h3>Follow a packet through the fabric</h3>
+    <p>See the tenant journey inside a spine–leaf fabric, then reveal ports and traffic directions.</p>
+    <span class="tv-gallery-action">Follow the packet <span aria-hidden="true">↗</span></span>
+  </div>
+</a>
+<a class="tv-gallery-card tv-gallery-featured" href="use-cases/kubernetes-service-map/">
+  <img src="../../assets/gallery/endpoint.png" alt="" width="1120" height="620" loading="eager">
+  <div class="tv-gallery-card-body">
+    <span class="tv-gallery-eyebrow">03 / Kubernetes</span>
+    <h3>What sits behind this endpoint?</h3>
+    <p>Start at the entry point. Unfold its workloads and discover the infrastructure they manage.</p>
+    <span class="tv-gallery-action">Explore the service map <span aria-hidden="true">↗</span></span>
+  </div>
+</a>
+</div>
 
-- [First Topology](../start/first-topology.md) teaches the smallest
-  `topology.yaml` plus `stylesheet.yaml` pair.
-- [Nodes](./nodes/index.md), [Edges](./edges/index.md), and
-  [Regions](./regions/index.md) cover focused object behavior.
-- [Service Provider Network](use-cases/service-provider-network.md) shows a
-  complete network use case with underlay, BGP, transport, service path, and
-  failure views.
+<p class="tv-gallery-note">These are reproducible examples with authored states. Each walkthrough explains its data and assumptions. Download the YAML bundle or import its <code>.tvstudio</code> archive to make it your own.</p>
 
-## Example Families
+## Patterns To Borrow
 
-Use these when you want to learn one part of the model or one visual behavior.
-They are intentionally focused and copyable.
+Learn one visual technique, then bring it into your own diagram.
 
-| Family | What it teaches |
-|---|---|
-| [Graph](./graph/index.md) | Nodes, links, layers, labels, data, and parent/child graph facts. |
-| [Nodes](./nodes/index.md) | Node shape, icons, labels, status markers, badges, outlines, and underlays. |
-| [Edges](./edges/index.md) | Link geometry, labels, arrows, endpoint spacing, dashes, gradients, and directional strokes. |
-| [Paths](./paths/index.md) | Ordered service or transport paths across existing links and child objects. |
-| [Attention](./attention/index.md) | Focus, dimming, dependency traversal, aggregation, and dense-link grouping. |
-| [Regions](./regions/index.md) | Visual grouping, labels, dragging, nesting, and overlap behavior. |
-| [Shapes](./shapes/index.md) | Diagram primitives that explain the topology without becoming graph nodes. |
-| [Callouts](./callouts/index.md) | Markdown callouts, image callouts, pins, and leader lines. |
-| [Styling](./styling/index.md) | Selector-driven visual policy and style overrides. |
-| [Layout](./layout/index.md) | Manual, force, CLOS, and deterministic tree layout behavior. |
-| [Object Family Examples](object-family-examples.md) | A lookup table from object family to focused example and reference contract. |
-| [Validation](./validation/index.md) | Broken references, unsafe images, and renderer limits. |
+<div class="tv-gallery-grid tv-gallery-patterns">
+<a class="tv-gallery-card" href="nodes/card-node-layout/">
+  <img src="../../assets/gallery/cards.png" alt="" width="1120" height="500" loading="lazy">
+  <div class="tv-gallery-card-body">
 
-## Use Cases
+    <h3>Service cards</h3>
+    <p>Give names, roles, and status a clear place.</p>
+    <span class="tv-gallery-action">Open the pattern <span aria-hidden="true">↗</span></span>
+  </div>
+</a>
+<a class="tv-gallery-card" href="edges/directional-link-strokes/">
+  <img src="../../assets/gallery/directions.png" alt="" width="1120" height="500" loading="lazy">
+  <div class="tv-gallery-card-body">
 
-Use cases show complete workflows rather than isolated features. They are useful
-when you want to understand how TopoViewer behaves inside authoring tools,
-documentation, topology imports, or operational dashboards.
+    <h3>Two traffic directions</h3>
+    <p>Read both directions on one physical link.</p>
+    <span class="tv-gallery-action">Open the pattern <span aria-hidden="true">↗</span></span>
+  </div>
+</a>
+<a class="tv-gallery-card" href="regions/nested-regions/">
+  <img src="../../assets/gallery/regions.png" alt="" width="1120" height="500" loading="lazy">
+  <div class="tv-gallery-card-body">
 
-| Use case | What it proves |
-|---|---|
-| [React](use-cases/react.md) | Embed TopoViewer as a typed React component with stable topology documents. |
-| [MkDocs](use-cases/mkdocs.md) | Render `topoviewer` fenced blocks from Markdown documentation. |
-| [Static HTML / Zensical Adapter](use-cases/static-html-zensical-adapter.md) | Mirror authored documentation into static HTML embeds. |
-| [TopoViewer Studio](use-cases/topoviewer-studio.md) | Author one portable topology, stylesheet, and mapper bundle with visual and code workspaces. |
-| [Kubernetes Service Map](use-cases/kubernetes-service-map/index.md) | Convert Kubernetes and EDA inventory into a reviewable service map. |
-| [Service Provider Network](use-cases/service-provider-network.md) | Render one provider topology as underlay, BGP, transport, service path, and failure view. |
-| [Grafana TopoViewer Panel](use-cases/grafana-topoviewer-panel.md) | Mount topology/style/mapper bundles into Grafana and drive runtime overlays from telemetry. |
+    <h3>Regions within regions</h3>
+    <p>Explain sites, domains, and shared membership.</p>
+    <span class="tv-gallery-action">Open the pattern <span aria-hidden="true">↗</span></span>
+  </div>
+</a>
+<a class="tv-gallery-card" href="attention/object-focus/">
+  <img src="../../assets/gallery/focus.png" alt="" width="1120" height="500" loading="lazy">
+  <div class="tv-gallery-card-body">
 
-Open [Use Cases](use-cases/index.md) when you want the applied examples grouped by
-workflow instead of by object family.
+    <h3>Focus and context</h3>
+    <p>Follow one object without losing the network.</p>
+    <span class="tv-gallery-action">Open the pattern <span aria-hidden="true">↗</span></span>
+  </div>
+</a>
+<a class="tv-gallery-card" href="callouts/pins-and-leaders/">
+  <img src="../../assets/gallery/callouts.png" alt="" width="1120" height="500" loading="lazy">
+  <div class="tv-gallery-card-body">
+
+    <h3>Anchored explanations</h3>
+    <p>Attach a short explanation to the right object.</p>
+    <span class="tv-gallery-action">Open the pattern <span aria-hidden="true">↗</span></span>
+  </div>
+</a>
+<a class="tv-gallery-card" href="layout/clos/">
+  <img src="../../assets/gallery/layout.png" alt="" width="1120" height="500" loading="lazy">
+  <div class="tv-gallery-card-body">
+
+    <h3>An orderly fabric</h3>
+    <p>Arrange stages with a repeatable CLOS layout.</p>
+    <span class="tv-gallery-action">Open the pattern <span aria-hidden="true">↗</span></span>
+  </div>
+</a>
+</div>
+
+## Find A Specific Feature
+
+The focused examples stay small so you can see exactly which source field changes the result.
+
+| Build the model | Shape the view | Explain and inspect |
+|---|---|---|
+| [Graph](graph/index.md) · [Nodes](nodes/index.md) | [Edges](edges/index.md) · [Paths](paths/index.md) | [Attention](attention/index.md) · [Regions](regions/index.md) |
+| [Authoring](authoring/index.md) | [Styling](styling/index.md) · [Layout](layout/index.md) | [Callouts](callouts/index.md) · [Shapes](shapes/index.md) |
+| [Validate your files](../author/validate-yaml.md) | [Text](text/index.md) | [Object family lookup](object-family-examples.md) |
+
+To embed a diagram in your own product or documentation, use the [integration guides](use-cases/index.md).

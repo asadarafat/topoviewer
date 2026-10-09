@@ -1,192 +1,137 @@
-# Service Provider Network
+# Payments Across Three Metros
 
-This example uses one compact service-provider topology and renders it five
-ways: underlay, BGP, transport layer, service path, and failure view.
+A payment leaves Frankfurt, crosses Amsterdam, and reaches London. Follow the
+cyan service route, inspect the failed circuit, then see the same service use
+its protection route. The cards keep the same IDs and positions across all
+three views.
 
-The point is not to create five unrelated diagrams. The point is that one set
-of graph facts can answer five operational questions.
+**Simulated scenario.** These are authored snapshots with illustrative metrics.
+TopoViewer displays the supplied paths and state; it does not calculate a
+reroute or receive live telemetry in this example.
 
-## Underlay
+=== "Normal · 14:02"
 
-Transport capacity, media, and backup links are the primary signal.
-
-=== "Live Viewport"
-
-    ```topoviewer
-    topology: examples/integration/real-network-underlay/topology.yaml
-    stylesheet: examples/integration/real-network-underlay/stylesheet.yaml
-    height: 520px
-    controls: true
-    controlsOpen: false
-    title: Real network underlay
-    selectedLayerIds:
-      - underlay
-    ```
-
-=== "Topology YAML"
-
-    ```yaml
-    --8<-- "docs/topoviewer/examples/integration/real-network-underlay/topology.yaml"
-    ```
-
-=== "Stylesheet YAML"
-
-    ```yaml
-    --8<-- "docs/topoviewer/examples/integration/real-network-underlay/stylesheet.yaml"
-    ```
-
-## BGP
-
-Route reflector sessions become the dominant objects while the underlay remains visible as context.
-
-=== "Live Viewport"
+    Payments uses AMS primary: **12 ms transport, 42 ms API p95**. The dashed
+    grey circuits through AMS protection are available but unused.
 
     ```topoviewer
-    topology: examples/integration/real-network-bgp/topology.yaml
-    stylesheet: examples/integration/real-network-bgp/stylesheet.yaml
-    height: 520px
+    topology: examples/integration/payments-journey/topology.yaml
+    stylesheet: examples/integration/payments-journey/stylesheet.yaml
+    height: 640px
     controls: true
     controlsOpen: false
-    title: Real network BGP
-    selectedLayerIds:
-      - underlay
-      - bgp
+    title: Payments · normal primary route
+    selectedLayerIds: [service, transport, notes]
     ```
 
-=== "Topology YAML"
+=== "Degraded · 14:07"
 
-    ```yaml
-    --8<-- "docs/topoviewer/examples/integration/real-network-bgp/topology.yaml"
-    ```
-
-=== "Stylesheet YAML"
-
-    ```yaml
-    --8<-- "docs/topoviewer/examples/integration/real-network-bgp/stylesheet.yaml"
-    ```
-
-## Transport Layer
-
-The programmed SR transport path is added on top of the BGP view so the forwarding intent is visible without losing control-plane context.
-
-=== "Live Viewport"
+    The Amsterdam–London primary circuit has **signal loss**. The amber service
+    path records the impacted route; it does not claim packets still traverse
+    the failed segment. Retries raise the illustrative API p95 to **860 ms**.
 
     ```topoviewer
-    topology: examples/integration/real-network-transport-layer/topology.yaml
-    stylesheet: examples/integration/real-network-transport-layer/stylesheet.yaml
-    height: 520px
+    topology: examples/integration/payments-journey/degraded.yaml
+    stylesheet: examples/integration/payments-journey/stylesheet.yaml
+    height: 640px
     controls: true
     controlsOpen: false
-    title: Real network transport layer
-    selectedLayerIds:
-      - underlay
-      - bgp
-      - transport
+    title: Payments · primary circuit degraded
+    selectedLayerIds: [service, transport, notes]
     ```
 
-=== "Topology YAML"
+=== "Recovered · 14:09"
 
-    ```yaml
-    --8<-- "docs/topoviewer/examples/integration/real-network-transport-layer/topology.yaml"
-    ```
-
-=== "Stylesheet YAML"
-
-    ```yaml
-    --8<-- "docs/topoviewer/examples/integration/real-network-transport-layer/stylesheet.yaml"
-    ```
-
-## Service Path
-
-The Payments L3VPN is added on top of the transport layer. Customer edge nodes and access links appear at the sides, while the service lane follows the SR transport carrier through the core.
-
-=== "Live Viewport"
+    The authored service path now uses AMS protection: **18 ms transport,
+    58 ms API p95**. Payments is restored, while the original red circuit
+    remains down. Service recovery and circuit repair are separate events.
 
     ```topoviewer
-    topology: examples/integration/real-network-service-path/topology.yaml
-    stylesheet: examples/integration/real-network-service-path/stylesheet.yaml
-    height: 520px
+    topology: examples/integration/payments-journey/recovered.yaml
+    stylesheet: examples/integration/payments-journey/stylesheet.yaml
+    height: 640px
     controls: true
     controlsOpen: false
-    title: Real network service path
-    selectedLayerIds:
-      - underlay
-      - bgp
-      - transport
-      - service
-    attention:
-      query:
-        pathIds:
-          - payments-primary
-        mode: dim-context
+    title: Payments · service recovered on protection
+    selectedLayerIds: [service, transport, notes]
     ```
 
-=== "Topology YAML"
+## Read The View
+
+| Visual cue | Meaning |
+|---|---|
+| Cyan or teal arrows | The authored Payments service route. |
+| Dashed grey circuits | The alternate transport corridor. |
+| Amber route and card outlines | Service impact in the degraded snapshot. |
+| Red dashed circuit | Signal loss on the primary Amsterdam–London segment. |
+| Metro boundaries | Frankfurt, Amsterdam, and London membership. |
+
+The service route is emphasized by default. Transport circuits stay subdued,
+while the unused route's card remains readable. Clicking an object dims the
+surrounding context. Titles, subtitles, the snapshot note, and line patterns
+carry the state alongside color.
+
+## Three Things To Try
+
+1. **Compare the incident with recovery.** Switch from Degraded to Recovered.
+   Follow the route through `ams-primary`, then `ams-protection`. Notice that
+   `primary-east` remains red even after the API recovers. The route ID stays
+   `payments-route`; its ordered node sequence changes.
+2. **Inspect one circuit.** In Degraded, click the red Amsterdam–London segment.
+   It becomes the focus. Click empty canvas to restore the default service
+   route. To read circuit names, open the viewer controls and enable
+   **Circuit labels**.
+3. **Separate service from infrastructure.** In Normal, open the controls and
+   turn off **Transport circuits**. The cyan service path and its nodes remain.
+   Turn Transport circuits back on to compare the chosen route with the
+   protection corridor. This changes visibility, not the source topology.
+
+## Open Your Own Copy
+
+[Download the source ZIP](../../../assets/gallery/payments.zip) or
+[download the Studio archive](../../../assets/gallery/payments.tvstudio).
+Import the archive through Studio's **Project menu > Open archive**.
+The normal snapshot is the starting topology; the source ZIP also includes
+`degraded.yaml` and `recovered.yaml` for comparison. To use either snapshot in
+Studio, replace the topology document with that file's contents and Apply.
+Keep the shared stylesheet.
+
+The bundle is self-contained: its small SVG icons are inline. Keep the object
+IDs when replacing the example locations, service, or metrics. Follow
+[Validate YAML](../../author/validate-yaml.md) before publishing your changes.
+
+??? example "Normal topology YAML"
 
     ```yaml
-    --8<-- "docs/topoviewer/examples/integration/real-network-service-path/topology.yaml"
+    --8<-- "docs/topoviewer/examples/integration/payments-journey/topology.yaml"
     ```
 
-=== "Stylesheet YAML"
+??? example "Shared stylesheet YAML"
 
     ```yaml
-    --8<-- "docs/topoviewer/examples/integration/real-network-service-path/stylesheet.yaml"
+    --8<-- "docs/topoviewer/examples/integration/payments-journey/stylesheet.yaml"
     ```
 
-=== "Attention YAML"
+## Explore The Provider Layers
 
-    ```yaml
-    attention:
-      query:
-        pathIds:
-          - payments-primary
-        mode: dim-context
-    ```
+For smaller examples that isolate a single network concept, continue with:
 
-## Failure View
+### Underlay
 
-Critical and major objects stay bright, healthy context stays visible but muted, and the impacted service path remains traceable.
+[Inspect the physical core and metro boundaries](./service-provider-network/underlay/index.md).
 
-=== "Live Viewport"
+### BGP
 
-    ```topoviewer
-    topology: examples/integration/real-network-failure-view/topology.yaml
-    stylesheet: examples/integration/real-network-failure-view/stylesheet.yaml
-    height: 520px
-    controls: true
-    controlsOpen: false
-    title: Real network failure view
-    selectedLayerIds:
-      - underlay
-      - bgp
-      - transport
-      - service
-      - operations
-    attention:
-      query:
-        data:
-          severity: critical
-        mode: dim-context
-    ```
+[Add route-reflector sessions over the underlay](./service-provider-network/bgp/index.md).
 
-=== "Topology YAML"
+### Transport Layer
 
-    ```yaml
-    --8<-- "docs/topoviewer/examples/integration/real-network-failure-view/topology.yaml"
-    ```
+[Show an SR transport carrier](./service-provider-network/transport-layer/index.md).
 
-=== "Stylesheet YAML"
+### Service Path
 
-    ```yaml
-    --8<-- "docs/topoviewer/examples/integration/real-network-failure-view/stylesheet.yaml"
-    ```
+[Trace a child L3VPN lane over its carrier](./service-provider-network/service-path/index.md).
 
-=== "Attention YAML"
+### Failure View
 
-    ```yaml
-    attention:
-      query:
-        data:
-          severity: critical
-        mode: dim-context
-    ```
+[Focus operational severity](./service-provider-network/failure-view/index.md).

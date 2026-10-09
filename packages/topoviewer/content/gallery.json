@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "featured": [
+    {
+      "id": "payments",
+      "exampleId": "integration-payments-journey",
+      "title": "Payments across three metros",
+      "eyebrow": "01 / Service provider",
+      "summary": "A fiber cut. One customer service. Follow the impact and compare the recovery route.",
+      "action": "Trace the service",
+      "page": "topoviewer/examples/use-cases/service-provider-network.md",
+      "height": 640
+    },
+    {
+      "id": "fabric",
+      "exampleId": "integration-fabric-journey",
+      "title": "Follow a packet through the fabric",
+      "eyebrow": "02 / Data center",
+      "summary": "See the tenant journey inside a spine–leaf fabric, then reveal ports and traffic directions.",
+      "action": "Follow the packet",
+      "page": "topoviewer/examples/use-cases/follow-a-packet.md",
+      "height": 620
+    },
+    {
+      "id": "endpoint",
+      "exampleId": "integration-endpoint-journey",
+      "title": "What sits behind this endpoint?",
+      "eyebrow": "03 / Kubernetes",
+      "summary": "Start at the entry point. Unfold its workloads and discover the infrastructure they manage.",
+      "action": "Explore the service map",
+      "page": "topoviewer/examples/use-cases/kubernetes-service-map/index.md",
+      "height": 620
+    }
+  ],
+  "patterns": [
+    {"id": "cards", "exampleId": "nodes-card-node-layout", "title": "Service cards", "summary": "Give names, roles, and status a clear place."},
+    {"id": "directions", "exampleId": "edges-directional-link-strokes", "title": "Two traffic directions", "summary": "Read both directions on one physical link."},
+    {"id": "regions", "exampleId": "regions-nested-regions", "title": "Regions within regions", "summary": "Explain sites, domains, and shared membership."},
+    {"id": "focus", "exampleId": "attention-object-focus", "title": "Focus and context", "summary": "Follow one object without losing the network."},
+    {"id": "callouts", "exampleId": "callouts-pins-and-leaders", "title": "Anchored explanations", "summary": "Attach a short explanation to the right object."},
+    {"id": "layout", "exampleId": "layout-clos", "title": "An orderly fabric", "summary": "Arrange stages with a repeatable CLOS layout."}
+  ]
+}

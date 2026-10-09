@@ -1,0 +1,18 @@
+/* Shared by MkDocs and Zensical. The diagrams are captures of the real renderer. */
+.tv-gallery-intro { max-width: 50rem; font-size: 1.05rem; line-height: 1.65; }
+.tv-gallery-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin: 1.5rem 0 2rem; }
+.md-typeset .tv-gallery-card { display: flex; min-width: 0; flex-direction: column; overflow: hidden; color: var(--md-default-fg-color); background: var(--md-default-bg-color); border: 1px solid var(--md-default-fg-color--lightest); border-radius: 12px; text-decoration: none; transition: border-color 160ms ease, box-shadow 160ms ease; }
+.md-typeset .tv-gallery-card:hover { border-color: var(--md-accent-fg-color); box-shadow: 0 5px 20px #00000012; }
+.md-typeset .tv-gallery-card:focus-visible { outline: 3px solid var(--md-accent-fg-color); outline-offset: 4px; }
+.md-typeset .tv-gallery-card > img { display: block; width: 100%; height: auto; aspect-ratio: 1120 / 620; object-fit: contain; margin: 0; background: #0b1220; border-bottom: 1px solid var(--md-default-fg-color--lightest); }
+.tv-gallery-card-body { display: flex; flex: 1; flex-direction: column; padding: 1rem; }
+.md-typeset .tv-gallery-card h3 { margin: .55rem 0 .5rem; font-size: 1rem; font-weight: 700; line-height: 1.35; letter-spacing: -.015em; }
+.md-typeset .tv-gallery-card p { margin: 0 0 1rem; font-size: .78rem; line-height: 1.6; color: var(--md-default-fg-color--light); }
+.tv-gallery-eyebrow { font-size: .61rem; font-weight: 700; letter-spacing: .075em; text-transform: uppercase; color: var(--md-default-fg-color--light); }
+.tv-gallery-action { margin-top: auto; font-size: .75rem; font-weight: 650; color: var(--md-typeset-a-color); }
+.tv-gallery-note { padding: 1rem 1.2rem; border-left: 3px solid #0891b2; background: var(--md-code-bg-color); border-radius: 0 8px 8px 0; }
+.tv-gallery-links { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; font-size: .8rem; }
+@media (max-width: 76.25em) { .tv-gallery-grid { gap: .75rem; } .tv-gallery-card-body { padding: .85rem; } }
+@media (max-width: 48em) { .tv-gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 34em) { .tv-gallery-grid { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .md-typeset .tv-gallery-card { transition: none; } }

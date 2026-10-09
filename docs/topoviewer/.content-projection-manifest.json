@@ -26,6 +26,7 @@
     "evaluate/threat-model.md",
     "examples/index.md",
     "examples/object-family-examples.md",
+    "examples/use-cases/follow-a-packet.md",
     "examples/use-cases/grafana-topoviewer-panel.md",
     "examples/use-cases/graph-authoring.md",
     "examples/use-cases/index.md",

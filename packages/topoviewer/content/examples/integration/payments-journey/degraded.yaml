@@ -1,0 +1,321 @@
+version: '0.2'
+graph:
+  id: payments-three-metros
+  layers:
+    - id: service
+      labels:
+        name: Payments route
+    - id: transport
+      labels:
+        name: Transport circuits
+    - id: notes
+      labels:
+        name: Snapshot note
+  nodes:
+    - id: checkout
+      labels:
+        name: Checkout
+        role: application
+        site: fra
+      data:
+        subtitle: Payment requests
+        severity: major
+      layers:
+        - service
+        - transport
+      position:
+        - 58
+        - 142
+    - id: fra-ce
+      labels:
+        name: FRA access
+        role: access
+        site: fra
+      data:
+        subtitle: Payments VRF 42
+        severity: normal
+      layers:
+        - service
+        - transport
+      position:
+        - 58
+        - 290
+    - id: fra-pe
+      labels:
+        name: FRA edge
+        role: edge
+        site: fra
+      data:
+        subtitle: Traffic affected
+        severity: major
+      layers:
+        - service
+        - transport
+      position:
+        - 58
+        - 438
+    - id: ams-primary
+      labels:
+        name: AMS primary
+        role: core
+        site: ams
+      data:
+        subtitle: Primary · 12ms
+        severity: normal
+      layers:
+        - service
+        - transport
+      position:
+        - 352
+        - 310
+    - id: ams-protection
+      labels:
+        name: AMS protection
+        role: protection
+        site: ams
+      data:
+        subtitle: Standby · 100G
+        severity: normal
+      layers:
+        - service
+        - transport
+      position:
+        - 352
+        - 450
+    - id: lon-pe
+      labels:
+        name: LON edge
+        role: edge
+        site: lon
+      data:
+        subtitle: Circuit loss
+        severity: major
+      layers:
+        - service
+        - transport
+      position:
+        - 646
+        - 438
+    - id: lon-ce
+      labels:
+        name: LON access
+        role: access
+        site: lon
+      data:
+        subtitle: Payments VRF 42
+        severity: normal
+      layers:
+        - service
+        - transport
+      position:
+        - 646
+        - 290
+    - id: payments-api
+      labels:
+        name: Payments API
+        role: application
+        site: lon
+      data:
+        subtitle: API p95 · 860ms
+        severity: major
+      layers:
+        - service
+        - transport
+      position:
+        - 646
+        - 142
+  links:
+    - id: checkout-access
+      source: checkout
+      target: fra-ce
+      labels:
+        name: Checkout access
+        corridor: access
+        state: up
+      data:
+        capacityGbps: 100
+        severity: normal
+      layers:
+        - transport
+    - id: fra-edge-access
+      source: fra-ce
+      target: fra-pe
+      labels:
+        name: Frankfurt access
+        corridor: access
+        state: up
+      data:
+        capacityGbps: 100
+        severity: normal
+      layers:
+        - transport
+    - id: primary-west
+      source: fra-pe
+      target: ams-primary
+      labels:
+        name: Primary west · 100G
+        corridor: primary
+        state: up
+      data:
+        capacityGbps: 100
+        severity: normal
+      layers:
+        - transport
+    - id: primary-east
+      source: ams-primary
+      target: lon-pe
+      labels:
+        name: Primary east · SIGNAL LOSS
+        corridor: primary
+        state: down
+      data:
+        capacityGbps: 100
+        severity: critical
+      layers:
+        - transport
+    - id: protection-west
+      source: fra-pe
+      target: ams-protection
+      labels:
+        name: Protection west · 100G
+        corridor: protection
+        state: up
+      data:
+        capacityGbps: 100
+        severity: normal
+      layers:
+        - transport
+    - id: protection-east
+      source: ams-protection
+      target: lon-pe
+      labels:
+        name: Protection east · 100G
+        corridor: protection
+        state: up
+      data:
+        capacityGbps: 100
+        severity: normal
+      layers:
+        - transport
+    - id: lon-edge-access
+      source: lon-pe
+      target: lon-ce
+      labels:
+        name: London access
+        corridor: access
+        state: up
+      data:
+        capacityGbps: 100
+        severity: normal
+      layers:
+        - transport
+    - id: payments-access
+      source: lon-ce
+      target: payments-api
+      labels:
+        name: Payments access
+        corridor: access
+        state: up
+      data:
+        capacityGbps: 100
+        severity: normal
+      layers:
+        - transport
+  paths:
+    - id: payments-route
+      labels:
+        name: Payments L3VPN
+        route: primary
+        state: impacted
+      data:
+        severity: major
+        transportLatencyMs: null
+        applicationP95Ms: 860
+      layers:
+        - service
+      sequence:
+        - checkout
+        - fra-ce
+        - fra-pe
+        - ams-primary
+        - lon-pe
+        - lon-ce
+        - payments-api
+  regions:
+    - id: metro-fra
+      labels:
+        name: 01  FRANKFURT
+        site: fra
+      layers:
+        - service
+        - transport
+      position:
+        - 30
+        - 76
+      members:
+        - checkout
+        - fra-ce
+        - fra-pe
+    - id: metro-ams
+      labels:
+        name: 02  AMSTERDAM
+        site: ams
+      layers:
+        - service
+        - transport
+      position:
+        - 324
+        - 76
+      members:
+        - ams-primary
+        - ams-protection
+    - id: metro-lon
+      labels:
+        name: 03  LONDON
+        site: lon
+      layers:
+        - service
+        - transport
+      position:
+        - 618
+        - 76
+      members:
+        - lon-pe
+        - lon-ce
+        - payments-api
+diagram:
+  callouts:
+    - id: snapshot-note
+      title: 14:07 · DEGRADED
+      body:
+        - AMS–LON signal loss.
+        - API p95 860ms · retrying.
+      labels:
+        state: impacted
+      layers:
+        - notes
+      position:
+        - 342
+        - 142
+      locked: true
+attention:
+  interactive: true
+  clickMode: dim-context
+  query:
+    pathIds:
+      - payments-route
+    ids:
+      - metro-fra
+      - metro-ams
+      - metro-lon
+      - primary-east
+    mode: highlight
+toggles:
+  - id: showRegions
+    labels:
+      name: Metro boundaries
+    default: true
+  - id: showEdgeLabels
+    labels:
+      name: Circuit labels
+    default: false

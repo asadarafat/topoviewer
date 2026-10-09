@@ -861,3 +861,39 @@ examples:
       controls: true
       controlsOpen: false
       title: Complete network demo
+
+  - id: integration-payments-journey
+    title: Payments across three metros
+    feature: integration
+    path: integration/payments-journey
+    page: topoviewer/examples/use-cases/service-provider-network
+    summary: Trace an authored Payments service through a fiber cut and recovery route.
+    publicPage: false
+    extraFiles: [degraded.yaml, recovered.yaml]
+    render:
+      height: 640px
+      controls: true
+      controlsOpen: false
+      selectedLayerIds: [service, transport, notes]
+  - id: integration-fabric-journey
+    title: Follow a packet through the fabric
+    feature: integration
+    path: integration/fabric-journey
+    page: topoviewer/examples/use-cases/follow-a-packet
+    summary: Follow a tenant path through a spine-leaf fabric and inspect physical ports.
+    publicPage: false
+    render:
+      height: 620px
+      controls: true
+      controlsOpen: false
+  - id: integration-endpoint-journey
+    title: What sits behind this endpoint?
+    feature: integration
+    path: integration/endpoint-journey
+    page: topoviewer/examples/use-cases/kubernetes-service-map
+    summary: Unfold the workload and managed infrastructure behind an endpoint.
+    publicPage: false
+    render:
+      height: 620px
+      controls: true
+      controlsOpen: false

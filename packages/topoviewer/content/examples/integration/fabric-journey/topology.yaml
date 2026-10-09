@@ -1,0 +1,176 @@
+version: "0.2"
+graph:
+  id: fabric-journey
+  layers:
+    - id: physical
+      labels:
+        name: Physical fabric
+    - id: tenant-42
+      labels:
+        name: Tenant 42 route
+  nodes:
+    - id: spine-1
+      labels: {name: Spine 1, role: spine}
+      layers: [physical]
+      position: [250, 70]
+    - id: spine-2
+      labels: {name: Spine 2, role: spine}
+      layers: [physical]
+      position: [610, 70]
+    - id: leaf-1
+      labels: {name: Leaf 1, role: leaf, rack: rack-01}
+      layers: [physical]
+      position: [60, 290]
+    - id: leaf-2
+      labels: {name: Leaf 2, role: leaf, rack: rack-02}
+      layers: [physical]
+      position: [290, 290]
+    - id: leaf-3
+      labels: {name: Leaf 3, role: leaf, rack: rack-03}
+      layers: [physical]
+      position: [520, 290]
+    - id: leaf-4
+      labels: {name: Leaf 4, role: leaf, rack: rack-04}
+      layers: [physical]
+      position: [750, 290]
+    - id: api-a
+      labels: {name: API A, role: workload, tenant: "42", rack: rack-01}
+      layers: [physical]
+      position: [60, 455]
+    - id: worker-b
+      labels: {name: Jobs B, role: workload, rack: rack-02}
+      layers: [physical]
+      position: [290, 455]
+    - id: cache-c
+      labels: {name: Cache C, role: workload, rack: rack-03}
+      layers: [physical]
+      position: [520, 455]
+    - id: db-d
+      labels: {name: DB D, role: workload, tenant: "42", rack: rack-04}
+      layers: [physical]
+      position: [750, 455]
+  links:
+    - id: leaf-1-spine-1
+      source: leaf-1
+      target: spine-1
+      sourceLabel: e1/49
+      targetLabel: e1/1
+      labels: {name: Leaf 1 uplink to Spine 1, role: fabric}
+      layers: [physical]
+      data: {capacityGbps: 100, sourcePort: e1/49, targetPort: e1/1}
+    - id: leaf-1-spine-2
+      source: leaf-1
+      target: spine-2
+      labels: {name: Leaf 1 uplink to Spine 2, role: fabric}
+      layers: [physical]
+      data: {capacityGbps: 100, sourcePort: e1/50, targetPort: e1/1}
+    - id: leaf-2-spine-1
+      source: leaf-2
+      target: spine-1
+      labels: {name: Leaf 2 uplink to Spine 1, role: fabric}
+      layers: [physical]
+      data: {capacityGbps: 100, sourcePort: e1/49, targetPort: e1/2}
+    - id: leaf-2-spine-2
+      source: leaf-2
+      target: spine-2
+      labels: {name: Leaf 2 uplink to Spine 2, role: fabric}
+      layers: [physical]
+      data: {capacityGbps: 100, sourcePort: e1/50, targetPort: e1/2}
+    - id: leaf-3-spine-1
+      source: leaf-3
+      target: spine-1
+      labels: {name: Leaf 3 uplink to Spine 1, role: fabric}
+      layers: [physical]
+      data: {capacityGbps: 100, sourcePort: e1/49, targetPort: e1/3}
+    - id: leaf-3-spine-2
+      source: leaf-3
+      target: spine-2
+      labels: {name: Leaf 3 uplink to Spine 2, role: fabric}
+      layers: [physical]
+      data: {capacityGbps: 100, sourcePort: e1/50, targetPort: e1/3}
+    - id: leaf-4-spine-1
+      source: leaf-4
+      target: spine-1
+      sourceLabel: e1/49
+      targetLabel: e1/4
+      labels: {name: Leaf 4 uplink to Spine 1, role: fabric}
+      layers: [physical]
+      data: {capacityGbps: 100, sourcePort: e1/49, targetPort: e1/4}
+    - id: leaf-4-spine-2
+      source: leaf-4
+      target: spine-2
+      labels: {name: Leaf 4 uplink to Spine 2, role: fabric}
+      layers: [physical]
+      data: {capacityGbps: 100, sourcePort: e1/50, targetPort: e1/4}
+    - id: api-a-leaf-1
+      source: api-a
+      target: leaf-1
+      labels: {name: API A access, role: access, sample: utilization}
+      layers: [physical]
+      data: {capacityGbps: 25, sourcePort: eth0, targetPort: e1/1, sampleKind: authored}
+      directions:
+        sourceToTarget:
+          label: "18%"
+          data: {utilizationPercent: 18, sampleKind: authored}
+        targetToSource:
+          label: "4%"
+          data: {utilizationPercent: 4, sampleKind: authored}
+    - id: worker-b-leaf-2
+      source: worker-b
+      target: leaf-2
+      labels: {name: Jobs B access, role: access}
+      layers: [physical]
+      data: {capacityGbps: 25, sourcePort: eth0, targetPort: e1/1}
+    - id: cache-c-leaf-3
+      source: cache-c
+      target: leaf-3
+      labels: {name: Cache C access, role: access}
+      layers: [physical]
+      data: {capacityGbps: 25, sourcePort: eth0, targetPort: e1/1}
+    - id: db-d-leaf-4
+      source: db-d
+      target: leaf-4
+      labels: {name: DB D access, role: access}
+      layers: [physical]
+      data: {capacityGbps: 25, sourcePort: eth0, targetPort: e1/1}
+  paths:
+    - id: tenant-42-api-db
+      labels: {name: Tenant 42 API to database, tenant: "42"}
+      layers: [tenant-42]
+      data:
+        routeKind: authored example
+        explanation: One selected route through Spine 1; Spine 2 remains physically connected.
+      sequence: [api-a, leaf-1, spine-1, leaf-4, db-d]
+  regions:
+    - id: rack-01
+      labels: {name: RACK 01}
+      members: [leaf-1, api-a]
+      layers: [physical]
+    - id: rack-02
+      labels: {name: RACK 02}
+      members: [leaf-2, worker-b]
+      layers: [physical]
+    - id: rack-03
+      labels: {name: RACK 03}
+      members: [leaf-3, cache-c]
+      layers: [physical]
+    - id: rack-04
+      labels: {name: RACK 04}
+      members: [leaf-4, db-d]
+      layers: [physical]
+diagram:
+  texts:
+    - id: fabric-caption
+      text: "100 GbE fabric · 25 GbE access · authored example"
+      position: [210, 565]
+      layers: [physical]
+toggles:
+  - id: showEdgeLabels
+    default: false
+    labels: {name: Port labels}
+  - id: utilization
+    default: false
+    labels: {name: Sample utilization}
+attention:
+  interactive: true
+  clickMode: dim-context

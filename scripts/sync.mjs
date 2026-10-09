@@ -19,7 +19,9 @@ const commands = {
   'pages-redirects': [['node', ['scripts/write-pages-redirects.mjs']]],
   'docs-site': [['node', ['scripts/sync-docs-site.mjs']]],
   examples: [['npm', ['--workspace', 'topoviewer', 'run', 'sync:examples']]],
+  gallery: [['node', ['scripts/sync-gallery.mjs']]],
   docs: [
+    ['node', ['scripts/sync-gallery.mjs']],
     ['node', ['scripts/sync-object-reference.mjs']],
     ['node', ['scripts/sync-content.mjs']],
     ['node', ['scripts/sync-docs-site.mjs']],

@@ -1,0 +1,170 @@
+version: '0.2'
+layout:
+  mode: manual
+  width: 900
+  height: 590
+icons:
+  router:
+    alt: Router
+    svg: >-
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><rect x="4" y="7" width="32" height="26"
+      rx="7" fill="#123344" stroke="#67e8f9" stroke-width="1.5"/><path d="M11 15h18M11 25h18M15 11l-4 4 4 4m10
+      2 4 4-4 4" fill="none" stroke="#a5f3fc" stroke-width="2" stroke-linecap="round"
+      stroke-linejoin="round"/></svg>
+  application:
+    alt: Application service
+    svg: >-
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><rect x="5" y="5" width="30" height="30"
+      rx="8" fill="#123c39" stroke="#5eead4" stroke-width="1.5"/><path d="m11 20 6 6 12-12" fill="none"
+      stroke="#99f6e4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  protection:
+    alt: Protected alternative route
+    svg: >-
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><path d="m20 4 13 5v11c0 8-7 13-13 16C14 33
+      7 28 7 20V9Z" fill="#162b40" stroke="#94a3b8" stroke-width="1.5"/><path d="m13 20 5 5 9-10" fill="none"
+      stroke="#cbd5e1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+labelFields:
+  - labels.name
+stylesheet:
+  - selector: node
+    style:
+      shape: roundRectangle
+      width: 194
+      height: 70
+      backgroundColor: '#0f2033'
+      borderColor: '#365168'
+      borderWidth: 1.5
+      icon: router
+      iconPadding: 0
+      labelColor: '#f0f9ff'
+      labelFontSize: 14
+      labelFontWeight: 700
+      metaColor: '#b8cbd9'
+      metaFontSize: 12
+      metaFontWeight: 500
+      statusColor: '#2dd4bf'
+      statusSize: 9
+      statusPlacement: topRight
+      nodeLayout:
+        type: card
+        direction: horizontal
+        icon:
+          placement: left
+          width: 34
+          height: 34
+        content:
+          align: left
+          titleField: labels.name
+          subtitleField: data.subtitle
+      draggable: false
+  - selector: node[labels.role = "application"]
+    style:
+      icon: application
+      borderColor: '#0d9488'
+      backgroundColor: '#102e35'
+  - selector: node[labels.role = "protection"]
+    style:
+      icon: protection
+      borderColor: '#475569'
+      statusColor: '#94a3b8'
+  - selector: node[data.severity = "major"]
+    style:
+      borderColor: '#f59e0b'
+      statusColor: '#f59e0b'
+      outlineColor: '#f59e0b'
+      outlineWidth: 1.5
+  - selector: node[labels.state = "protected"]
+    style:
+      borderColor: '#2dd4bf'
+      statusColor: '#2dd4bf'
+  - selector: link
+    style:
+      curveStyle: straight
+      lineColor: '#64748b'
+      lineWidth: 2.5
+      labelFontSize: 12
+      labelColor: var(--topoviewer-fg-strong)
+      textBackgroundColor: var(--topoviewer-edge-label-bg)
+      targetArrowShape: none
+      labelCollisionPolicy: avoid
+      zIndex: 2
+      opacity: 0.48
+  - selector: link[labels.corridor = "protection"]
+    style:
+      lineStyle: dashed
+      lineDashPattern: 6 7
+      lineColor: '#8294a8'
+      lineWidth: 2
+  - selector: link[labels.state = "down"]
+    style:
+      lineColor: '#ef4444'
+      lineWidth: 4
+      lineStyle: dashed
+      lineDashPattern: 4 5
+      labelColor: '#dc2626'
+      opacity: 1
+  - selector: path
+    style:
+      label: ''
+      curveStyle: bezier
+      lineColor: '#06b6d4'
+      lineWidth: 5
+      opacity: 1
+      targetArrowShape: triangle
+      targetArrowSize: 7
+      targetArrowColor: '#06b6d4'
+      zIndex: 8
+      controlPointDistance: 30
+      controlPointWeight: 0.5
+  - selector: path[labels.state = "impacted"]
+    style:
+      lineColor: '#f59e0b'
+      targetArrowColor: '#f59e0b'
+      lineStyle: dashed
+      lineDashPattern: 10 6
+  - selector: path[labels.state = "protected"]
+    style:
+      lineColor: '#14b8a6'
+      targetArrowColor: '#14b8a6'
+  - selector: region
+    style:
+      width: 250
+      height: 480
+      shape: roundRectangle
+      backgroundColor: rgba(15, 118, 110, 0.035)
+      borderColor: '#71879b'
+      borderWidth: 1
+      labelPosition: topCenter
+      labelMargin: 20
+      labelFontSize: 14
+      labelFontWeight: 800
+      labelColor: var(--topoviewer-fg-strong)
+      labelBackgroundColor: var(--topoviewer-region-label-bg)
+      selectable: false
+      draggable: false
+      zIndex: -20
+  - selector: callout
+    style:
+      width: 214
+      height: 112
+      backgroundColor: '#102437'
+      borderColor: '#31546a'
+      borderWidth: 1
+      borderRadius: 10
+      titleColor: '#67e8f9'
+      titleBackgroundColor: '#102437'
+      titleFontSize: 13
+      titleFontWeight: 800
+      bodyColor: '#d7e6ef'
+      bodyFontSize: 12
+      bodyLineHeight: 1.5
+      textAlign: left
+      draggable: false
+  - selector: callout[labels.state = "impacted"]
+    style:
+      titleColor: '#fbbf24'
+      borderColor: '#b7791f'
+  - selector: callout[labels.state = "protected"]
+    style:
+      titleColor: '#5eead4'
+      borderColor: '#0d9488'
