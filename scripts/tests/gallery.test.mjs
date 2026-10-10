@@ -46,6 +46,7 @@ async function fixture(t, { runtime = false } = {}) {
   for (const source of gallerySources(card)) copy(path.relative(galleryRoot, source.path));
   const library = await import(pathToFileURL(path.join(root, 'scripts/lib/docs-gallery.mjs')).href);
   for (const file of Object.values(library.galleryRendererAssets)) copy(file);
+  copy('docs/assets/topoviewer/diagrams.css');
   copy(`docs/assets/gallery/${card.id}.png`);
   write(root, `docs/${library.galleryPage(card)}`, '# Fixture guide\n');
 
@@ -152,6 +153,13 @@ test('capture provenance detects renderer and generator changes', async (t) => {
   assert.equal(rendererResult.status, 1);
   assert.match(rendererResult.stderr, /rendererCssSha256 changed/);
   write(root, renderer, original);
+  const diagramStylesheet = 'docs/assets/topoviewer/diagrams.css';
+  const originalDiagramStylesheet = fs.readFileSync(path.join(root, diagramStylesheet));
+  fs.appendFileSync(path.join(root, diagramStylesheet), '\n/* changed diagram palette */');
+  const diagramResult = run(root, 'scripts/check-docs-gallery.mjs');
+  assert.equal(diagramResult.status, 1);
+  assert.match(diagramResult.stderr, /generatorFingerprint changed/);
+  write(root, diagramStylesheet, originalDiagramStylesheet);
   fs.appendFileSync(path.join(root, 'scripts/capture-docs-gallery.mjs'), '\n// changed framing\n');
   const generatorResult = run(root, 'scripts/check-docs-gallery.mjs');
   assert.equal(generatorResult.status, 1);
