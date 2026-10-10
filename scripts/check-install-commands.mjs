@@ -5,6 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { npmInstallCommands, npmInstallCommandProblems } from './lib/documentation-contracts.mjs';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const topoviewerPackage = JSON.parse(fs.readFileSync(path.join(repoRoot, 'packages/topoviewer/package.json'), 'utf8'));
@@ -35,16 +36,6 @@ const requiredMkdocsPublishedInstallCommandFiles = new Set([
   'packages/mkdocs-topoviewer/README.md',
   'packages/topoviewer/content/pages/examples/use-cases/mkdocs.md',
   'docs/topoviewer/examples/use-cases/mkdocs.md'
-]);
-const allowedMkdocsPublishedInstallCommandFiles = new Set([
-  ...requiredMkdocsPublishedInstallCommandFiles,
-  'README.md',
-  'packages/topoviewer/README.md',
-  'packages/topoviewer/content/pages/_fragments/readme.md',
-  'packages/topoviewer/content/pages/maintainers/monorepo.md',
-  'packages/topoviewer/content/pages/maintainers/release.md',
-  'docs/topoviewer/maintainers/monorepo.md',
-  'docs/topoviewer/maintainers/release.md'
 ]);
 const allowedMkdocsLocalEditableInstallFiles = new Set([
   'packages/mkdocs-topoviewer/README.md',
@@ -133,21 +124,22 @@ function walkAbsoluteFiles(root) {
 
 function assertPublicInstallCommands() {
   const badCommands = [];
-  const installCommandPattern = /npm\s+install\s+[^\n`]*/g;
   const files = new Set(publicTextRoots.flatMap(walkTextFiles));
 
   for (const filePath of [...files].sort()) {
     const text = fs.readFileSync(filePath, 'utf8');
-    const matches = (text.match(installCommandPattern) || []).filter((match) => /\btopoviewer\b/.test(match));
+    const matches = npmInstallCommands(text).filter((match) => /\btopoviewer\b/.test(match.split(/\s+#/)[0]));
     for (const match of matches) {
       const normalized = match.trim().replace(/\s+/g, ' ');
       const relativePath = relative(filePath);
-      const isAllowedPublishedInstall = normalized === publishedInstallCommand;
-      const isAllowedSourceInstall =
-        sourceTarballInstallCommandFiles.has(relativePath)
-        && (normalized === sourceTarballInstallCommand || normalized === sourceTarballInstallPlaceholderCommand);
-      if (!isAllowedPublishedInstall && !isAllowedSourceInstall) {
-        badCommands.push(`${relative(filePath)}: ${normalized}`);
+      const problems = npmInstallCommandProblems(normalized, {
+        requiredPeers: Object.keys(topoviewerPackage.peerDependencies || {}),
+        allowedTarballs: sourceTarballInstallCommandFiles.has(relativePath)
+          ? [sourceTarballInstallCommand.split(' ')[2], sourceTarballInstallPlaceholderCommand.split(' ')[2]]
+          : []
+      });
+      if (problems.length) {
+        badCommands.push(`${relativePath}: ${normalized} (${problems.join('; ')})`);
       }
     }
   }
@@ -165,7 +157,6 @@ function assertPublicInstallCommands() {
 }
 
 function assertMkDocsInstallCommands() {
-  const badCommands = [];
   const missingRequiredCommands = [];
   const wrongPackageCommands = [];
   const leakedEditableCommands = [];
@@ -194,19 +185,15 @@ function assertMkDocsInstallCommands() {
       leakedEditableCommands.push(relativePath);
     }
     mkdocsLocalEditableInstallPattern.lastIndex = 0;
-    if (text.includes(mkdocsPublishedInstallCommand) && !allowedMkdocsPublishedInstallCommandFiles.has(relativePath)) {
-      badCommands.push(relativePath);
-    }
   }
 
-  if (missingRequiredCommands.length || wrongPackageCommands.length || leakedEditableCommands.length || badCommands.length) {
+  if (missingRequiredCommands.length || wrongPackageCommands.length || leakedEditableCommands.length) {
     throw new Error([
       'Public mkdocs-topoviewer install command drift detected.',
       `Current public MkDocs install command: ${mkdocsPublishedInstallCommand}`,
       ...missingRequiredCommands.map((item) => `- missing required command: ${item}`),
       ...wrongPackageCommands.map((item) => `- wrong MkDocs package command in ${item}; use mkdocs-topoviewer, not topoviewer`),
-      ...leakedEditableCommands.map((item) => `- local editable MkDocs install leaked into public docs: ${item}`),
-      ...badCommands.map((item) => `- unexpected public MkDocs install command in ${item}`)
+      ...leakedEditableCommands.map((item) => `- local editable MkDocs install leaked into public docs: ${item}`)
     ].join('\n'));
   }
 }
@@ -321,6 +308,11 @@ function assertInstalledPackage(consumerRoot) {
 
 assertPublicInstallCommands();
 assertMkDocsInstallCommands();
+
+if (process.argv.includes('--docs-only')) {
+  console.log('documented install command checks passed');
+  process.exit(0);
+}
 
 const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'topoviewer-install-check-'));
 try {

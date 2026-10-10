@@ -23,7 +23,8 @@ const runId = env('GITHUB_RUN_ID', 'local');
 const eventName = env('GITHUB_EVENT_NAME', 'local');
 
 const jobResults = [
-  ['Dependency, readiness, Go, and secret checks', env('SECURITY_JOB_DEPENDENCY_AND_SECRET_CHECKS', 'local-or-not-run')],
+  ['Dependency, Go, and secret checks', env('SECURITY_JOB_DEPENDENCY_AND_SECRET_CHECKS', 'local-or-not-run')],
+  ['Public readiness guardrails', env('SECURITY_JOB_PUBLIC_READINESS', 'local-or-not-run')],
   ['Container image checks', env('SECURITY_JOB_CONTAINER_IMAGE_CHECKS', 'local-or-not-run')],
   ['OSV cross-ecosystem scan', env('SECURITY_JOB_OSV_CROSS_ECOSYSTEM_SCAN', 'local-or-not-run')]
 ];

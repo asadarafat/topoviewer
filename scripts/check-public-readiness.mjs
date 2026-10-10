@@ -3,6 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { adoptionGuideProblems } from './lib/documentation-contracts.mjs';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const errors = [];
@@ -183,16 +184,11 @@ function assertArchitectureAndThreatModelDocs() {
     'Runtime Review',
     'Documentation Review'
   ]);
-  assertFile('packages/topoviewer/content/pages/evaluate/adopt-topoviewer-or-keep-topology-locked-to-a-surface.md', [
-    'Why The YAML Bundle Matters',
-    'Visual Policy As Code',
-    'Runtime State Without Corrupting The Topology',
-    'The Converter And Adapter Question',
-    'Why Maintaining A Converter Can Be A Strength',
-    'When Not To Use TopoViewer',
-    'Adoption Test',
-    'Final Position'
-  ]);
+  const adoptionPath = 'packages/topoviewer/content/pages/evaluate/adopt-topoviewer-or-keep-topology-locked-to-a-surface.md';
+  const adoption = assertFile(adoptionPath);
+  for (const problem of adoptionGuideProblems(adoption, {
+    sourceExists: (reference) => fs.existsSync(repoPath('packages/topoviewer/content', reference))
+  })) fail(`${adoptionPath}: ${problem}`);
 }
 
 function assertPerformanceReliabilityAccessibilityDocs() {
@@ -275,6 +271,7 @@ function assertSecurityAutomation() {
     'Open Findings And Triage State',
     'Primary owner',
     'SECURITY_JOB_DEPENDENCY_AND_SECRET_CHECKS',
+    'SECURITY_JOB_PUBLIC_READINESS',
     'SECURITY_JOB_CONTAINER_IMAGE_CHECKS',
     'SECURITY_JOB_OSV_CROSS_ECOSYSTEM_SCAN'
   ]);

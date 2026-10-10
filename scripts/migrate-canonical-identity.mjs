@@ -132,6 +132,9 @@ function reconcile(document, current, next, yamlPath = []) {
 }
 
 function migratedText(source, nextValue) {
+  // A migration gate checks the model, not the YAML serializer's preferred
+  // wrapping, quotes or whitespace. Preserve byte-for-byte source on no-ops.
+  if (source && sameValue(source.value, nextValue)) return source.text;
   if (!source) {
     const document = parseDocument('{}\n');
     reconcile(document, {}, nextValue);
