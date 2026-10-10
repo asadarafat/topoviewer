@@ -180,7 +180,7 @@
     "oxlint": "^1.85.0",
     "postcss": "^8.5.28",
     "publint": "^0.3.24",
-    "rollup": "^4.63.3",
+    "rollup": "^4.63.5",
     "rollup-plugin-dts": "^6.5.1"
   }
 }
