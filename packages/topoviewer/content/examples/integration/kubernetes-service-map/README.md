@@ -246,6 +246,12 @@ node packages/topoviewer/content/examples/integration/kubernetes-service-map/con
   eda-kubernetes-inventory/topology.yaml
 ```
 
+Pair the collected `topology.yaml` with
+[`inventory-stylesheet.yaml`](../../integration/kubernetes-service-map/inventory-stylesheet.yaml).
+That stylesheet covers captured Services, Deployments, ReplicaSets, Pods, and
+custom resources. The teaching snapshot uses `stylesheet.yaml` and its curated
+associations instead.
+
 The generated topology is intentionally deterministic. Re-running the converter
 against the same inventory should produce the same IDs, links, regions, and
 attention groups. That makes the output reviewable in Git and usable in CI.

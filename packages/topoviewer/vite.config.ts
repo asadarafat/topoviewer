@@ -4,6 +4,7 @@ import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
+import { transform } from 'lightningcss';
 import { defineConfig, type Plugin } from 'vite';
 
 const packageRoot = path.dirname(fileURLToPath(import.meta.url));
@@ -52,7 +53,12 @@ function stylesheetAssetPlugin(): Plugin {
     closeBundle() {
       const reactFlowCss = fs.readFileSync(require.resolve('@xyflow/react/dist/style.css'), 'utf8');
       const topoviewerCss = fs.readFileSync(path.join(packageRoot, 'src/styles.css'), 'utf8');
-      fs.writeFileSync(path.join(packageRoot, 'dist/topoviewer.css'), `${reactFlowCss.trim()}\n${topoviewerCss}`);
+      const stylesheet = transform({
+        filename: 'topoviewer.css',
+        code: Buffer.from(`${reactFlowCss.trim()}\n${topoviewerCss}`),
+        minify: true
+      });
+      fs.writeFileSync(path.join(packageRoot, 'dist/topoviewer.css'), stylesheet.code);
     }
   };
 }

@@ -1,0 +1,85 @@
+version: '0.2'
+layout:
+  mode: manual
+icons:
+  service: {glyph: SVC, fill: '#26313c', stroke: '#a3b0bd'}
+  deployment: {glyph: DEP, fill: '#26313c', stroke: '#a3b0bd'}
+  replicaSet: {glyph: RS, fill: '#26313c', stroke: '#a3b0bd'}
+  pod: {glyph: POD, fill: '#26313c', stroke: '#a3b0bd'}
+  resource: {glyph: CR, fill: '#26313c', stroke: '#a3b0bd'}
+stylesheet:
+  - selector: region
+    style:
+      backgroundColor: var(--topoviewer-region-fill)
+      borderColor: var(--topoviewer-region-stroke)
+      labelColor: var(--topoviewer-region-label-fg)
+      labelBackgroundColor: var(--topoviewer-region-label-bg)
+      labelPosition: topCenter
+      labelFontSize: 16
+      headerPadding: 48
+      paddingX: 48
+      paddingY: 42
+  - selector: node
+    style:
+      shape: roundRectangle
+      width: 104
+      height: 58
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-edge-default)
+      borderWidth: 2
+      labelColor: var(--topoviewer-fg-strong)
+      labelFontSize: 14
+      labelPosition: bottom
+      iconColor: var(--topoviewer-fg-strong)
+  - selector: node[labels.object = "service"]
+    style:
+      icon: service
+      borderColor: var(--topoviewer-accent)
+  - selector: node[labels.object = "deployment"]
+    style:
+      icon: deployment
+      borderColor: var(--topoviewer-info)
+  - selector: node[labels.object = "replicaSet"]
+    style:
+      icon: replicaSet
+      borderColor: var(--topoviewer-info)
+  - selector: node[labels.object = "pod"]
+    style:
+      icon: pod
+      borderColor: var(--topoviewer-info)
+  - selector: node[labels.object = "customResource"]
+    style:
+      icon: resource
+      borderColor: var(--topoviewer-warning)
+  - selector: node[isAggregate = "true"]
+    style:
+      width: 220
+      height: 82
+      iconOpacity: 0
+      labelPosition: center
+      labelFontSize: 18
+  - selector: link
+    style:
+      lineColor: var(--topoviewer-edge-default)
+      lineWidth: 2
+      sourceArrowShape: none
+      targetArrowShape: triangle
+      targetArrowColor: var(--topoviewer-edge-default)
+      labelColor: var(--topoviewer-fg-strong)
+      labelFontSize: 14
+      labelYOffset: -20
+      textBackgroundColor: var(--topoviewer-edge-label-bg)
+      textBackgroundOpacity: 1
+      textBackgroundPadding: 4
+  - selector: link[labels.link = "template-match"]
+    style:
+      lineStyle: dashed
+      targetArrowShape: none
+  - selector: link[labels.link = "selector"]
+    style:
+      lineColor: var(--topoviewer-info)
+      targetArrowColor: var(--topoviewer-info)
+  - selector: link[labels.link = "owns"]
+    style:
+      lineColor: var(--topoviewer-accent)
+      targetArrowColor: var(--topoviewer-accent)

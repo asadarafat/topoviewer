@@ -56,3 +56,21 @@ test('absent namespace evidence cannot establish selection or namespaced ownersh
  const d=convert({'services.json':[svc],'deployments.json':[dep],'pods.json':[pod]});
  assert.deepEqual(d.graph.links,[]);
 });
+
+test('the inventory stylesheet covers collected resource families and relationships', async () => {
+ const { lintTopoDocument } = await import('../../packages/topoviewer/dist/topoviewer.mjs');
+ const service = object('Service','api','a',{spec:{selector:{app:'api'}}});
+ service.metadata.uid = 'a-service-api';
+ const deployment = object('Deployment','api','a',{spec:{template:{metadata:{labels:{app:'api'}}}}});
+ const replicaSet = object('ReplicaSet','api-rs');
+ replicaSet.metadata.ownerReferences = [{kind:'Deployment',name:'api',uid:'a-api',controller:true}];
+ const pod = object('Pod','api-pod');
+ pod.metadata.ownerReferences = [{kind:'ReplicaSet',name:'api-rs',uid:'a-api-rs',controller:true}];
+ const document = convert({'services.json':[service],'deployments.json':[deployment],
+  'replicasets.json':[replicaSet],'pods.json':[pod],'domain.json':[object('NetworkTopology','fabric')]});
+ const stylesheetPath = new URL('../../packages/topoviewer/content/examples/integration/kubernetes-service-map/inventory-stylesheet.yaml',import.meta.url);
+ const stylesheet = yaml.load(fs.readFileSync(stylesheetPath,'utf8'));
+ assert.deepEqual(lintTopoDocument({...document,...stylesheet}),[]);
+ assert.equal(stylesheet.icons.replicaSet.glyph,'RS');
+ assert.equal(stylesheet.icons.resource.glyph,'CR');
+});

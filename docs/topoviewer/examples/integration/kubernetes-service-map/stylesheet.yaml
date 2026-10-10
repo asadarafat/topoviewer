@@ -250,20 +250,3 @@ stylesheet:
       sourceArrowShape: none
       targetArrowShape: none
       lineColor: var(--topoviewer-edge-default)
-  - selector: link[labels.link = "selector"]
-    style:
-      lineColor: var(--topoviewer-info)
-      targetArrowColor: var(--topoviewer-info)
-  - selector: link[labels.link = "owns"]
-    style:
-      lineColor: var(--topoviewer-info)
-      targetArrowColor: var(--topoviewer-info)
-  - selector: node[labels.object = "replicaSet"]
-    style:
-      icon: replicaSet
-      backgroundColor: color-mix(in srgb, var(--topoviewer-accent) 12%, var(--topoviewer-panel-bg))
-      borderColor: var(--topoviewer-accent)
-  - selector: node[labels.object = "customResource"]
-    style:
-      icon: resource
-      borderColor: var(--topoviewer-warning)

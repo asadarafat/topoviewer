@@ -131,22 +131,22 @@ stylesheet:
       minHeight: 300
       minWidth: 300
       padding: 58
-  - selector: link[source = "aggregate:north-metro"][target = "aggregate:west-metro"]
+  - selector: link[source = "aggregate:north-metro"][target = "aggregate:west-metro"][isAggregate = "true"]
     style:
       curveStyle: unbundled-bezier
       controlPointDistance: -280
       controlPointWeight: 0.5
-  - selector: link[source = "aggregate:north-metro"][target = "west-pe-a"]
+  - selector: link[source = "aggregate:north-metro"][target = "west-pe-a"][isAggregate = "true"]
     style:
       curveStyle: unbundled-bezier
       controlPointDistance: -280
       controlPointWeight: 0.5
-  - selector: link[source = "aggregate:north-metro"][target = "west-pe-b"]
+  - selector: link[source = "aggregate:north-metro"][target = "west-pe-b"][isAggregate = "true"]
     style:
       curveStyle: unbundled-bezier
       controlPointDistance: -280
       controlPointWeight: 0.5
-  - selector: link[source = "north-pe-a"][target = "aggregate:west-metro"]
+  - selector: link[source = "north-pe-a"][target = "aggregate:west-metro"][isAggregate = "true"]
     style:
       curveStyle: unbundled-bezier
       controlPointDistance: -280
@@ -161,7 +161,7 @@ stylesheet:
       curveStyle: unbundled-bezier
       controlPointDistance: -280
       controlPointWeight: 0.5
-  - selector: link[source = "north-pe-b"][target = "aggregate:west-metro"]
+  - selector: link[source = "north-pe-b"][target = "aggregate:west-metro"][isAggregate = "true"]
     style:
       curveStyle: unbundled-bezier
       controlPointDistance: -280

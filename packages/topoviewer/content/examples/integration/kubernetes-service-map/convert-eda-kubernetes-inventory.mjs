@@ -40,12 +40,13 @@ const status = (object) => {
 };
 const xy = (index, row) => [120 + (index % 8) * 170, rowOffsets[row] + Math.floor(index / 8) * 150];
 const node = (object, prefix, objectType, index, row, data, layer = 'control-plane') => ({
-  id: id(prefix, object), name: object.metadata?.labels?.['app.kubernetes.io/name'] ?? object.metadata?.name ?? object.kind,
-  labels: pick({ object: objectType, namespace: object.metadata?.namespace, role: role(object, objectType), status: status(object) }),
+  id: id(prefix, object),
+  labels: pick({ name: object.metadata?.labels?.['app.kubernetes.io/name'] ?? object.metadata?.name ?? object.kind,
+    object: objectType, namespace: object.metadata?.namespace, role: role(object, objectType), status: status(object) }),
   data: pick(data), layers: [layer], position: xy(index, row),
 });
 const region = (idValue, name, members, layers) =>
-  ({ id: idValue, name, labels: { region: 'generated' }, members, layers, paddingX: 48, paddingY: 42 });
+  ({ id: idValue, labels: { name, region: 'generated' }, members, layers });
 
 const services = items(read('services.json'));
 const deployments = items(read('deployments.json'));
@@ -87,15 +88,15 @@ const links = [];
 services.forEach((service) => {
   pods.forEach((pod) => {
     if (sameNamespace(service, pod) && match(service.spec?.selector, labels(pod))) links.push({
-      id: `${id('svc', service)}-selects-${id('pod', pod)}`, name: 'selects Pods',
-      source: id('svc', service), target: id('pod', pod), labels: { link: 'selector' },
+      id: `${id('svc', service)}-selects-${id('pod', pod)}`,
+      source: id('svc', service), target: id('pod', pod), labels: { name: 'selects Pods', link: 'selector' },
       data: { provenance: 'Service selector matches Pod labels; not a readiness or observed traffic claim.' }, layers: ['control-plane'],
     });
   });
   deployments.forEach((deployment) => {
     if (sameNamespace(service, deployment) && match(service.spec?.selector, deployment.spec?.template?.metadata?.labels)) links.push({
-      id: `${id('svc', service)}-template-match-${id('deploy', deployment)}`, name: 'template match',
-      source: id('svc', service), target: id('deploy', deployment), labels: { link: 'template-match' },
+      id: `${id('svc', service)}-template-match-${id('deploy', deployment)}`,
+      source: id('svc', service), target: id('deploy', deployment), labels: { name: 'template match', link: 'template-match' },
       data: { provenance: 'inferred', detail: 'Selector matches the Pod template. A Service selects Pods, not Deployments.' }, layers: ['control-plane'],
     });
   });
@@ -112,8 +113,8 @@ resources.forEach((resource, index) => {
     if ((owner.resource.metadata?.namespace || ['Service', 'Deployment', 'ReplicaSet', 'Pod'].includes(owner.resource.kind))
       && !sameNamespace(owner.resource, resource)) return;
     links.push({
-      id: `${owner.node.id}-owner-${nodes[index].id}`, name: reference.controller ? 'controller owner' : 'owner',
-      source: owner.node.id, target: nodes[index].id, labels: { link: 'owns' },
+      id: `${owner.node.id}-owner-${nodes[index].id}`,
+      source: owner.node.id, target: nodes[index].id, labels: { name: reference.controller ? 'controller owner' : 'owner', link: 'owns' },
       data: { provenance: 'metadata.ownerReferences', ownerUid: reference.uid }, layers: [...new Set([...owner.node.layers, ...nodes[index].layers])],
     });
   });
@@ -124,10 +125,10 @@ const regions = [
   region('region-runtime', 'Topology runtime', extraNodes.filter((item) => item.layers.includes('topology-runtime')).map((item) => item.id), ['topology-runtime']),
 ].filter((item) => item.members.length > 0);
 const graph = { id: 'kubernetes-inventory-service-map', data: { scope: 'Collected inventory; selector matches are not traffic traces. Only captured ownerReferences establish ownership.' }, layers: [
-  { id: 'control-plane', name: 'Control plane' }, { id: 'topology-runtime', name: 'Topology runtime' },
+  { id: 'control-plane', labels: { name: 'Control plane' } }, { id: 'topology-runtime', labels: { name: 'Topology runtime' } },
 ], nodes, links, regions };
 const attention = { aggregate: {
-  groups: regions.map((item) => ({ id: item.id, by: 'region', regionId: item.id, label: item.name })),
+  groups: regions.map((item) => ({ id: item.id, by: 'region', regionId: item.id, label: item.labels.name })),
   expandedGroupIds: regions.map((item) => item.id), expandOnClick: true,
 }};
 fs.mkdirSync(path.dirname(outputFile), { recursive: true });

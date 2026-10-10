@@ -163,11 +163,6 @@ stylesheet:
       labelBorderWidth: 1
       zIndex: 45
       labelYOffset: -46
-  - selector: link[labels.route = "bezier"]
-    style:
-      curveStyle: bezier
-      controlPointDistance: 56
-      controlPointWeight: 0.54
   - selector: link[labels.route = "smooth-taxi"]
     style:
       curveStyle: smooth-taxi
