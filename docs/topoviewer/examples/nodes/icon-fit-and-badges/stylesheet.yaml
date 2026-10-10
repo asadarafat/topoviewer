@@ -22,21 +22,24 @@ stylesheet:
       width: 180
       height: 180
       shape: circle
-      borderWidth: 3
+      borderWidth: 2
       iconPadding: 0
-      backgroundColor: "#f8fafc"
+      backgroundColor: "var(--topoviewer-panel-bg)"
       labelColor: var(--topoviewer-fg-strong)
-      labelFontWeight: 800
-      badgeColor: "#0f172a"
-      badgeBackgroundColor: "#f8fafc"
-      badgeBorderColor: "#94a3b8"
+      labelFontWeight: 600
+      badgeColor: "var(--topoviewer-fg-strong)"
+      badgeBackgroundColor: "var(--topoviewer-panel-bg)"
+      badgeBorderColor: "var(--topoviewer-accent)"
       statusSize: 12
+      labelFontSize: 14
+      metaColor: transparent
+      borderColor: var(--topoviewer-edge-default)
   - selector: node[labels.role = "contain"]
     style:
       icon: wideSignal
       iconFit: contain
       badgeLabel: "full"
-      statusColor: "#22c55e"
+      statusColor: "var(--topoviewer-success)"
       statusPlacement: bottomRight
   - selector: node[labels.role = "cover"]
     style:
@@ -44,7 +47,7 @@ stylesheet:
       iconFit: cover
       badgeLabel: "crop"
       badgePosition: topLeft
-      statusColor: "#f59e0b"
+      statusColor: "var(--topoviewer-warning)"
       statusPlacement: bottomLeft
   - selector: node[labels.role = "fill"]
     style:
@@ -52,10 +55,12 @@ stylesheet:
       iconFit: fill
       badgeLabel: "stretch"
       badgePosition: topRight
-      statusColor: "#dc2626"
+      statusColor: "var(--topoviewer-danger)"
       statusPlacement: topRight
   - selector: link
     style:
-      lineColor: "#94a3b8"
+      lineColor: "var(--topoviewer-edge-default)"
       lineWidth: 2
       targetArrowShape: none
+      labelFontSize: 12
+      labelFontWeight: 600

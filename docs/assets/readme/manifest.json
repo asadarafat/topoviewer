@@ -8,12 +8,12 @@
       {
         "kind": "topology",
         "path": "labs/grafana-topoviewer/topoviewer-bundles/st-clos/st-clos.topo.tv.yaml",
-        "sha256": "b0673e76a34f357fd6b417023c17329171930a7b412c05fe5d40722cb46733de"
+        "sha256": "bef5544e3b9096a7a632187cccc97de3ff42f59375d9736630fd8cceb25bb9dd"
       },
       {
         "kind": "stylesheet",
         "path": "labs/grafana-topoviewer/topoviewer-bundles/st-clos/st-clos.style.tv.yaml",
-        "sha256": "49056ebe36de2030a7a0848cb70030c59dd098b82a2db9d99fb4d92fc088de00"
+        "sha256": "63cf1fb64845b35b995912154ac1b44d67a81adcadfdaf9c9648d42706361e55"
       },
       {
         "kind": "mapper",
@@ -40,7 +40,7 @@
       "surface": "studio",
       "height": 900,
       "width": 1600,
-      "sha256": "afd8c672467b5e283c4c02adeace3ab8a60d68906c74d7a426abff48412305de"
+      "sha256": "f2355b9f4ee4307b998f698f22342c626729ec00555a741f9ac909497012de5e"
     },
     {
       "file": "mkdocs.png",
@@ -49,7 +49,7 @@
       "surface": "mkdocs",
       "height": 900,
       "width": 1600,
-      "sha256": "4490c0d21ccea6bad67ae20e17347460edb4e4faad6dcb89b26374ef73d58c56"
+      "sha256": "caa30f74bddc642f2592ee8d005c94ddee0fd142b947e452d0c213105a5e6325"
     },
     {
       "file": "zensical.png",
@@ -58,7 +58,7 @@
       "surface": "zensical",
       "height": 900,
       "width": 1600,
-      "sha256": "d0f17b18f52c119f87726498de7fa5e1e551cf2af965fafe0210c0ed423dabeb"
+      "sha256": "0d6b20094a1f534229e68f08404442395afe7afe0d961775c3519537f723caa6"
     },
     {
       "file": "grafana-panel.png",
@@ -67,7 +67,7 @@
       "surface": "grafana",
       "height": 1000,
       "width": 1600,
-      "sha256": "4ba348c4f51d7d3f88f79bda180889ce042bd4f1b30815117757cfa26a7e22db"
+      "sha256": "33a637d1a39790a1476e5491cde98540fb66d4aad5858f24b5191e156b8caf09"
     },
     {
       "file": "topoviewer-yaml-to-diagram.png",
@@ -76,7 +76,7 @@
       "surface": "studio-code",
       "height": 900,
       "width": 1600,
-      "sha256": "ed6105757b87b3c12e6779706f34aaa3fd5ce2fb50d3aa8687703ef1408c4015"
+      "sha256": "9ac48b71d6a4fafa233320f1c387269f14d83b88d6417afad2275a5f4b4d4ea6"
     },
     {
       "file": "topoviewer-yaml-to-graph-collage.png",
@@ -85,7 +85,7 @@
       "surface": "collage",
       "height": 1600,
       "width": 2200,
-      "sha256": "550ccd7a54ac65170fcf591d17eff9273ceca28fc1ccabad0bdb87720d2e1344"
+      "sha256": "ad259fa230778e24b87a52f03289b6102f87189bb965148b8662cec5248c2b54"
     }
   ]
 }

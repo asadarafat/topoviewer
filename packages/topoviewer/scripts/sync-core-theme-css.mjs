@@ -17,28 +17,37 @@ function declarations(values, indent = '  ') {
     .join('\n');
 }
 
+// Resolve aliases on each theme container rather than inheriting resolved root values.
+function aliases(indent = '  ') {
+  return [
+    '--topoviewer-region-label-bg: var(--topoviewer-surface-bg);',
+    '--topoviewer-region-label-fg: var(--topoviewer-fg-strong);',
+    '--topoviewer-edge-label-fg: var(--topoviewer-fg-strong);',
+    '--topoviewer-node-shadow: 0 1px 4px var(--topoviewer-shadow-soft);',
+    '--topoviewer-panel-shadow: 0 14px 34px var(--topoviewer-shadow-strong);',
+    '--topoviewer-label-shadow: 0 8px 18px var(--topoviewer-shadow-strong);',
+  ].map((declaration) => `${indent}${declaration}`).join('\n');
+}
+
 const generated = `${startMarker}
 :root,
 .topoviewer-theme-dark,
 .topoviewer-theme-system {
 ${declarations(tokens.dark)}
-  --topoviewer-region-label-bg: var(--topoviewer-surface-bg);
-  --topoviewer-region-label-fg: var(--topoviewer-fg-strong);
-  --topoviewer-edge-label-fg: var(--topoviewer-fg-strong);
-  --topoviewer-node-shadow: 0 1px 4px var(--topoviewer-shadow-soft);
-  --topoviewer-panel-shadow: 0 14px 34px var(--topoviewer-shadow-strong);
-  --topoviewer-label-shadow: 0 8px 18px var(--topoviewer-shadow-strong);
+${aliases()}
   color-scheme: dark;
 }
 
 .topoviewer-theme-light {
 ${declarations(tokens.light)}
+${aliases()}
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: light) {
   .topoviewer-theme-system {
 ${declarations(tokens.light, '    ')}
+${aliases('    ')}
     color-scheme: light;
   }
 }

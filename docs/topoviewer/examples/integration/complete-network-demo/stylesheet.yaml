@@ -1,8 +1,8 @@
-version: "0.2"
+version: '0.2'
 layout:
-  mode: force
-  width: 1280
-  height: 720
+  mode: manual
+  width: 1060
+  height: 1060
   iterations: 220
   linkDistance: 185
   chargeStrength: -620
@@ -10,10 +10,16 @@ layout:
 icons:
   router.generic:
     glyph: R
-    fill: var(--topoviewer-router-generic-fill)
-    stroke: var(--topoviewer-router-generic-stroke)
+    fill: '#26313c'
+    stroke: '#a3b0bd'
+    svg: >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#f2f5f8"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="48" height="48"
+      rx="6" fill="#26313c" stroke="none"/><path d="M8 24h32M24 8v32M8 24l6-6m-6 6 6 6m26-6-6-6m6 6-6 6M24
+      8l-6 6m6-6 6 6M24 40l-6-6m6 6 6-6"/></svg>
+    alt: Router
   router.nokia:
-    glyph: "N"
+    glyph: 'N'
     alt: Nokia router
     svg: |
       <svg
@@ -31,7 +37,7 @@ icons:
         fill="none"
       >
         <style type="text/css">
-          .st0 { fill: #001135; }
+          .st0 { fill: #26313c; }
           .st1 { fill: none; stroke: #FFFFFF; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 10; }
         </style>
         <rect height="120" width="120" class="st0" />
@@ -54,42 +60,55 @@ icons:
           </g>
         </g>
       </svg>
-    fill: var(--topoviewer-router-nokia-fill)
-    stroke: var(--topoviewer-router-nokia-stroke)
+    fill: var(--topoviewer-surface-bg)
+    stroke: var(--topoviewer-border-strong)
   router.cisco:
     glyph: C
-    fill: var(--topoviewer-router-cisco-fill)
-    stroke: var(--topoviewer-router-cisco-stroke)
+    fill: '#26313c'
+    stroke: '#a3b0bd'
+    svg: >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#f2f5f8"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="48" height="48"
+      rx="6" fill="#26313c" stroke="none"/><path d="M8 24h32M24 8v32M8 24l6-6m-6 6 6 6m26-6-6-6m6 6-6 6M24
+      8l-6 6m6-6 6 6M24 40l-6-6m6 6 6-6"/></svg>
   router.juniper:
     glyph: J
-    fill: var(--topoviewer-router-juniper-fill)
-    stroke: var(--topoviewer-router-juniper-stroke)
+    fill: '#26313c'
+    stroke: '#a3b0bd'
+    svg: >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#f2f5f8"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="48" height="48"
+      rx="6" fill="#26313c" stroke="none"/><path d="M8 24h32M24 8v32M8 24l6-6m-6 6 6 6m26-6-6-6m6 6-6 6M24
+      8l-6 6m6-6 6 6M24 40l-6-6m6 6 6-6"/></svg>
   controller.nsp:
     glyph: NSP
     alt: NSP controller
-    svg: |
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
-        <defs>
-          <linearGradient id="screen" x1="14" y1="18" x2="82" y2="70" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#ffcf7a"/>
-            <stop offset="1" stop-color="#ff8f3d"/>
-          </linearGradient>
-        </defs>
-        <rect x="8" y="14" width="80" height="58" rx="12" fill="url(#screen)" stroke="#ffe8bd" stroke-width="5"/>
-        <path d="M26 82h44M40 72v10M56 72v10" stroke="#ffe8bd" stroke-width="6" stroke-linecap="round"/>
-        <path d="M24 37h18M24 49h34M24 61h22" stroke="#38210c" stroke-width="5" stroke-linecap="round" opacity="0.78"/>
-        <circle cx="70" cy="39" r="8" fill="#38210c" opacity="0.82"/>
-      </svg>
-    fill: var(--topoviewer-controller-nsp-fill)
-    stroke: var(--topoviewer-controller-nsp-stroke)
+    svg: >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#f2f5f8"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="48" height="48"
+      rx="6" fill="#26313c" stroke="none"/><rect x="6" y="8" width="36" height="26" rx="4"/><path d="M18
+      40h12M24 34v6M13 18h8m-8 7h18"/></svg>
+    fill: '#26313c'
+    stroke: '#a3b0bd'
   controller.nrc:
     glyph: NRC
-    fill: var(--topoviewer-controller-nrc-fill)
-    stroke: var(--topoviewer-controller-nrc-stroke)
+    fill: '#26313c'
+    stroke: '#a3b0bd'
+    svg: >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#f2f5f8"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="48" height="48"
+      rx="6" fill="#26313c" stroke="none"/><path d="M8 24h32M24 8v32M8 24l6-6m-6 6 6 6m26-6-6-6m6 6-6 6M24
+      8l-6 6m6-6 6 6M24 40l-6-6m6 6 6-6"/></svg>
   service.l3vpn:
     glyph: VPN
-    fill: var(--topoviewer-service-l3vpn-fill)
-    stroke: var(--topoviewer-service-l3vpn-stroke)
+    fill: '#26313c'
+    stroke: '#a3b0bd'
+    svg: >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#f2f5f8"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="48" height="48"
+      rx="6" fill="#26313c" stroke="none"/><rect x="7" y="9" width="34" height="30" rx="5"/><path d="M15
+      20h18M15 28h18"/><circle cx="24" cy="24" r="2"/></svg>
+    alt: Virtual private network service
 labelFields:
   - labels.name
 stylesheet:
@@ -98,12 +117,16 @@ stylesheet:
       icon: router.generic
       width: 82
       height: 60
-      backgroundColor: var(--topoviewer-router-generic-fill)
-      borderColor: var(--topoviewer-router-generic-stroke)
-      borderWidth: 4
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-edge-default)
+      borderWidth: 2
       zIndex: 10
       draggable: true
       selectable: true
+      labelFontSize: 16
+      labelFontWeight: 600
+      metaColor: transparent
+      labelTextMaxWidth: 150
   - selector: node[labels.vendor = "nokia"]
     style:
       icon: router.nokia
@@ -126,13 +149,18 @@ stylesheet:
   - selector: node[labels.node = "service"][labels.service = "l3vpn"]
     style:
       icon: service.l3vpn
-      width: 84
+      width: 104
       zIndex: 20
+      height: 42
+      iconSize: 24
+      labelFontSize: 14
+      labelPosition: center
+      iconOpacity: 0
   - selector: link[labels.link = "physical"]
     style:
       label: Physical
       curveStyle: straight
-      lineColor: var(--topoviewer-link-physical)
+      lineColor: var(--topoviewer-fg-muted)
       lineWidth: 1
       targetArrowShape: none
       opacity: 0.88
@@ -140,7 +168,7 @@ stylesheet:
     style:
       label: BGP-LS
       curveStyle: taxi
-      lineColor: var(--topoviewer-link-bgpls)
+      lineColor: var(--topoviewer-info)
       lineWidth: 1
       lineDashPattern: 3 6
       targetArrowShape: triangle
@@ -148,214 +176,221 @@ stylesheet:
     style:
       label: PCEP
       curveStyle: unbundled-bezier
-      lineColor: var(--topoviewer-link-pcep)
+      lineColor: var(--topoviewer-accent)
       lineWidth: 1
       lineDashPattern: 3 6
-      targetArrowShape: triangle
+      targetArrowShape: none
+      sourceArrowShape: none
   - selector: link[labels.link = "service"]
     style:
       label: Service overlay
       curveStyle: bezier
-      lineColor: var(--topoviewer-link-service)
+      lineColor: var(--topoviewer-focus)
       lineWidth: 1
       targetArrowShape: triangle
   - selector: path[labels.protocol = "sr-te"]
     style:
       label: Transport path
       curveStyle: smooth-taxi
-      lineColor: var(--topoviewer-path-srte)
+      lineColor: var(--topoviewer-focus)
       lineWidth: 1
       targetArrowShape: triangle
       animated: true
       opacity: 0.9
   - selector: region
     style:
-      backgroundColor: var(--topoviewer-region-default-bg)
-      borderColor: var(--topoviewer-region-default-border)
+      backgroundColor: var(--topoviewer-region-fill)
+      borderColor: var(--topoviewer-region-stroke)
       borderWidth: 1
       zIndex: -20
       selectable: true
       draggable: true
+      labelFontSize: 14
+      labelFontWeight: 600
+      headerPadding: 48
   - selector: region[id = "isis-l1"]
     style:
-      backgroundColor: var(--topoviewer-region-isis-bg)
-      borderColor: var(--topoviewer-region-isis-border)
+      backgroundColor: var(--topoviewer-region-fill)
+      borderColor: var(--topoviewer-region-stroke)
       minHeight: 110
       nodeHeight: 60
       nodeWidth: 82
       paddingX: 34
-      paddingY: 12
+      paddingY: 28
+      headerPadding: 48
   - selector: region[id = "as65000"]
     style:
-      backgroundColor: var(--topoviewer-region-as-bg)
-      borderColor: var(--topoviewer-region-as-border)
+      backgroundColor: var(--topoviewer-region-fill)
+      borderColor: var(--topoviewer-region-stroke)
       zIndex: -30
-      headerPadding: 28
+      headerPadding: 48
       minHeight: 150
       nodeHeight: 60
       nodeWidth: 82
       paddingX: 46
       paddingY: 18
       parentPaddingX: 18
-      parentPaddingY: 10
+      parentPaddingY: 42
   - selector: shape
     style:
-      backgroundColor: rgba(15, 23, 42, 0.88)
-      borderColor: rgba(148, 163, 184, 0.45)
+      backgroundColor: color-mix(in srgb, var(--topoviewer-accent) 12%, var(--topoviewer-panel-bg))
+      borderColor: color-mix(in srgb, var(--topoviewer-accent) 45%, transparent)
       borderWidth: 1
-      labelColor: "#dbeafe"
-      labelFontSize: 12
-      labelFontWeight: 800
-      bodyColor: "#a8b3c7"
-      bodyFontSize: 10
-      bodyLineHeight: 1.35
+      labelColor: var(--topoviewer-fg-strong)
+      labelFontSize: 14
+      labelFontWeight: 600
+      bodyColor: var(--topoviewer-fg-muted)
+      bodyFontSize: 13
+      bodyLineHeight: 1.5
       zIndex: -5
       selectable: true
   - selector: shape[labels.shape = "canvas"]
     style:
       shape: rectangle
-      width: 1228
-      height: 666
-      backgroundColor: rgba(2, 6, 23, 0.58)
-      borderColor: rgba(125, 211, 252, 0.20)
+      width: 1040
+      height: 1030
+      backgroundColor: transparent
+      borderColor: color-mix(in srgb, var(--topoviewer-info) 20%, transparent)
       borderWidth: 1
       zIndex: -80
+      labelColor: transparent
+      stroke: color-mix(in srgb, var(--topoviewer-info) 20%, transparent)
   - selector: shape[labels.shape = "band"]
     style:
       shape: rectangle
-      backgroundColor: rgba(30, 41, 59, 0.35)
-      borderColor: rgba(148, 163, 184, 0.20)
+      backgroundColor: color-mix(in srgb, var(--topoviewer-accent) 12%, var(--topoviewer-panel-bg))
+      borderColor: color-mix(in srgb, var(--topoviewer-accent) 20%, transparent)
       borderWidth: 1
-      labelColor: rgba(226, 232, 240, 0.72)
+      labelColor: transparent
       labelFontSize: 11
       labelFontWeight: 800
       textAlign: left
       zIndex: -70
   - selector: shape[labels.plane = "controller"]
     style:
-      width: 630
-      height: 96
-      backgroundColor: rgba(251, 146, 60, 0.10)
-      borderColor: rgba(251, 191, 36, 0.30)
+      width: 440
+      height: 160
+      backgroundColor: color-mix(in srgb, var(--topoviewer-info) 6%, transparent)
+      borderColor: color-mix(in srgb, var(--topoviewer-info) 30%, transparent)
   - selector: shape[labels.plane = "transport"]
     style:
-      width: 1174
-      height: 174
-      backgroundColor: rgba(56, 189, 248, 0.08)
-      borderColor: rgba(56, 189, 248, 0.28)
+      width: 950
+      height: 170
+      backgroundColor: color-mix(in srgb, var(--topoviewer-info) 6%, transparent)
+      borderColor: color-mix(in srgb, var(--topoviewer-info) 28%, transparent)
   - selector: shape[labels.plane = "service"]
     style:
-      width: 1174
-      height: 120
-      backgroundColor: rgba(168, 85, 247, 0.08)
-      borderColor: rgba(216, 180, 254, 0.24)
+      width: 950
+      height: 100
+      backgroundColor: 'color-mix(in srgb, #8b78b8 6%, transparent)'
+      borderColor: 'color-mix(in srgb, #8b78b8 24%, transparent)'
   - selector: shape[labels.shape = "database"]
     style:
       shape: cylinder
-      width: 280
-      height: 96
-      fill: rgba(14, 165, 233, 0.18)
-      stroke: rgba(125, 211, 252, 0.76)
+      width: 200
+      height: 82
+      fill: color-mix(in srgb, var(--topoviewer-info) 16%, var(--topoviewer-panel-bg))
+      stroke: color-mix(in srgb, var(--topoviewer-info) 76%, transparent)
       borderWidth: 2
-      boxShadow: 0 18px 38px rgba(2, 132, 199, 0.20)
+      boxShadow: none
       zIndex: 16
   - selector: shape[labels.shape = "sap"]
     style:
       shape: rectangle
       width: 180
       height: 36
-      fill: rgba(168, 85, 247, 0.18)
-      stroke: rgba(216, 180, 254, 0.85)
+      fill: 'color-mix(in srgb, #8b78b8 16%, var(--topoviewer-panel-bg))'
+      stroke: 'color-mix(in srgb, #8b78b8 85%, transparent)'
       borderWidth: 2
-      boxShadow: 0 10px 24px rgba(88, 28, 135, 0.28)
+      boxShadow: none
       zIndex: 18
   - selector: shape[labels.shape = "label-stack"]
     style:
       shape: cuboid
-      width: 364
-      height: 70
-      fill: rgba(190, 24, 93, 0.20)
-      stroke: rgba(251, 113, 133, 0.84)
+      width: 240
+      height: 64
+      fill: 'color-mix(in srgb, #8b78b8 16%, var(--topoviewer-panel-bg))'
+      stroke: color-mix(in srgb, var(--topoviewer-accent) 84%, transparent)
       borderWidth: 2
-      boxShadow: 0 12px 30px rgba(190, 24, 93, 0.20)
+      boxShadow: none
       zIndex: 22
   - selector: shape[labels.shape = "packet"]
     style:
       shape: prism
       width: 82
       height: 48
-      fill: rgba(125, 211, 252, 0.38)
-      stroke: rgba(224, 242, 254, 0.88)
+      fill: color-mix(in srgb, var(--topoviewer-info) 16%, var(--topoviewer-panel-bg))
+      stroke: color-mix(in srgb, var(--topoviewer-info) 88%, transparent)
       borderWidth: 2
       zIndex: 24
   - selector: callout[labels.leader = true]
     style:
       curveStyle: smoothstep
       anchor: fixed
-      lineColor: rgba(203, 213, 225, 0.66)
+      lineColor: var(--topoviewer-edge-default)
       lineWidth: 1
       targetArrowShape: triangle
-      arrowColor: rgba(203, 213, 225, 0.78)
+      arrowColor: var(--topoviewer-edge-default)
       zIndex: 28
   - selector: callout[labels.callout = "service-access"]
     style:
       label: Access binding
-      lineColor: rgba(216, 180, 254, 0.88)
-      arrowColor: rgba(216, 180, 254, 0.88)
+      lineColor: '#8b78b8'
+      arrowColor: '#8b78b8'
       lineDashPattern: 5 5
       curveStyle: smooth-taxi
   - selector: callout[labels.callout = "telemetry-feed"]
     style:
       label: Topology feed
       curveStyle: taxi
-      lineColor: rgba(251, 191, 36, 0.82)
-      arrowColor: rgba(251, 191, 36, 0.82)
+      lineColor: var(--topoviewer-info)
+      arrowColor: var(--topoviewer-info)
       lineDashPattern: 4 6
   - selector: callout[labels.callout = "packet-flow"]
     style:
       label: Encapsulated traffic
       curveStyle: smooth-taxi
-      lineColor: rgba(244, 114, 182, 0.86)
-      arrowColor: rgba(244, 114, 182, 0.86)
+      lineColor: '#8b78b8'
+      arrowColor: '#8b78b8'
       animated: true
   - selector: callout[labels.callout = "srrp"]
     style:
       label: Dashed callout line
       curveStyle: straight
-      lineColor: rgba(74, 222, 128, 0.74)
-      arrowColor: rgba(74, 222, 128, 0.74)
+      lineColor: var(--topoviewer-info)
+      arrowColor: var(--topoviewer-info)
       lineDashPattern: 9 7
   - selector: callout
     style:
-      backgroundColor: rgba(15, 23, 42, 0.94)
-      borderColor: rgba(148, 163, 184, 0.42)
+      backgroundColor: color-mix(in srgb, var(--topoviewer-accent) 12%, var(--topoviewer-panel-bg))
+      borderColor: color-mix(in srgb, var(--topoviewer-accent) 42%, transparent)
       borderWidth: 1
-      borderRadius: 14
-      titleBackgroundColor: rgba(30, 41, 59, 0.88)
-      titleColor: "#f8fafc"
-      titleFontSize: 13
-      titleFontWeight: 900
-      bodyColor: "#cbd5e1"
-      bodyFontSize: 11
-      bodyLineHeight: 1.38
-      boxShadow: 0 16px 38px rgba(0, 0, 0, 0.26)
+      borderRadius: 8
+      titleBackgroundColor: color-mix(in srgb, var(--topoviewer-accent) 18%, var(--topoviewer-panel-bg))
+      titleColor: var(--topoviewer-fg-strong)
+      titleFontSize: 16
+      titleFontWeight: 600
+      bodyColor: var(--topoviewer-fg-muted)
+      bodyFontSize: 15
+      bodyLineHeight: 1.5
+      boxShadow: none
       zIndex: 42
   - selector: callout[labels.callout = "model"]
     style:
-      borderColor: rgba(125, 211, 252, 0.78)
-      titleBackgroundColor: rgba(14, 116, 144, 0.42)
+      borderColor: color-mix(in srgb, var(--topoviewer-info) 78%, transparent)
+      titleBackgroundColor: color-mix(in srgb, var(--topoviewer-info) 18%, var(--topoviewer-panel-bg))
   - selector: callout[labels.callout = "controller"]
     style:
-      borderColor: rgba(251, 191, 36, 0.76)
-      titleBackgroundColor: rgba(180, 83, 9, 0.42)
+      borderColor: color-mix(in srgb, var(--topoviewer-info) 76%, transparent)
+      titleBackgroundColor: color-mix(in srgb, var(--topoviewer-info) 18%, var(--topoviewer-panel-bg))
   - selector: callout[labels.callout = "anchor"]
     style:
-      borderColor: rgba(216, 180, 254, 0.78)
-      titleBackgroundColor: rgba(107, 33, 168, 0.42)
+      borderColor: 'color-mix(in srgb, #8b78b8 78%, transparent)'
+      titleBackgroundColor: 'color-mix(in srgb, #8b78b8 18%, var(--topoviewer-panel-bg))'
   - selector: callout[labels.callout = "export"]
     style:
-      borderColor: rgba(74, 222, 128, 0.72)
-      titleBackgroundColor: rgba(21, 128, 61, 0.38)
+      borderColor: color-mix(in srgb, var(--topoviewer-info) 72%, transparent)
+      titleBackgroundColor: color-mix(in srgb, var(--topoviewer-info) 18%, var(--topoviewer-panel-bg))
   - selector: node[id = "NSP"]
     style:
       icon: controller.nsp
@@ -368,32 +403,45 @@ stylesheet:
       nodeHeight: 60
       nodeWidth: 82
       paddingX: 34
-      paddingY: 12
+      paddingY: 28
+      headerPadding: 48
   - selector: callout[id = "route-db-note"]
     style:
-      width: 238
-      height: 94
+      width: 300
+      height: 136
   - selector: callout[id = "sid-list-note"]
     style:
-      width: 316
-      height: 104
+      width: 300
+      height: 136
   - selector: callout[id = "note-rich-text"]
     style:
-      width: 286
-      height: 92
+      width: 300
+      height: 136
   - selector: callout[id = "callout-semantic-model"]
     style:
-      width: 310
-      height: 122
+      width: 300
+      height: 136
   - selector: callout[id = "callout-controller"]
     style:
-      width: 306
-      height: 120
+      width: 300
+      height: 136
   - selector: callout[id = "callout-pin-anchor"]
     style:
       width: 300
-      height: 116
+      height: 136
   - selector: callout[id = "callout-documentation-frame"]
     style:
-      width: 330
-      height: 96
+      width: 300
+      height: 136
+  - selector: node[id = "R01"]
+    style:
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-border)
+      borderWidth: 1
+      labelPosition: top
+  - selector: node[id = "R09"]
+    style:
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-border)
+      borderWidth: 1
+      labelPosition: top

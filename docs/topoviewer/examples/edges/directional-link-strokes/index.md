@@ -26,7 +26,7 @@ One physical link can show two independently styled traffic directions.
 ## Try It
 
 1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `linkDirection[direction = "targetToSource"]`.
-2. Change its `lineColor` from `"#ff9800"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+2. Change its `lineColor` from `"var(--topoviewer-warning)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
 3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"

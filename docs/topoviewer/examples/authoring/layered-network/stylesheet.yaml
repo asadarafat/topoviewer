@@ -1,4 +1,4 @@
-version: "0.2"
+version: '0.2'
 icons:
   router.pe:
     glyph: PE
@@ -19,7 +19,7 @@ icons:
         fill="none"
       >
         <style type="text/css">
-          .st0 { fill: #001135; }
+          .st0 { fill: #26313c; }
           .st1 { fill: none; stroke: #FFFFFF; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 10; }
         </style>
         <rect height="120" width="120" class="st0" />
@@ -61,7 +61,7 @@ icons:
         fill="none"
       >
         <style type="text/css">
-          .st0 { fill: #001135; }
+          .st0 { fill: #26313c; }
           .st1 { fill: none; stroke: #FFFFFF; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 10; }
         </style>
         <rect height="120" width="120" class="st0" />
@@ -92,7 +92,7 @@ icons:
         fill="none"
       >
         <style type="text/css">
-          .st0 { fill: #001135; }
+          .st0 { fill: #26313c; }
           .st1 { fill: none; stroke: #FFFFFF; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 10; }
         </style>
         <rect height="120" width="120" class="st0" />
@@ -124,7 +124,7 @@ icons:
         fill="none"
       >
         <style type="text/css">
-          .st0 { fill: #001135; }
+          .st0 { fill: #26313c; }
           .st1 { fill: none; stroke: #FFFFFF; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 10; }
         </style>
         <rect height="120" width="120" class="st0" />
@@ -154,11 +154,11 @@ stylesheet:
       shape: square
       width: 48
       height: 48
-      borderWidth: 3
-      borderColor: "#90caf9"
+      borderWidth: 2
+      borderColor: var(--topoviewer-edge-default)
       iconFit: contain
       iconPadding: 0
-      labelFontWeight: 800
+      labelFontWeight: 600
       labelColor: var(--topoviewer-fg-strong)
       labelBackgroundColor: var(--topoviewer-panel-bg)
       labelBackgroundOpacity: 0.92
@@ -167,14 +167,16 @@ stylesheet:
       labelZIndex: 10
       labelYOffset: 8
       labelPadding: 4
-      metaColor: "transparent"
+      metaColor: transparent
+      labelFontSize: 14
+      backgroundColor: var(--topoviewer-panel-bg)
   - selector: node[labels.role = "pe"]
     style:
       icon: router.pe
       shape: square
-      backgroundColor: "#1976d2"
-      borderColor: "#1976d2"
-      underlayColor: "#42a5f5"
+      backgroundColor: color-mix(in srgb, var(--topoviewer-accent) 12%, var(--topoviewer-panel-bg))
+      borderColor: var(--topoviewer-accent)
+      underlayColor: color-mix(in srgb, var(--topoviewer-accent) 18%, var(--topoviewer-panel-bg))
       underlayOpacity: 0.2
       underlayPadding: 9
   - selector: node[labels.role = "rr"]
@@ -188,79 +190,81 @@ stylesheet:
       icon: ops
   - selector: node[data.severity = "major"]
     style:
-      statusColor: "#ff9800"
-      outlineColor: "#ff9800"
+      statusColor: var(--topoviewer-warning)
+      outlineColor: var(--topoviewer-warning)
       outlineWidth: 5
       outlineOpacity: 0.9
   - selector: link
     style:
       curveStyle: straight
-      lineColor: "#90a4ae"
+      lineColor: var(--topoviewer-edge-default)
       lineWidth: 3
       labelColor: var(--topoviewer-fg-strong)
-      labelFontSize: 11
+      labelFontSize: 12
       textBackgroundColor: var(--topoviewer-edge-label-bg)
+      labelFontWeight: 600
   - selector: link[labels.protocol = "bgp"]
     style:
       label: iBGP
       curveStyle: straight
-      lineColor: "#9c27b0"
+      lineColor: '#8b78b8'
       lineWidth: 3
       lineStyle: dashed
       lineDashPattern: 7 7
-      targetArrowShape: triangle
-      sourceArrowShape: triangle
-      targetArrowColor: "#9c27b0"
+      targetArrowShape: none
+      sourceArrowShape: none
+      targetArrowColor: '#8b78b8'
       textBackgroundColor: var(--topoviewer-edge-label-bg)
-      labelColor: "#7b1fa2"
+      labelColor: var(--topoviewer-fg-strong)
   - selector: link[labels.tenant = "payments"]
     style:
       label: access
       curveStyle: bezier
-      lineColor: "#ff9800"
+      lineColor: var(--topoviewer-warning)
       lineWidth: 4
       targetArrowShape: triangle
-      targetArrowColor: "#ff9800"
+      targetArrowColor: var(--topoviewer-warning)
       textBackgroundColor: var(--topoviewer-edge-label-bg)
-      labelColor: "#e65100"
+      labelColor: var(--topoviewer-fg-strong)
   - selector: link[labels.layer = "operations"]
     style:
       label: incident
       curveStyle: smoothTaxi
-      lineColor: "#d32f2f"
+      lineColor: var(--topoviewer-danger)
       lineWidth: 4
       lineStyle: dashed
       lineDashPattern: 8 5
-      targetArrowColor: "#d32f2f"
+      targetArrowColor: var(--topoviewer-danger)
       textBackgroundColor: var(--topoviewer-edge-label-bg)
-      labelColor: "#c62828"
+      labelColor: var(--topoviewer-fg-strong)
   - selector: path[labels.service = "payments"]
     style:
       label: service path
       curveStyle: bezier
-      lineColor: "#02d144ff"
+      lineColor: var(--topoviewer-info)
       lineWidth: 20
       laneWidth: 20
       laneGap: 9
       lineOpacity: 0.5
       targetArrowShape: circle
-      targetArrowColor: "#02d144ff"
+      targetArrowColor: var(--topoviewer-info)
       textBackgroundColor: var(--topoviewer-edge-label-bg)
-      labelColor: "#01579b"
+      labelColor: var(--topoviewer-fg-strong)
   - selector: region
     style:
-      backgroundColor: "rgba(25, 118, 210, 0.08)"
-      borderColor: "rgba(25, 118, 210, 0.34)"
+      backgroundColor: var(--topoviewer-region-fill)
+      borderColor: var(--topoviewer-region-stroke)
       borderWidth: 1
       labelColor: var(--topoviewer-region-label-fg)
-      labelFontSize: 12
-      labelFontWeight: 800
+      labelFontSize: 14
+      labelFontWeight: 600
       labelPosition: topCenter
       labelMargin: 12
       zIndex: -20
+      headerPadding: 48
   - selector: region[id = "provider-core"]
     style:
-      headerPadding: 34
+      headerPadding: 48
       paddingX: 36
       paddingY: 32
 layout:

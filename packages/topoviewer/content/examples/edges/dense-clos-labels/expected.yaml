@@ -8,7 +8,7 @@ assertions:
   edgeMarkersMin: 4
   sourceEdgeLabelText: e1-49
   targetEdgeLabelText: e1-1
-  labelZIndexValues: 40,70,80,90,91
+  labelZIndexValues: 40,80,90,91
 semantic:
   errors: []
   warnings: []

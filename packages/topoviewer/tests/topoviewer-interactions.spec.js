@@ -30,21 +30,30 @@ test('applies light, dark, system, and host theme contracts', async ({ page }) =
   const viewer = page.locator('.topoviewer');
   await expect(viewer).toHaveClass(/topoviewer-theme-light/);
   await expect.poll(() => viewer.evaluate((element) => getComputedStyle(element).getPropertyValue('--topoviewer-bg').trim()))
-    .toBe('#f8fafc');
+    .toBe('#f6f7f9');
   await expect.poll(() => viewer.evaluate((element) => ({
     image: getComputedStyle(element).backgroundImage,
     color: getComputedStyle(element).backgroundColor
-  }))).toEqual({ image: 'none', color: 'rgb(248, 250, 252)' });
+  }))).toEqual({ image: 'none', color: 'rgb(246, 247, 249)' });
+
+  await expect.poll(() => viewer.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return ['--topoviewer-region-label-bg', '--topoviewer-region-label-fg', '--topoviewer-edge-label-fg']
+      .map((name) => style.getPropertyValue(name).trim());
+  })).toEqual(['#eef1f5', '#26313c', '#26313c']);
 
   await page.goto('/tests/fixtures/render-states-runtime.html?mode=empty&theme=dark');
   await expect(viewer).toHaveClass(/topoviewer-theme-dark/);
   await expect.poll(() => viewer.evaluate((element) => getComputedStyle(element).getPropertyValue('--topoviewer-bg').trim()))
-    .toBe('#0b1118');
+    .toBe('#14191f');
 
+  await page.emulateMedia({ colorScheme: 'light' });
   await page.goto('/tests/fixtures/render-states-runtime.html?mode=empty&theme=system&override=true');
   await expect(viewer).toHaveClass(/topoviewer-theme-system/);
   await expect.poll(() => viewer.evaluate((element) => getComputedStyle(element).getPropertyValue('--topoviewer-accent').trim()))
     .toBe('#ff00aa');
+  await expect.poll(() => viewer.evaluate((element) => getComputedStyle(element)
+    .getPropertyValue('--topoviewer-region-label-bg').trim())).toBe('#eef1f5');
 });
 
 const NODE_CONTAINMENT_TOLERANCE_PX = 3;

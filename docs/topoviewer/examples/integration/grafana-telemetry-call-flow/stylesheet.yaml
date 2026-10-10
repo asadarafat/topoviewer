@@ -1,69 +1,72 @@
-version: "0.2"
+version: '0.2'
 layout:
   mode: manual
-  width: 1080
-  height: 540
+  width: 1420
+  height: 830
 icons:
   authoring:
     glyph: YAML
-    fill: "#1976d2"
-    stroke: "#bbdefb"
+    fill: '#26313c'
+    stroke: '#a3b0bd'
   backend:
     glyph: API
-    fill: "#7b1fa2"
-    stroke: "#e1bee7"
+    fill: '#26313c'
+    stroke: '#a3b0bd'
   frontend:
     glyph: UI
-    fill: "#9c27b0"
-    stroke: "#e1bee7"
+    fill: '#26313c'
+    stroke: '#a3b0bd'
   mapper:
     glyph: MAP
-    fill: "#2e7d32"
-    stroke: "#c8e6c9"
+    fill: '#26313c'
+    stroke: '#a3b0bd'
   renderer:
     glyph: TV
-    fill: "#2e7d32"
-    stroke: "#c8e6c9"
+    fill: '#26313c'
+    stroke: '#a3b0bd'
   prometheus:
     glyph: P
-    fill: "#d32f2f"
-    stroke: "#ffcdd2"
+    fill: '#26313c'
+    stroke: '#a3b0bd'
   diagnostics:
-    glyph: "!"
-    fill: "#d32f2f"
-    stroke: "#ffcdd2"
+    glyph: '!'
+    fill: '#26313c'
+    stroke: '#a3b0bd'
 labelFields:
   - labels.name
 stylesheet:
   - selector: region
     style:
-      backgroundColor: "rgba(25, 118, 210, 0.05)"
-      borderColor: "rgba(66, 165, 245, 0.38)"
+      backgroundColor: var(--topoviewer-region-fill)
+      borderColor: var(--topoviewer-region-stroke)
       borderWidth: 2
       labelPosition: topLeft
       labelMargin: 12
       labelColor: var(--topoviewer-region-label-fg)
       labelBackgroundColor: var(--topoviewer-region-label-bg)
-      labelFontSize: 12
-      labelFontWeight: 800
+      labelFontSize: 16
+      labelFontWeight: 600
       labelZIndex: 40
       zIndex: -30
+      headerPadding: 48
   - selector: region[labels.lane = "telemetry"]
     style:
-      backgroundColor: "rgba(255, 152, 0, 0.07)"
-      borderColor: "rgba(255, 152, 0, 0.5)"
+      backgroundColor: color-mix(in srgb, var(--topoviewer-warning) 5%, var(--topoviewer-panel-bg))
+      borderColor: var(--topoviewer-region-stroke)
   - selector: region[labels.lane = "backend"]
     style:
-      backgroundColor: "rgba(156, 39, 176, 0.07)"
-      borderColor: "rgba(186, 104, 200, 0.52)"
+      backgroundColor: 'color-mix(in srgb, #8b78b8 5%, var(--topoviewer-panel-bg))'
+      borderColor: var(--topoviewer-region-stroke)
+      labelFontSize: 15
   - selector: region[labels.lane = "frontend"]
     style:
-      backgroundColor: "rgba(46, 125, 50, 0.07)"
-      borderColor: "rgba(76, 175, 80, 0.5)"
+      backgroundColor: color-mix(in srgb, var(--topoviewer-info) 5%, var(--topoviewer-panel-bg))
+      borderColor: var(--topoviewer-region-stroke)
+      labelFontSize: 15
   - selector: region[labels.lane = "grafana"]
     style:
-      backgroundColor: "rgba(2, 136, 209, 0.04)"
-      borderColor: "rgba(3, 169, 244, 0.42)"
+      backgroundColor: color-mix(in srgb, var(--topoviewer-info) 5%, var(--topoviewer-panel-bg))
+      borderColor: var(--topoviewer-region-stroke)
       borderWidth: 2
       labelPosition: topCenter
       labelMargin: 12
@@ -72,89 +75,94 @@ stylesheet:
   - selector: node
     style:
       shape: rectangle
-      width: 150
+      width: 190
       height: 58
-      borderWidth: 4
+      borderWidth: 2
       iconWidth: 48
       iconHeight: 48
       iconFit: contain
       iconPadding: 0
       iconOpacity: 0
       labelPosition: center
-      labelColor: "#ffffff"
+      labelColor: var(--topoviewer-fg-strong)
       labelBackgroundColor: transparent
       labelBackgroundOpacity: 0
       labelBorderWidth: 0
-      labelFontSize: 12
-      labelFontWeight: 800
+      labelFontSize: 16
+      labelFontWeight: 600
       labelZIndex: 50
       labelPadding: 0
-      labelTextMaxWidth: 142
+      labelTextMaxWidth: 182
       labelTextWrap: none
       labelTextOverflow: clip
       metaColor: transparent
       zIndex: 20
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-edge-default)
+      iconColor: var(--topoviewer-fg-strong)
+      labelCollisionPolicy: none
   - selector: node[labels.role = "authoring"]
     style:
       icon: authoring
-      backgroundColor: "#1976d2"
-      borderColor: "#90caf9"
+      backgroundColor: color-mix(in srgb, var(--topoviewer-accent) 12%, var(--topoviewer-panel-bg))
+      borderColor: var(--topoviewer-accent)
   - selector: node[labels.role = "backend"]
     style:
       icon: backend
-      backgroundColor: "#7b1fa2"
-      borderColor: "#ce93d8"
+      backgroundColor: 'color-mix(in srgb, #8b78b8 12%, var(--topoviewer-panel-bg))'
+      borderColor: '#8b78b8'
   - selector: node[labels.role = "frontend"]
     style:
       icon: frontend
-      backgroundColor: "#9c27b0"
-      borderColor: "#ce93d8"
+      backgroundColor: 'color-mix(in srgb, #8b78b8 12%, var(--topoviewer-panel-bg))'
+      borderColor: '#8b78b8'
   - selector: node[labels.role = "mapper"]
     style:
       icon: mapper
-      backgroundColor: "#2e7d32"
-      borderColor: "#a5d6a7"
+      backgroundColor: color-mix(in srgb, var(--topoviewer-info) 12%, var(--topoviewer-panel-bg))
+      borderColor: var(--topoviewer-info)
   - selector: node[labels.role = "renderer"]
     style:
       icon: renderer
-      backgroundColor: "#2e7d32"
-      borderColor: "#a5d6a7"
-      outlineColor: "#4caf50"
+      backgroundColor: color-mix(in srgb, var(--topoviewer-info) 12%, var(--topoviewer-panel-bg))
+      borderColor: var(--topoviewer-info)
+      outlineColor: var(--topoviewer-info)
       outlineWidth: 4
       outlineOpacity: 0.3
   - selector: node[labels.role = "datasource"]
     style:
       icon: prometheus
-      backgroundColor: "#d32f2f"
-      borderColor: "#ef9a9a"
+      backgroundColor: color-mix(in srgb, var(--topoviewer-danger) 12%, var(--topoviewer-panel-bg))
+      borderColor: var(--topoviewer-danger)
   - selector: node[labels.kind = "diagnostic"]
     style:
       icon: diagnostics
-      backgroundColor: "#d32f2f"
-      borderColor: "#ef9a9a"
-      width: 172
-      labelTextMaxWidth: 164
+      backgroundColor: color-mix(in srgb, var(--topoviewer-danger) 12%, var(--topoviewer-panel-bg))
+      borderColor: var(--topoviewer-danger)
+      width: 204
+      labelTextMaxWidth: 196
   - selector: link
     style:
       curveStyle: straight
-      lineColor: "#78909c"
-      lineWidth: 4
+      lineColor: var(--topoviewer-edge-default)
+      lineWidth: 2
       lineCap: round
       targetArrowShape: triangle
-      targetArrowColor: "#78909c"
-      targetArrowSize: 14
+      targetArrowColor: var(--topoviewer-info)
+      targetArrowSize: 10
       targetArrowOffset: 0
       sourceArrowShape: none
       labelColor: var(--topoviewer-fg-strong)
-      labelFontSize: 11
-      labelFontWeight: 800
+      labelFontSize: 15
+      labelFontWeight: 600
       labelZIndex: 80
-      textBackgroundColor: "rgba(255, 255, 255, 0.96)"
+      textBackgroundColor: var(--topoviewer-edge-label-bg)
       textBackgroundOpacity: 1
       textBackgroundPadding: 4
-      labelBorderColor: "rgba(15, 23, 42, 0.18)"
+      labelBorderColor: color-mix(in srgb, var(--topoviewer-accent) 18%, transparent)
       labelBorderWidth: 1
       zIndex: 45
+      labelYOffset: -46
   - selector: link[labels.route = "bezier"]
     style:
       curveStyle: bezier
@@ -168,86 +176,44 @@ stylesheet:
       taxiTurnMinDistance: 90
   - selector: link[labels.flow = "source"]
     style:
-      lineColor: "#1976d2"
-      targetArrowColor: "#1976d2"
-      labelColor: "#1565c0"
-  - selector: link[id = "authoring-to-backend"]
-    style:
-      label: "1"
-      labelXOffset: -28
-      labelYOffset: -22
-  - selector: link[id = "backend-to-frontend"]
-    style:
-      label: "2"
-      labelYOffset: -24
+      lineColor: var(--topoviewer-accent)
+      targetArrowColor: var(--topoviewer-accent)
+      labelColor: var(--topoviewer-fg-strong)
   - selector: link[labels.flow = "telemetry"]
     style:
-      lineColor: "#ff9800"
-      targetArrowColor: "#ff9800"
-      labelColor: "#e65100"
-      controlPointDistance: 78
-      controlPointWeight: 0.46
-      labelXOffset: -44
-      labelYOffset: -14
-  - selector: link[id = "prometheus-to-backend"]
-    style:
-      label: "3"
+      lineColor: var(--topoviewer-warning)
+      targetArrowColor: var(--topoviewer-warning)
+      labelColor: var(--topoviewer-fg-strong)
   - selector: link[labels.flow = "mapping"]
     style:
-      lineColor: "#2e7d32"
-      targetArrowColor: "#2e7d32"
-      labelColor: "#1b5e20"
-      labelXOffset: -48
-      labelYOffset: 18
-  - selector: link[id = "frontend-to-mapper"]
-    style:
-      label: "4"
+      lineColor: var(--topoviewer-info)
+      targetArrowColor: var(--topoviewer-info)
+      labelColor: var(--topoviewer-fg-strong)
   - selector: link[labels.flow = "overlay"]
     style:
-      lineColor: "#4caf50"
-      targetArrowColor: "#4caf50"
-      lineWidth: 5
-      labelColor: "#1b5e20"
-      labelXOffset: 34
-      labelYOffset: -30
+      lineColor: var(--topoviewer-info)
+      targetArrowColor: var(--topoviewer-info)
+      lineWidth: 3
+      labelColor: var(--topoviewer-fg-strong)
       targetArrowSize: 16
       targetArrowOffset: 0
-  - selector: link[id = "mapper-to-renderer"]
-    style:
-      label: "6"
   - selector: link[labels.flow = "render"]
     style:
-      lineColor: "#9c27b0"
-      targetArrowColor: "#9c27b0"
-      labelColor: "#7b1fa2"
-  - selector: link[id = "frontend-to-renderer"]
-    style:
-      label: "5"
-      labelYOffset: -24
+      lineColor: '#8b78b8'
+      targetArrowColor: '#8b78b8'
+      labelColor: var(--topoviewer-fg-strong)
   - selector: link[labels.flow = "diagnostic"]
     style:
-      lineColor: "#d32f2f"
-      targetArrowColor: "#d32f2f"
+      lineColor: var(--topoviewer-danger)
+      targetArrowColor: var(--topoviewer-danger)
       lineStyle: dashed
       lineDashPattern: 9 7
       lineWidth: 3
-      labelColor: "#c62828"
-  - selector: link[id = "mapper-to-diagnostics"]
-    style:
-      label: "7"
-      controlPointDistance: 82
-      controlPointWeight: 0.5
-      labelXOffset: -10
-      labelYOffset: -26
-  - selector: link[id = "backend-to-diagnostics"]
-    style:
-      label: "8"
-      labelXOffset: 26
-      labelYOffset: 0
+      labelColor: var(--topoviewer-fg-strong)
   - selector: region[id = "source-region"]
     style:
-      paddingX: 42
-      paddingY: 56
+      paddingX: 34
+      paddingY: 48
   - selector: region[id = "telemetry-region"]
     style:
       paddingX: 42
@@ -255,8 +221,8 @@ stylesheet:
   - selector: region[id = "grafana-region"]
     style:
       headerPadding: 82
-      paddingX: 54
-      paddingY: 62
+      paddingX: 32
+      paddingY: 38
       parentPaddingX: 28
       parentPaddingY: 28
   - selector: region[id = "backend-region"]
@@ -267,3 +233,19 @@ stylesheet:
     style:
       paddingX: 48
       paddingY: 64
+  - selector: link[labels.flow = "manual"]
+    style:
+      lineStyle: dashed
+      lineColor: var(--topoviewer-accent)
+      targetArrowColor: var(--topoviewer-accent)
+  - selector: node[labels.kind = "artifact"]
+    style:
+      shape: cutRectangle
+      borderColor: var(--topoviewer-accent)
+  - selector: link[id = "datasource-to-frontend"]
+    style:
+      taxiDirection: horizontal
+      taxiTurn: 50%
+      taxiTurnMinDistance: 0
+      labelXOffset: 0
+      labelYOffset: 80

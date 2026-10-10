@@ -11,6 +11,7 @@ repo_url = "https://github.com/asadarafat/topoviewer"
 repo_name = "asadarafat/topoviewer"
 extra_css = [
   "assets/topoviewer/gallery.css",
+  "assets/topoviewer/diagrams.css",
   "assets/topoviewer/topoviewer-embed.css",
   "assets/topoviewer/topoviewer-zensical.css",
 ]

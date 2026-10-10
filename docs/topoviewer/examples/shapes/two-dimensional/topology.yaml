@@ -1,4 +1,4 @@
-version: "0.2"
+version: '0.2'
 graph:
   id: two-dimensional-shapes
   layers:
@@ -145,5 +145,104 @@ diagram:
         family: 2d
         geometry: star
         name: star
+      layers:
+        - diagram
+  texts:
+    - id: shape-circle-caption
+      text: circle
+      position:
+        - 50
+        - 180
+      layers:
+        - diagram
+    - id: shape-triangle-caption
+      text: triangle
+      position:
+        - 150
+        - 180
+      layers:
+        - diagram
+    - id: shape-square-caption
+      text: square
+      position:
+        - 250
+        - 180
+      layers:
+        - diagram
+    - id: shape-rectangle-caption
+      text: rectangle
+      position:
+        - 350
+        - 180
+      layers:
+        - diagram
+    - id: shape-pentagon-caption
+      text: pentagon
+      position:
+        - 450
+        - 180
+      layers:
+        - diagram
+    - id: shape-hexagon-caption
+      text: hexagon
+      position:
+        - 550
+        - 180
+      layers:
+        - diagram
+    - id: shape-octagon-caption
+      text: octagon
+      position:
+        - 650
+        - 180
+      layers:
+        - diagram
+    - id: shape-ellipse-caption
+      text: ellipse
+      position:
+        - 50
+        - 300
+      layers:
+        - diagram
+    - id: shape-semicircle-caption
+      text: semicircle
+      position:
+        - 150
+        - 300
+      layers:
+        - diagram
+    - id: shape-trapezoid-caption
+      text: trapezoid
+      position:
+        - 250
+        - 300
+      layers:
+        - diagram
+    - id: shape-parallelogram-caption
+      text: parallelogram
+      position:
+        - 350
+        - 300
+      layers:
+        - diagram
+    - id: shape-rhombus-caption
+      text: rhombus
+      position:
+        - 450
+        - 300
+      layers:
+        - diagram
+    - id: shape-kite-caption
+      text: kite
+      position:
+        - 550
+        - 300
+      layers:
+        - diagram
+    - id: shape-star-caption
+      text: star
+      position:
+        - 650
+        - 300
       layers:
         - diagram

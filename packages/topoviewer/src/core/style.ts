@@ -901,6 +901,11 @@ export function compileShapeStyle(style: StyleDeclaration, entity: DiagramShape)
         minHeight: size.height
       },
       labelZIndex: finiteNumber(style.labelZIndex),
+      labelStyle: withoutUndefined({
+        color: style.labelColor,
+        fontSize: cssPixel(style.labelFontSize),
+        fontWeight: style.labelFontWeight
+      }),
       shapeStyle: withoutUndefined({
         width: size.width,
         height: size.height,

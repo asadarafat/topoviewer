@@ -1,4 +1,4 @@
-version: "0.2"
+version: '0.2'
 graph:
   id: grafana-telemetry-call-flow
   layers:
@@ -25,8 +25,8 @@ graph:
       layers:
         - source
       position:
-        - 140
-        - 170
+        - 110
+        - 190
     - id: plugin-backend
       labels:
         kind: runtime
@@ -37,20 +37,20 @@ graph:
       layers:
         - runtime
       position:
-        - 390
-        - 170
+        - 640
+        - 190
     - id: prometheus-http-api
       labels:
         kind: telemetry
         role: datasource
-        name: HTTP API
+        name: Prometheus API
       data:
         detail: Grafana calls Prometheus HTTP query endpoints and receives time-series samples.
       layers:
         - telemetry
       position:
-        - 140
-        - 370
+        - 110
+        - 620
     - id: plugin-frontend
       labels:
         kind: runtime
@@ -61,8 +61,8 @@ graph:
       layers:
         - runtime
       position:
-        - 640
-        - 170
+        - 920
+        - 190
     - id: mapper-runtime
       labels:
         kind: runtime
@@ -73,8 +73,8 @@ graph:
       layers:
         - runtime
       position:
-        - 640
-        - 370
+        - 920
+        - 390
     - id: topoviewer-renderer
       labels:
         kind: runtime
@@ -85,8 +85,8 @@ graph:
       layers:
         - runtime
       position:
-        - 900
-        - 170
+        - 1220
+        - 190
     - id: source-diagnostics
       labels:
         kind: diagnostic
@@ -98,8 +98,8 @@ graph:
         - diagnostics
         - runtime
       position:
+        - 640
         - 390
-        - 300
     - id: runtime-diagnostics
       labels:
         kind: diagnostic
@@ -111,43 +111,96 @@ graph:
         - diagnostics
         - runtime
       position:
-        - 830
+        - 1220
+        - 390
+    - id: mounted-bundle
+      labels:
+        kind: artifact
+        role: bundle
+        name: Mounted YAML
+      data:
+        detail: >-
+          Portable bundle exported from Studio and mounted by an operator/deployment; not a live
+          Studio-to-Grafana API.
+      layers:
+        - source
+      position:
         - 370
+        - 190
+    - id: grafana-datasource
+      labels:
+        kind: runtime
+        role: datasource
+        name: Grafana data source
+      data:
+        detail: >-
+          Grafana queries Prometheus via its data source; PanelProps.data.series supplies resulting data
+          frames to the panel.
+      layers:
+        - telemetry
+        - runtime
+      position:
+        - 640
+        - 620
   links:
-    - id: authoring-to-backend
+    - id: export-and-mount
       source: authoring-tool
+      target: mounted-bundle
+      labels:
+        flow: manual
+        route: straight
+        name: export / mount
+      layers:
+        - source
+    - id: bundle-files-to-backend
+      source: mounted-bundle
       target: plugin-backend
       labels:
         flow: source
         route: straight
-        name: "1"
+        name: 1 · read YAML
       layers:
         - source
+        - runtime
+    - id: prometheus-to-datasource
+      source: prometheus-http-api
+      target: grafana-datasource
+      labels:
+        flow: telemetry
+        route: straight
+        name: 3a · query results
+      data:
+        detail: Response data direction; Grafana sends the query request in the opposite direction.
+      layers:
+        - telemetry
+    - id: datasource-to-frontend
+      source: grafana-datasource
+      target: plugin-frontend
+      labels:
+        flow: telemetry
+        route: smooth-taxi
+        name: 3b · data frames
+      layers:
+        - telemetry
+        - runtime
+      sourceHandle: shape-port-2
+      targetHandle: shape-port-4
     - id: backend-to-frontend
       source: plugin-backend
       target: plugin-frontend
       labels:
         flow: source
         route: straight
-        name: "2"
+        name: 2 · bundle YAML
       layers:
         - runtime
-    - id: prometheus-to-backend
-      source: prometheus-http-api
-      target: plugin-backend
-      labels:
-        flow: telemetry
-        route: bezier
-        name: "3"
-      layers:
-        - telemetry
     - id: frontend-to-mapper
       source: plugin-frontend
       target: mapper-runtime
       labels:
         flow: mapping
-        route: bezier
-        name: "4"
+        route: straight
+        name: 4 · frames + rules
       layers:
         - runtime
     - id: frontend-to-renderer
@@ -156,7 +209,7 @@ graph:
       labels:
         flow: render
         route: straight
-        name: "5"
+        name: 5 · graph + style
       layers:
         - runtime
     - id: mapper-to-renderer
@@ -164,8 +217,8 @@ graph:
       target: topoviewer-renderer
       labels:
         flow: overlay
-        route: bezier
-        name: "6"
+        route: straight
+        name: 6 · overlay
       layers:
         - runtime
     - id: mapper-to-diagnostics
@@ -173,8 +226,8 @@ graph:
       target: runtime-diagnostics
       labels:
         flow: diagnostic
-        route: smooth-taxi
-        name: "7"
+        route: straight
+        name: 7 · coverage
       layers:
         - diagnostics
     - id: backend-to-diagnostics
@@ -183,7 +236,7 @@ graph:
       labels:
         flow: diagnostic
         route: straight
-        name: "8"
+        name: 8 · source errors
       layers:
         - diagnostics
   regions:
@@ -194,6 +247,7 @@ graph:
         name: Authoring
       members:
         - authoring-tool
+        - mounted-bundle
       layers:
         - source
     - id: telemetry-region
@@ -217,6 +271,7 @@ graph:
         - topoviewer-renderer
         - source-diagnostics
         - runtime-diagnostics
+        - grafana-datasource
       layers:
         - runtime
         - diagnostics
@@ -224,7 +279,7 @@ graph:
       labels:
         region: lane
         lane: backend
-        name: TopoViewer plugin backend
+        name: Bundle backend
       parent: grafana-region
       members:
         - plugin-backend
@@ -236,7 +291,7 @@ graph:
       labels:
         region: lane
         lane: frontend
-        name: TopoViewer plugin frontend
+        name: Panel frontend
       parent: grafana-region
       members:
         - plugin-frontend
@@ -245,6 +300,10 @@ graph:
         - runtime-diagnostics
       layers:
         - runtime
+  data:
+    scope: >-
+      Component data flow, not a packet trace or timing diagram. Arrow labels name payloads; dashed links
+      indicate manual transfer or diagnostics.
 toggles:
   - id: showEdgeLabels
     default: true

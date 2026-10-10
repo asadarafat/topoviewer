@@ -154,7 +154,12 @@ async function openExample(page, example) {
   await page.goto(exampleUrl(example), { waitUntil: 'domcontentloaded' });
   // Narrative pages can host multiple fixtures, including catalog entries with
   // publicPage: false. Match the source rather than relying on embed order.
-  const embed = page.locator(`.topoviewer-embed[data-topology$="/${example.path}/topology.yaml"]`);
+  const embedId = await page.locator('.topoviewer-embed').evaluateAll((embeds, sourcePath) => {
+    return embeds.find((element) => new URL(element.getAttribute('data-topology'), document.baseURI)
+      .pathname.endsWith(`/${sourcePath}/topology.yaml`))?.id;
+  }, example.path);
+  expect(embedId, `${example.id}: source embed must exist`).toBeTruthy();
+  const embed = page.locator(`#${embedId}`);
   await expect(embed).toHaveCount(1);
   await expect(embed).toBeVisible({ timeout: 30000 });
   await embed.scrollIntoViewIfNeeded();
@@ -204,6 +209,7 @@ async function nodeBox(page, id) {
 }
 
 async function dragNodeNearPeer(page, draggedId, peerId, offset = { x: 4, y: 2 }) {
+  await page.locator('.react-flow').first().scrollIntoViewIfNeeded();
   const dragBefore = await nodeBox(page, draggedId);
   const peerBefore = await nodeBox(page, peerId);
   const pointerOffset = {
@@ -306,6 +312,17 @@ async function expectGenericExample(figure, example) {
   if (expected.minRegions !== undefined) {
     await expect.poll(async () => figure.locator('.react-flow__node-region').count(), { timeout: 15000 }).toBeGreaterThanOrEqual(expected.minRegions);
   }
+  await expect.poll(async () => figure.locator('.react-flow').evaluate((canvas) => {
+    const bounds = canvas.getBoundingClientRect();
+    const labels = [...canvas.querySelectorAll('.topoviewer-node-label, .topoviewer-node-card-title, .topoviewer-region-label, .topoviewer-callout-title')];
+    return labels.filter((label) => {
+      const style = getComputedStyle(label);
+      if (!label.checkVisibility({ opacityProperty: true, visibilityProperty: true }) || style.color === 'rgba(0, 0, 0, 0)') return false;
+      const box = label.getBoundingClientRect();
+      return box.width > 0 && box.height > 0 && (box.left < bounds.left - 2 || box.top < bounds.top - 2
+        || box.right > bounds.right + 2 || box.bottom > bounds.bottom + 2);
+    }).map((label) => label.textContent.trim());
+  }), { message: `${example.id}: initial names and headings must fit the canvas`, timeout: 15000 }).toEqual([]);
 }
 
 async function expectControlAssertions(page, example, figure) {
@@ -317,6 +334,7 @@ async function expectControlAssertions(page, example, figure) {
       await figure.locator('.topoviewer-controls-toggle').click();
     }
     await expect(figure.locator('.topoviewer-embed-controls-overlay')).toBeVisible();
+    await figure.locator('.topoviewer-controls-toggle').click();
   }
 
   if (assertions.svgIcons) {
@@ -332,6 +350,16 @@ async function expectControlAssertions(page, example, figure) {
   if (assertions.nodeLabelPositions) {
     for (const position of String(assertions.nodeLabelPositions).split(',').map((item) => item.trim()).filter(Boolean)) {
       await expect(figure.locator(`.topoviewer-node-label[data-label-position="${position}"]`).first()).toBeVisible();
+    }
+    // Regression: absolute side labels used to shrink to a single character
+    // per line. Check the actual rendered words, including authored wrapping.
+    for (const position of ['left', 'right']) {
+      const label = figure.locator(`.topoviewer-node-label[data-label-position="${position}"]`).first();
+      if (await label.count()) {
+        const size = await label.evaluate((element) => ({ width: element.offsetWidth, height: element.offsetHeight }));
+        expect(size.width).toBeGreaterThan(50);
+        expect(size.height).toBeLessThan(100);
+      }
     }
   }
 
@@ -398,13 +426,18 @@ async function expectControlAssertions(page, example, figure) {
   }
 
   if (assertions.themeVariables) {
-    const lightBackground = await figure.evaluate((element) => {
+    await page.evaluate(() => document.body.setAttribute('data-md-color-scheme', 'default'));
+    const viewer = figure.locator('.topoviewer');
+    await expect(viewer).toHaveClass(/topoviewer-theme-light/);
+    const lightBackground = await viewer.evaluate((element) => {
       return getComputedStyle(element).getPropertyValue('--topoviewer-bg').trim();
     });
-    await page.evaluate(() => document.documentElement.setAttribute('data-md-color-scheme', 'slate'));
-    const darkBackground = await figure.evaluate((element) => {
+    await page.evaluate(() => document.body.setAttribute('data-md-color-scheme', 'slate'));
+    await expect(viewer).toHaveClass(/topoviewer-theme-dark/);
+    await expect.poll(async () => viewer.evaluate((element) => {
       return getComputedStyle(element).getPropertyValue('--topoviewer-bg').trim();
-    });
+    })).not.toEqual(lightBackground);
+    const darkBackground = await viewer.evaluate((element) => getComputedStyle(element).getPropertyValue('--topoviewer-bg').trim());
     expect(lightBackground).not.toEqual('');
     expect(darkBackground).not.toEqual('');
     expect(darkBackground).not.toEqual(lightBackground);
@@ -455,6 +488,16 @@ async function expectControlAssertions(page, example, figure) {
     expectedOffsets.forEach((offset) => {
       expect(renderedOffsets).toContain(offset);
     });
+  }
+  if (assertions.edgeMarkersExact !== undefined) {
+    await expect(figure.locator('svg marker')).toHaveCount(Number(assertions.edgeMarkersExact));
+  }
+  if (assertions.undirectedSessionLinkIds) {
+    for (const id of String(assertions.undirectedSessionLinkIds).split(',').map((value) => value.trim()).filter(Boolean)) {
+      const session = figure.locator(`.react-flow__edge[data-id="${id}"]`);
+      await expect(session).toBeVisible();
+      await expect(session.locator('marker')).toHaveCount(0);
+    }
   }
   if (assertions.edgeMarkersMin !== undefined) {
     await expect.poll(async () => figure.locator('svg marker').count()).toBeGreaterThanOrEqual(Number(assertions.edgeMarkersMin));
@@ -581,18 +624,18 @@ async function expectControlAssertions(page, example, figure) {
     expect(targetToSource?.d).toMatch(/^M /);
     expect(sourceToTarget?.length).toBeGreaterThan(40);
     expect(targetToSource?.length).toBeGreaterThan(40);
-    expect(Number.parseFloat(sourceToTarget?.strokeWidth || '0')).toBeCloseTo(16);
-    expect(Number.parseFloat(targetToSource?.strokeWidth || '0')).toBeCloseTo(16);
-    expect(Number(sourceToTargetMarker?.markerWidth)).toBeCloseTo(16);
-    expect(Number(targetToSourceMarker?.markerWidth)).toBeCloseTo(16);
+    expect(Number.parseFloat(sourceToTarget?.strokeWidth || '0')).toBeCloseTo(6);
+    expect(Number.parseFloat(targetToSource?.strokeWidth || '0')).toBeCloseTo(6);
+    expect(Number(sourceToTargetMarker?.markerWidth)).toBeCloseTo(6);
+    expect(Number(targetToSourceMarker?.markerWidth)).toBeCloseTo(6);
     expect(Math.hypot(
       Number(sourceToTargetMarker?.end.x || 0) - Number(sourceToTarget?.end.x || 0),
       Number(sourceToTargetMarker?.end.y || 0) - Number(sourceToTarget?.end.y || 0)
-    )).toBeGreaterThan(8);
+    )).toBeCloseTo(8);
     expect(Math.hypot(
       Number(targetToSourceMarker?.end.x || 0) - Number(targetToSource?.end.x || 0),
       Number(targetToSourceMarker?.end.y || 0) - Number(targetToSource?.end.y || 0)
-    )).toBeGreaterThan(8);
+    )).toBeCloseTo(8);
     const labelTransforms = await figure.locator('.topoviewer-edge-label-center').evaluateAll((labels) => {
       return labels.map((label) => ({
         text: label.textContent?.trim() || '',
@@ -623,6 +666,18 @@ async function expectControlAssertions(page, example, figure) {
     await expect(figure.locator('.react-flow__node-pin')).toHaveCount(2);
     await expect(figure.locator('.react-flow__edge[data-id="access-line:leader"]')).toBeVisible();
     await expect(figure.locator('.react-flow__edge[data-id="pin-callout:leader"]')).toBeVisible();
+    const shape = figure.locator('.topoviewer-shape-geometry');
+    await expect(shape).toHaveAttribute('preserveAspectRatio', 'none');
+    // A wide attachment bar must paint its authored footprint; otherwise the
+    // leader appears to land on empty space rather than the attachment pin.
+    const paintedFraction = await shape.evaluate((svg) => {
+      const rectangle = svg.querySelector('rect');
+      const painted = rectangle.getBoundingClientRect();
+      const bounds = svg.getBoundingClientRect();
+      return { width: painted.width / bounds.width, height: painted.height / bounds.height };
+    });
+    expect(paintedFraction.width).toBeGreaterThan(0.9);
+    expect(paintedFraction.height).toBeGreaterThan(0.9);
   }
 
   if (assertions.attentionClickNode) {
@@ -765,7 +820,7 @@ test.describe('MkDocs TopoViewer documented examples', () => {
     test(`documents non-renderable validation fixture: ${example.id}`, async ({ page }) => {
       test.skip(!hasPublicExample(example), `MkDocs validation page output is missing: ${pageIndexPath(example)}`);
       await page.goto(exampleUrl(example), { waitUntil: 'domcontentloaded' });
-      await expect(page.locator('.admonition.warning, .admonition-title', { hasText: 'Non-renderable validation fixture' }).first()).toBeVisible();
+      await expect(page.locator('.admonition.warning', { hasText: 'Intentional validation failure' }).first()).toBeVisible();
       await expect(page.locator('.topoviewer-embed')).toHaveCount(0);
     });
   }
@@ -795,6 +850,7 @@ test.describe('MkDocs TopoViewer documented examples', () => {
     await openEmbedControls(page);
 
     await setEmbedCheck(page, 'Helper lines', false);
+    await page.locator('.topoviewer-controls-toggle').first().click();
     await dragNodeNearPeer(page, 'R01', 'R02');
     await expect(page.locator('.topoviewer-helper-line')).toHaveCount(0);
     await page.mouse.up();
@@ -804,6 +860,7 @@ test.describe('MkDocs TopoViewer documented examples', () => {
     await openEmbedControls(page);
     await setEmbedCheck(page, 'Helper lines', false);
     await setEmbedCheck(page, 'Helper lines', true);
+    await page.locator('.topoviewer-controls-toggle').first().click();
     await dragNodeNearPeer(page, 'R01', 'R02');
     await expect(page.locator('.topoviewer-helper-line').first()).toBeVisible();
     await page.mouse.up();
@@ -886,13 +943,13 @@ test.describe('MkDocs TopoViewer documented examples', () => {
     await expect(markdownCallout.locator('.topoviewer-callout-body img[alt="Tiny topology badge"]')).toBeVisible();
   });
 
-  test('renders geometry-only shapes without legacy label, body, or image nodes', async ({ page }) => {
+  test('renders labeled vector shapes with authored rotation', async ({ page }) => {
     const example = examples.find((item) => item.expected?.assertions?.shapeRotation);
     test.skip(!example || !hasPublicExample(example), 'No published geometry-shape example is available.');
     await openExample(page, example);
 
     await expect(page.locator('.topoviewer-shape-geometry')).toHaveCount(example.expected.dom.shapes);
-    await expect(page.locator('.topoviewer-shape-label')).toHaveCount(0);
+    await expect(page.locator('.topoviewer-shape-label')).toHaveCount(example.expected.dom.shapes);
     await expect(page.locator('.topoviewer-shape-body')).toHaveCount(0);
     await expect(page.locator('.topoviewer-shape-image')).toHaveCount(0);
     await expect(page.locator('.topoviewer-shape-cuboid .topoviewer-shape-geometry g')).toHaveAttribute('transform', 'rotate(-6 50 50)');
@@ -906,7 +963,7 @@ test.describe('MkDocs TopoViewer documented examples', () => {
     await expect(page.locator('.react-flow__node[data-id="services-1-10-agg1"]')).toBeVisible();
     await expect(page.locator('.react-flow__node[data-id="services-1-10-agg2"]')).toBeVisible();
     await expect(page.locator('.topoviewer-edge-pipe-fill')).toHaveCount(4);
-    await expect(page.locator('.topoviewer-edge-lane')).toHaveCount(6);
+    await expect(page.locator('.topoviewer-edge-lane')).toHaveCount(10);
     await expect(page.locator('.topoviewer-edge-lane-stub')).toHaveCount(2);
   });
 });

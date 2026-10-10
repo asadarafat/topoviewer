@@ -1,11 +1,13 @@
-version: "0.2"
+version: '0.2'
 graph:
   id: endpoint-journey
   labels:
     name: What sits behind this endpoint?
   data:
-    provenance: Authored walkthrough using identities from the captured EDA service-map example.
-    scope: Simplified relationships; not a live inventory or an observed request trace.
+    provenance: Authored walkthrough using captured EDA object identities.
+    scope: >-
+      Curated teaching snapshot, not live inventory or an observed request trace. Dashed matches are inferred;
+      ReplicaSets are omitted.
   layers:
     - id: service
       labels:
@@ -22,8 +24,11 @@ graph:
         detail: Operator entry point
         subtitle: Operator
         sourceId: client-browser
-      layers: [service]
-      position: [20, 200]
+      layers:
+        - service
+      position:
+        - 20
+        - 200
     - id: svc-try-eda
       labels:
         name: try-eda
@@ -33,19 +38,25 @@ graph:
         detail: NodePort service; HTTPS entry
         subtitle: NodePort
         sourceId: svc-try-eda
-      layers: [service]
-      position: [260, 200]
+      layers:
+        - service
+      position:
+        - 260
+        - 200
     - id: svc-eda-api
       labels:
         name: eda-api
         object: service
         role: api
       data:
-        detail: API service; selects the API workload
+        detail: API Service; selects Pods matching its selector
         subtitle: Service
         sourceId: svc-eda-api
-      layers: [service]
-      position: [500, 200]
+      layers:
+        - service
+      position:
+        - 500
+        - 200
     - id: deploy-eda-api
       labels:
         name: API workload
@@ -55,8 +66,11 @@ graph:
         subtitle: Deployment
         sourceName: eda-api
         sourceId: deploy-eda-api
-      layers: [service]
-      position: [740, 200]
+      layers:
+        - service
+      position:
+        - 740
+        - 200
     - id: svc-eda-cx
       labels:
         name: Sim control
@@ -67,8 +81,11 @@ graph:
         subtitle: eda-cx service
         sourceName: eda-cx
         sourceId: svc-eda-cx
-      layers: [runtime]
-      position: [500, 320]
+      layers:
+        - runtime
+      position:
+        - 500
+        - 320
     - id: toponode-leaf1
       labels:
         name: leaf1
@@ -77,19 +94,25 @@ graph:
         detail: TopoNode custom resource in the eda namespace
         subtitle: TopoNode
         sourceId: toponode-leaf1
-      layers: [runtime]
-      position: [120, 430]
+      layers:
+        - runtime
+      position:
+        - 120
+        - 430
     - id: deploy-cx-eda-leaf1-sim
       labels:
         name: Simulator
         object: deployment
       data:
-        detail: cx-eda--leaf1-sim Deployment; owns the simulator Pod
+        detail: Simulator Deployment; Pod association shown with ReplicaSet omitted
         subtitle: Deployment
         sourceName: cx-eda--leaf1-sim
         sourceId: deploy-cx-eda-leaf1-sim
-      layers: [runtime]
-      position: [380, 430]
+      layers:
+        - runtime
+      position:
+        - 380
+        - 430
     - id: pod-cx-eda-leaf1-sim-777d7654d8-rj7vt
       labels:
         name: leaf1 pod
@@ -99,8 +122,11 @@ graph:
         subtitle: Simulator Pod
         sourceName: cx-eda--leaf1-sim-777d7654d8-rj7vt
         sourceId: pod-cx-eda-leaf1-sim-777d7654d8-rj7vt
-      layers: [runtime]
-      position: [640, 430]
+      layers:
+        - runtime
+      position:
+        - 640
+        - 430
   links:
     - id: client-to-try-eda
       source: client-browser
@@ -110,25 +136,32 @@ graph:
         relation: entry
       data:
         provenance: captured-model
-      layers: [service]
+      layers:
+        - service
     - id: try-eda-to-eda-api
       source: svc-try-eda
       target: svc-eda-api
       labels:
-        name: /api
-        relation: route
+        name: shared selector
+        relation: shared-selector
       data:
-        provenance: captured-model
-      layers: [service]
+        provenance: selector-correspondence
+        detail: Two Service frontends select the same Pod labels. This is not a Service-to-Service forwarding hop.
+      layers:
+        - service
     - id: selects-eda-api-eda-api
       source: svc-eda-api
       target: deploy-eda-api
       labels:
-        name: selects
-        relation: selector
+        name: template match
+        relation: template-match
       data:
-        provenance: captured-model
-      layers: [service]
+        provenance: inferred
+        detail: >-
+          Service selector corresponds to Deployment Pod-template labels; Services select Pods, not
+          Deployments.
+      layers:
+        - service
     - id: flow-svc-eda-cx-svc-eda-api
       source: svc-eda-cx
       target: svc-eda-api
@@ -137,7 +170,8 @@ graph:
         relation: control
       data:
         provenance: captured-model
-      layers: [runtime]
+      layers:
+        - runtime
     - id: authored-controller-runtime-context
       source: svc-eda-cx
       target: toponode-leaf1
@@ -147,7 +181,8 @@ graph:
       data:
         provenance: authored
         detail: An explanatory bridge to the managed objects, not an observed network call.
-      layers: [runtime]
+      layers:
+        - runtime
     - id: toponode-to-sim-leaf1
       source: toponode-leaf1
       target: deploy-cx-eda-leaf1-sim
@@ -156,16 +191,21 @@ graph:
         relation: binding
       data:
         provenance: captured-model
-      layers: [runtime]
+      layers:
+        - runtime
     - id: deploy-to-pod-cx-eda-leaf1-sim-cx-eda-leaf1-sim-777d7654d8-rj7vt
       source: deploy-cx-eda-leaf1-sim
       target: pod-cx-eda-leaf1-sim-777d7654d8-rj7vt
       labels:
-        name: owns
-        relation: ownership
+        name: Pod association
+        relation: workload-association
       data:
-        provenance: captured-model
-      layers: [runtime]
+        provenance: curated-association
+        detail: >-
+          Deployment-to-Pod correspondence in the saved model. ReplicaSet and ownerReferences are not
+          represented; this is not direct ownership.
+      layers:
+        - runtime
   regions:
     - id: managed-runtime
       labels:
@@ -174,7 +214,8 @@ graph:
         - toponode-leaf1
         - deploy-cx-eda-leaf1-sim
         - pod-cx-eda-leaf1-sim-777d7654d8-rj7vt
-      layers: [runtime]
+      layers:
+        - runtime
 attention:
   aggregate:
     groups:

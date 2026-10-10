@@ -6,23 +6,24 @@ layout:
 stylesheet:
   - selector: callout
     style:
-      backgroundColor: rgba(15, 23, 42, 0.94)
-      borderColor: rgba(148, 163, 184, 0.42)
+      backgroundColor: color-mix(in srgb, var(--topoviewer-accent) 12%, var(--topoviewer-panel-bg))
+      borderColor: color-mix(in srgb, var(--topoviewer-accent) 42%, transparent)
       borderWidth: 1
-      borderRadius: 14
-      titleBackgroundColor: rgba(30, 41, 59, 0.88)
-      titleColor: "#f8fafc"
-      titleFontSize: 13
-      titleFontWeight: 900
-      bodyColor: "#cbd5e1"
-      bodyFontSize: 11
-      bodyLineHeight: 1.38
+      borderRadius: 8
+      titleBackgroundColor: color-mix(in srgb, var(--topoviewer-accent) 18%, var(--topoviewer-panel-bg))
+      titleColor: "var(--topoviewer-fg-strong)"
+      titleFontSize: 14
+      titleFontWeight: 600
+      bodyColor: "var(--topoviewer-fg-muted)"
+      bodyFontSize: 13
+      bodyLineHeight: 1.5
       curveStyle: smoothstep
-      lineColor: rgba(226, 232, 240, 0.72)
-      arrowColor: rgba(226, 232, 240, 0.82)
+      lineColor: var(--topoviewer-edge-default)
+      arrowColor: var(--topoviewer-edge-default)
       lineWidth: 1
       targetArrowShape: triangle
       zIndex: 40
+      boxShadow: none
   - selector: callout[id = "image-note"]
     style:
       width: 420

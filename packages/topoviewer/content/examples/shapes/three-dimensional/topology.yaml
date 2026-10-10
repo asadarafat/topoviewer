@@ -1,4 +1,4 @@
-version: "0.2"
+version: '0.2'
 graph:
   id: three-dimensional-shapes
   layers:
@@ -75,5 +75,55 @@ diagram:
         family: 3d
         geometry: prism
         name: prism
+      layers:
+        - diagram
+  texts:
+    - id: shape-cube-caption
+      text: cube
+      position:
+        - 60
+        - 220
+      layers:
+        - diagram
+    - id: shape-cuboid-caption
+      text: cuboid
+      position:
+        - 160
+        - 220
+      layers:
+        - diagram
+    - id: shape-sphere-caption
+      text: sphere
+      position:
+        - 260
+        - 220
+      layers:
+        - diagram
+    - id: shape-cone-caption
+      text: cone
+      position:
+        - 360
+        - 220
+      layers:
+        - diagram
+    - id: shape-cylinder-caption
+      text: cylinder
+      position:
+        - 460
+        - 220
+      layers:
+        - diagram
+    - id: shape-pyramid-caption
+      text: pyramid
+      position:
+        - 560
+        - 220
+      layers:
+        - diagram
+    - id: shape-prism-caption
+      text: prism
+      position:
+        - 660
+        - 220
       layers:
         - diagram

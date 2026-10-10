@@ -15,7 +15,7 @@ A compact layered-network fixture for Studio, demos, and regression checks.
 ### Try It
 
 1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `region`.
-2. Change its `borderColor` from `"rgba(25, 118, 210, 0.34)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+2. Change its `borderColor` from `"var(--topoviewer-region-stroke)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
 3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
@@ -64,7 +64,7 @@ A compact data center fabric template with two spine switches, four leaf switche
 ### Try It
 
 1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link`.
-2. Change its `lineColor` from `"#42a5f5"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+2. Change its `lineColor` from `"var(--topoviewer-edge-default)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
 3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
@@ -103,7 +103,7 @@ A Studio fixture for inserting nodes, links, paths, regions, and notes.
 ### Try It
 
 1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `region`.
-2. Change its `borderColor` from `"rgba(66, 165, 245, 0.58)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+2. Change its `borderColor` from `"var(--topoviewer-region-stroke)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
 3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
@@ -111,7 +111,7 @@ A Studio fixture for inserting nodes, links, paths, regions, and notes.
     ```topoviewer
     topology: insert-workflow/topology.yaml
     stylesheet: insert-workflow/stylesheet.yaml
-    height: 520px
+    height: 600px
     controls: true
     controlsOpen: false
     title: Insert workflow
@@ -142,7 +142,7 @@ A Studio fixture for editing attention focus, aggregation, and link grouping.
 ### Try It
 
 1. Copy the two YAML tabs into your own project. Select the same layers in the viewer: `underlay`, `service`, `operations`. In stylesheet.yaml, find selector `region`.
-2. Change its `borderColor` from `"rgba(66, 165, 245, 0.58)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+2. Change its `borderColor` from `"var(--topoviewer-region-stroke)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
 3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
@@ -185,7 +185,7 @@ A Studio fixture for inspecting object labels, data, positions, and relationship
 ### Try It
 
 1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link[labels.layer = "security"]`.
-2. Change its `lineColor` from `"#d32f2f"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+2. Change its `lineColor` from `"var(--topoviewer-danger)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
 3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
@@ -224,7 +224,7 @@ A Studio fixture for parallel link grouping and bundle threshold editing.
 ### Try It
 
 1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link[labels.layer = "observability"]`.
-2. Change its `lineColor` from `"#2e7d32"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+2. Change its `lineColor` from `"var(--topoviewer-info)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
 3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"

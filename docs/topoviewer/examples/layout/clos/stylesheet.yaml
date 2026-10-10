@@ -11,8 +11,8 @@ layout:
 icons:
   stage:
     glyph: "•"
-    fill: "#1976d2"
-    stroke: "#90caf9"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
 labelFields:
   - labels.name
 stylesheet:
@@ -22,15 +22,22 @@ stylesheet:
       shape: rectangle
       width: 72
       height: 56
-      borderWidth: 3
+      borderWidth: 2
       labelColor: var(--topoviewer-fg-strong)
-      labelFontWeight: 800
+      labelFontWeight: 600
       labelBackgroundColor: var(--topoviewer-panel-bg)
       labelBackgroundOpacity: 0.92
       labelPadding: 3
+      labelFontSize: 14
+      metaColor: transparent
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-edge-default)
+      iconColor: var(--topoviewer-fg-strong)
   - selector: link
     style:
       curveStyle: straight
-      lineColor: "#42a5f5"
+      lineColor: "var(--topoviewer-edge-default)"
       lineWidth: 3
       targetArrowShape: none
+      labelFontSize: 12
+      labelFontWeight: 600

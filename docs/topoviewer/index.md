@@ -31,10 +31,10 @@ TopoViewer renders declarative graph and diagram documents from YAML. The canoni
 - [Endpoint label controls](examples/edges/endpoint-label-controls/index.md): Endpoint labels can show physical ports while arrow markers remain pure geometry.
 - [Endpoint spacing and routing](examples/edges/endpoint-spacing-routing/index.md): Endpoint spacing, segment controls, and taxi controls make edge routes explicit.
 - [Gradient and interaction flags](examples/edges/gradient-and-interaction/index.md): Linear gradients and interaction flags can be declared directly on edge style rules.
-- [Floating anchors](examples/edges/floating-anchors/index.md): Floating anchors connect to the nearest point on each node boundary.
+- [Floating anchors](examples/edges/floating-anchors/index.md): Floating anchors connect to the facing side of each visible node outline.
 - [Parent link pipe](examples/edges/parent-link-pipe/index.md): A child link can be visually carried inside a parent transport link.
 - [Directional link strokes](examples/edges/directional-link-strokes/index.md): One physical link can show two independently styled traffic directions.
-- [Dense CLOS labels](examples/edges/dense-clos-labels/index.md): Show region, node, metadata, endpoint port, and bidirectional bandwidth labels in one compact CLOS fabric.
+- [Dense CLOS labels](examples/edges/dense-clos-labels/index.md): Keep node names, endpoint ports, and bidirectional bandwidth values legible in a CLOS fabric.
 
 ### Paths
 
@@ -110,7 +110,7 @@ TopoViewer renders declarative graph and diagram documents from YAML. The canoni
 
 ### Integration
 
-- [Kubernetes service map](examples/use-cases/kubernetes-service-map/index.md): A real EDA Playground Kubernetes service map showing services, deployments, pods, EDA TopoNodes, simulator pods, and runtime bindings.
+- [Kubernetes service map](examples/use-cases/kubernetes-service-map/index.md): A curated EDA Playground snapshot showing Kubernetes resources, inferred Pod-template matches, and authored runtime associations.
 - [Service Provider Network](examples/use-cases/service-provider-network.md): One provider topology rendered as underlay, BGP, transport, service path, and failure views.
 
 The important rule is simple: if an object is part of the topology, model it under `graph.*`. If it explains the topology visually, model it under `diagram.*`.

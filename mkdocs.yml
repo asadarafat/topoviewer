@@ -8,6 +8,7 @@ docs_dir: docs
 site_dir: site/docs/mkdocs
 extra_css:
   - assets/topoviewer/gallery.css
+  - assets/topoviewer/diagrams.css
 
 theme:
   name: material

@@ -6,20 +6,20 @@ layout:
 icons:
   endpoint:
     glyph: C
-    fill: "#2563eb"
-    stroke: "#bfdbfe"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   gateway:
     glyph: G
-    fill: "#0f766e"
-    stroke: "#99f6e4"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   service:
     glyph: API
-    fill: "#dc2626"
-    stroke: "#fecaca"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   support:
     glyph: S
-    fill: "#64748b"
-    stroke: "#cbd5e1"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
 labelFields:
   - labels.name
 stylesheet:
@@ -27,9 +27,14 @@ stylesheet:
     style:
       width: 86
       height: 60
-      borderWidth: 3
+      borderWidth: 2
       labelColor: var(--topoviewer-fg-strong)
-      labelFontWeight: 800
+      labelFontWeight: 600
+      labelFontSize: 14
+      metaColor: transparent
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-edge-default)
+      iconColor: var(--topoviewer-fg-strong)
   - selector: node[labels.role = "endpoint"]
     style:
       icon: endpoint
@@ -45,10 +50,12 @@ stylesheet:
   - selector: link
     style:
       curveStyle: smooth-step
-      lineColor: "#64748b"
+      lineColor: "var(--topoviewer-edge-default)"
       lineWidth: 1.5
       targetArrowShape: none
       opacity: 0.72
+      labelFontSize: 12
+      labelFontWeight: 600
   - selector: link[labels.link = "support"]
     style:
       lineDashPattern: 5 5
@@ -56,7 +63,9 @@ stylesheet:
     style:
       label: Checkout flow
       curveStyle: smooth-taxi
-      lineColor: "#38bdf8"
+      lineColor: "var(--topoviewer-info)"
       lineWidth: 4
       animated: true
       targetArrowShape: triangle
+      labelFontSize: 12
+      labelFontWeight: 600

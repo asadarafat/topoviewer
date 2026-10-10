@@ -14,7 +14,7 @@ graph:
       layers:
         - story
       position:
-        - 120
+        - 70
         - 100
     - id: eda-api
       labels:
@@ -24,7 +24,7 @@ graph:
       layers:
         - story
       position:
-        - 120
+        - 70
         - 250
     - id: collector
       labels:
@@ -34,7 +34,7 @@ graph:
       layers:
         - story
       position:
-        - 340
+        - 310
         - 175
     - id: raw-inventory
       labels:
@@ -44,7 +44,7 @@ graph:
       layers:
         - story
       position:
-        - 560
+        - 550
         - 175
     - id: converter
       labels:
@@ -54,7 +54,7 @@ graph:
       layers:
         - story
       position:
-        - 760
+        - 790
         - 80
     - id: run-converter
       labels:
@@ -65,8 +65,8 @@ graph:
       layers:
         - story
       position:
-        - 760
-        - 140
+        - 790
+        - 180
     - id: derive-topology-model
       labels:
         object: model
@@ -76,8 +76,8 @@ graph:
       layers:
         - story
       position:
-        - 760
-        - 240
+        - 790
+        - 260
     - id: topology-yaml
       labels:
         object: artifact
@@ -86,8 +86,8 @@ graph:
       layers:
         - story
       position:
-        - 1040
-        - 135
+        - 550
+        - 490
     - id: stylesheet-yaml
       labels:
         object: artifact
@@ -96,8 +96,8 @@ graph:
       layers:
         - story
       position:
-        - 1040
-        - 285
+        - 550
+        - 630
     - id: topoviewer
       labels:
         object: renderer
@@ -106,8 +106,8 @@ graph:
       layers:
         - story
       position:
-        - 1280
-        - 210
+        - 310
+        - 565
     - id: layer-attention-controls
       labels:
         object: behavior
@@ -116,8 +116,8 @@ graph:
       layers:
         - story
       position:
-        - 1520
-        - 135
+        - 70
+        - 490
     - id: service-map
       labels:
         object: output
@@ -126,8 +126,8 @@ graph:
       layers:
         - story
       position:
-        - 1520
-        - 285
+        - 70
+        - 630
   links:
     - id: k8s-to-collector
       source: kubernetes-api

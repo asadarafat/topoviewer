@@ -34,7 +34,7 @@ try {
       ...(render.attention ? { 'data-attention': JSON.stringify(render.attention) } : {}),
       ...(render.selectedLayerIds ? { 'data-selected-layer-ids': JSON.stringify(render.selectedLayerIds) } : {})
     };
-    const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${escape(card.title)}</title><link rel="stylesheet" href="/gallery/${galleryRendererAssets.stylesheet}"><style>html,body{margin:0;width:1120px;height:${height}px;background:#0b1118}*{box-sizing:border-box}.topoviewer-embed{width:1120px;height:${height}px}</style></head><body><div class="topoviewer-embed topoviewer-parity-theme" ${Object.entries(attributes).map(([key, value]) => `${key}="${escape(value)}"`).join(' ')}></div><script src="/gallery/${galleryRendererAssets.javascript}"></script></body></html>`;
+    const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${escape(card.title)}</title><link rel="stylesheet" href="/gallery/${galleryRendererAssets.stylesheet}"><link rel="stylesheet" href="/gallery/docs/assets/topoviewer/diagrams.css"><style>html,body{margin:0;width:1120px;height:${height}px;background:#14191f}*{box-sizing:border-box}.topoviewer-embed{width:1120px;height:${height}px}</style></head><body><div class="topoviewer-embed topoviewer-parity-theme" ${Object.entries(attributes).map(([key, value]) => `${key}="${escape(value)}"`).join(' ')}></div><script src="/gallery/${galleryRendererAssets.javascript}"></script></body></html>`;
     fs.writeFileSync(path.join(previewRoot, `${card.id}.html`), html);
     const page = await browser.newPage({ viewport: { width: 1120, height }, deviceScaleFactor: 1, colorScheme: 'dark', reducedMotion: 'reduce', locale: 'en-US', timezoneId: 'UTC' });
     const errors = [];

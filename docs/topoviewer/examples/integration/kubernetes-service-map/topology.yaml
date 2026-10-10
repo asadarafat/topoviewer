@@ -1,4 +1,4 @@
-version: "0.2"
+version: '0.2'
 graph:
   id: eda-kubernetes-service-map
   layers:
@@ -31,7 +31,7 @@ graph:
       data:
         type: NodePort
         clusterIP: 10.96.114.73
-        externalIPs: ""
+        externalIPs: ''
         ports: https:443/TCP, grpc-proxy:51206/TCP
         selector:
           eda.nokia.com/app: apiserver
@@ -51,7 +51,9 @@ graph:
         type: LoadBalancer
         clusterIP: 10.96.45.173
         externalIPs: 172.21.255.2, fc00:f853:ccd:e793:ffff:ffff:ffff:ff00
-        ports: apiserver:80/TCP, apiserverhttps:443/TCP, redundancy:51201/TCP, state-aggregator:51202/TCP, fe:51203/TCP, grpc-proxy:51206/TCP, apiserver-grpc:51300/TCP, eda-dhcp:67/UDP, eda-dhcp6:547/UDP
+        ports: >-
+          apiserver:80/TCP, apiserverhttps:443/TCP, redundancy:51201/TCP, state-aggregator:51202/TCP,
+          fe:51203/TCP, grpc-proxy:51206/TCP, apiserver-grpc:51300/TCP, eda-dhcp:67/UDP, eda-dhcp6:547/UDP
         selector:
           eda.nokia.com/app: apiserver
       layers:
@@ -69,7 +71,7 @@ graph:
       data:
         type: ClusterIP
         clusterIP: 10.96.190.5
-        externalIPs: ""
+        externalIPs: ''
         ports: fe:51101/TCP
         selector:
           eda.nokia.com/app: flowengine
@@ -88,7 +90,7 @@ graph:
       data:
         type: ClusterIP
         clusterIP: 10.96.11.120
-        externalIPs: ""
+        externalIPs: ''
         ports: https:9443/TCP, debug-grpc:51200/TCP
         selector:
           eda.nokia.com/app: keycloak
@@ -107,7 +109,7 @@ graph:
       data:
         type: ClusterIP
         clusterIP: 10.96.17.76
-        externalIPs: ""
+        externalIPs: ''
         ports: appstore:8082/TCP, appstore-grpc:51202/TCP
         selector:
           eda.nokia.com/app: appstore
@@ -145,7 +147,7 @@ graph:
       data:
         type: ClusterIP
         clusterIP: 10.96.219.224
-        externalIPs: ""
+        externalIPs: ''
         ports: postgres:5432/TCP, grpc:51200/TCP
         selector:
           eda.nokia.com/app: postgres
@@ -164,7 +166,7 @@ graph:
       data:
         type: ClusterIP
         clusterIP: 10.96.183.113
-        externalIPs: ""
+        externalIPs: ''
         ports: ce-grpc-port:51200/TCP
         selector:
           eda.nokia.com/app: configengine
@@ -183,7 +185,7 @@ graph:
       data:
         type: ClusterIP
         clusterIP: 10.96.228.75
-        externalIPs: ""
+        externalIPs: ''
         ports: statecontroller:51100/TCP, shard:51101/TCP
         selector:
           eda.nokia.com/app: statecontroller
@@ -202,7 +204,7 @@ graph:
       data:
         type: ClusterIP
         clusterIP: 10.96.52.184
-        externalIPs: ""
+        externalIPs: ''
         ports: stateaggregator:51100/TCP
         selector:
           eda.nokia.com/app: stateaggregator
@@ -221,7 +223,7 @@ graph:
       data:
         type: ClusterIP
         clusterIP: 10.96.95.129
-        externalIPs: ""
+        externalIPs: ''
         ports: grpc:51200/TCP, grpc-tunnel:51204/TCP
         selector:
           eda.nokia.com/app: eda-cluster-manager
@@ -240,7 +242,7 @@ graph:
       data:
         type: ClusterIP
         clusterIP: 10.96.134.40
-        externalIPs: ""
+        externalIPs: ''
         ports: cx-grpc-port:52200/TCP
         selector:
           eda.nokia.com/app: cx
@@ -259,7 +261,7 @@ graph:
       data:
         type: ClusterIP
         clusterIP: 10.96.67.194
-        externalIPs: ""
+        externalIPs: ''
         ports: grpc:8000/TCP
         selector:
           eda.nokia.com/app: bootstrapserver
@@ -278,7 +280,7 @@ graph:
       data:
         type: ClusterIP
         clusterIP: 10.96.143.242
-        externalIPs: ""
+        externalIPs: ''
         ports: https:443/TCP
         selector:
           eda.nokia.com/app: artifactserver
@@ -297,7 +299,7 @@ graph:
       data:
         type: ClusterIP
         clusterIP: 10.96.97.124
-        externalIPs: ""
+        externalIPs: ''
         ports: grpc:51200/TCP
         selector:
           eda.nokia.com/app: eda-ai-engine
@@ -316,7 +318,7 @@ graph:
       data:
         type: ClusterIP
         clusterIP: 10.96.59.23
-        externalIPs: ""
+        externalIPs: ''
         ports: 443:443/TCP
         selector:
           eda.nokia.com/app: configengine
@@ -335,7 +337,7 @@ graph:
       data:
         type: ClusterIP
         clusterIP: 10.96.104.218
-        externalIPs: ""
+        externalIPs: ''
         ports: 51200:51200/TCP
         selector:
           eda.nokia.com/app: apiserver
@@ -354,7 +356,7 @@ graph:
       data:
         type: ClusterIP
         clusterIP: 10.96.227.131
-        externalIPs: ""
+        externalIPs: ''
         ports: dhcp:67/UDP
         selector:
           eda.nokia.com/app: bootstrapserver
@@ -373,7 +375,7 @@ graph:
       data:
         type: ClusterIP
         clusterIP: 10.96.136.165
-        externalIPs: ""
+        externalIPs: ''
         ports: dhcp6:547/UDP
         selector:
           eda.nokia.com/app: bootstrapserver
@@ -392,7 +394,7 @@ graph:
       data:
         type: ClusterIP
         clusterIP: 10.96.61.44
-        externalIPs: ""
+        externalIPs: ''
         ports: ssh:22/TCP, web:3000/TCP
         selector:
           eda.nokia.com/app: git-replica
@@ -411,7 +413,7 @@ graph:
       data:
         type: ClusterIP
         clusterIP: 10.96.121.164
-        externalIPs: ""
+        externalIPs: ''
         ports: 2020:2020/TCP
         selector:
           eda.nokia.com/app: logoutput-collector
@@ -430,7 +432,7 @@ graph:
       data:
         type: ClusterIP
         clusterIP: 10.96.63.71
-        externalIPs: ""
+        externalIPs: ''
         ports: webhook:443/TCP
         selector:
           app: trust-manager
@@ -449,7 +451,7 @@ graph:
       data:
         type: ClusterIP
         clusterIP: 10.96.199.210
-        externalIPs: ""
+        externalIPs: ''
         ports: metrics:9402/TCP
         selector:
           app: trust-manager
@@ -904,7 +906,7 @@ graph:
         namespace: eda
         role: leaf
         status: connected
-        onboarded: "true"
+        onboarded: 'true'
         name: leaf1
       data:
         platform: 7220 IXR-D3L
@@ -912,7 +914,7 @@ graph:
         os: srl
         npp: Connected
         node: Synced
-        onboarded: "false"
+        onboarded: 'false'
         nodeDetails: 10.244.0.40:57400
         nppPod: eda-npp-0
       layers:
@@ -926,7 +928,7 @@ graph:
         namespace: eda
         role: leaf
         status: connected
-        onboarded: "true"
+        onboarded: 'true'
         name: leaf2
       data:
         platform: 7220 IXR-D3L
@@ -934,7 +936,7 @@ graph:
         os: srl
         npp: Connected
         node: Synced
-        onboarded: "false"
+        onboarded: 'false'
         nodeDetails: 10.244.0.41:57400
         nppPod: eda-npp-0
       layers:
@@ -948,7 +950,7 @@ graph:
         namespace: eda
         role: spine
         status: connected
-        onboarded: "true"
+        onboarded: 'true'
         name: spine1
       data:
         platform: 7220 IXR-D5
@@ -956,7 +958,7 @@ graph:
         os: srl
         npp: Connected
         node: Synced
-        onboarded: "false"
+        onboarded: 'false'
         nodeDetails: 10.244.0.42:57400
         nppPod: eda-npp-1
       layers:
@@ -1084,10 +1086,12 @@ graph:
       source: svc-try-eda
       target: svc-eda-api
       labels:
-        link: service-route
+        link: shared-selector
         layer: control-plane
-        name: NodePort selects API
-      data: {}
+        name: shared selector
+      data:
+        provenance: selector-correspondence
+        detail: Two Service frontends select the same Pod labels. This is not a Service-to-Service forwarding hop.
       layers:
         - control-plane
     - id: flow-svc-eda-api-svc-eda-keycloak
@@ -1097,7 +1101,11 @@ graph:
         link: runtime-flow
         layer: control-plane
         name: auth
-      data: {}
+      data:
+        provenance: curated-association
+        detail: >-
+          Authored dependency/binding in the saved teaching model; not a measured network call or captured
+          owner reference.
       layers:
         - control-plane
     - id: flow-svc-eda-api-svc-eda-appstore
@@ -1107,7 +1115,11 @@ graph:
         link: runtime-flow
         layer: control-plane
         name: apps
-      data: {}
+      data:
+        provenance: curated-association
+        detail: >-
+          Authored dependency/binding in the saved teaching model; not a measured network call or captured
+          owner reference.
       layers:
         - control-plane
     - id: flow-svc-eda-api-svc-eda-ce
@@ -1117,7 +1129,11 @@ graph:
         link: runtime-flow
         layer: control-plane
         name: config
-      data: {}
+      data:
+        provenance: curated-association
+        detail: >-
+          Authored dependency/binding in the saved teaching model; not a measured network call or captured
+          owner reference.
       layers:
         - control-plane
     - id: flow-svc-eda-api-svc-eda-sc
@@ -1127,7 +1143,11 @@ graph:
         link: runtime-flow
         layer: control-plane
         name: state
-      data: {}
+      data:
+        provenance: curated-association
+        detail: >-
+          Authored dependency/binding in the saved teaching model; not a measured network call or captured
+          owner reference.
       layers:
         - control-plane
     - id: flow-svc-eda-api-svc-eda-fe
@@ -1137,7 +1157,11 @@ graph:
         link: runtime-flow
         layer: control-plane
         name: workflow
-      data: {}
+      data:
+        provenance: curated-association
+        detail: >-
+          Authored dependency/binding in the saved teaching model; not a measured network call or captured
+          owner reference.
       layers:
         - control-plane
     - id: flow-svc-eda-appstore-svc-eda-git
@@ -1147,7 +1171,11 @@ graph:
         link: runtime-flow
         layer: control-plane
         name: catalog repo
-      data: {}
+      data:
+        provenance: curated-association
+        detail: >-
+          Authored dependency/binding in the saved teaching model; not a measured network call or captured
+          owner reference.
       layers:
         - control-plane
     - id: flow-svc-eda-keycloak-svc-eda-postgres
@@ -1157,7 +1185,11 @@ graph:
         link: runtime-flow
         layer: control-plane
         name: identity db
-      data: {}
+      data:
+        provenance: curated-association
+        detail: >-
+          Authored dependency/binding in the saved teaching model; not a measured network call or captured
+          owner reference.
       layers:
         - control-plane
     - id: flow-svc-eda-ce-svc-eda-sc
@@ -1167,7 +1199,11 @@ graph:
         link: runtime-flow
         layer: control-plane
         name: commit/state
-      data: {}
+      data:
+        provenance: curated-association
+        detail: >-
+          Authored dependency/binding in the saved teaching model; not a measured network call or captured
+          owner reference.
       layers:
         - control-plane
     - id: flow-svc-eda-sc-svc-eda-se
@@ -1177,7 +1213,11 @@ graph:
         link: runtime-flow
         layer: control-plane
         name: state engine
-      data: {}
+      data:
+        provenance: curated-association
+        detail: >-
+          Authored dependency/binding in the saved teaching model; not a measured network call or captured
+          owner reference.
       layers:
         - control-plane
     - id: flow-svc-eda-bsvr-svc-eda-asvr
@@ -1187,7 +1227,11 @@ graph:
         link: runtime-flow
         layer: control-plane
         name: bootstrap artifacts
-      data: {}
+      data:
+        provenance: curated-association
+        detail: >-
+          Authored dependency/binding in the saved teaching model; not a measured network call or captured
+          owner reference.
       layers:
         - control-plane
     - id: flow-svc-eda-cx-svc-eda-api
@@ -1197,37 +1241,47 @@ graph:
         link: runtime-flow
         layer: control-plane
         name: sim control
-      data: {}
+      data:
+        provenance: curated-association
+        detail: >-
+          Authored dependency/binding in the saved teaching model; not a measured network call or captured
+          owner reference.
       layers:
         - control-plane
     - id: topology-to-leaf1
       source: eda-topology-try-eda-topology
       target: toponode-leaf1
       labels:
-        link: topology
+        link: domain-grouping
         layer: topology-runtime
-        name: contains
-      data: {}
+        name: modeled membership
+      data:
+        provenance: curated-association
+        detail: Domain membership in the teaching model, not verified metadata.ownerReferences.
       layers:
         - topology-runtime
     - id: topology-to-leaf2
       source: eda-topology-try-eda-topology
       target: toponode-leaf2
       labels:
-        link: topology
+        link: domain-grouping
         layer: topology-runtime
-        name: contains
-      data: {}
+        name: modeled membership
+      data:
+        provenance: curated-association
+        detail: Domain membership in the teaching model, not verified metadata.ownerReferences.
       layers:
         - topology-runtime
     - id: topology-to-spine1
       source: eda-topology-try-eda-topology
       target: toponode-spine1
       labels:
-        link: topology
+        link: domain-grouping
         layer: topology-runtime
-        name: contains
-      data: {}
+        name: modeled membership
+      data:
+        provenance: curated-association
+        detail: Domain membership in the teaching model, not verified metadata.ownerReferences.
       layers:
         - topology-runtime
     - id: toponode-to-sim-leaf1
@@ -1237,7 +1291,11 @@ graph:
         link: runtime-binding
         layer: topology-runtime
         name: backed by sim pod
-      data: {}
+      data:
+        provenance: curated-association
+        detail: >-
+          Authored dependency/binding in the saved teaching model; not a measured network call or captured
+          owner reference.
       layers:
         - topology-runtime
     - id: toponode-to-sim-leaf2
@@ -1247,7 +1305,11 @@ graph:
         link: runtime-binding
         layer: topology-runtime
         name: backed by sim pod
-      data: {}
+      data:
+        provenance: curated-association
+        detail: >-
+          Authored dependency/binding in the saved teaching model; not a measured network call or captured
+          owner reference.
       layers:
         - topology-runtime
     - id: toponode-to-sim-spine1
@@ -1257,7 +1319,11 @@ graph:
         link: runtime-binding
         layer: topology-runtime
         name: backed by sim pod
-      data: {}
+      data:
+        provenance: curated-association
+        detail: >-
+          Authored dependency/binding in the saved teaching model; not a measured network call or captured
+          owner reference.
       layers:
         - topology-runtime
     - id: npp-0-to-leaf1
@@ -1267,7 +1333,11 @@ graph:
         link: control
         layer: topology-runtime
         name: NPP connected
-      data: {}
+      data:
+        provenance: curated-association
+        detail: >-
+          Authored dependency/binding in the saved teaching model; not a measured network call or captured
+          owner reference.
       layers:
         - topology-runtime
     - id: npp-0-to-leaf2
@@ -1277,7 +1347,11 @@ graph:
         link: control
         layer: topology-runtime
         name: NPP connected
-      data: {}
+      data:
+        provenance: curated-association
+        detail: >-
+          Authored dependency/binding in the saved teaching model; not a measured network call or captured
+          owner reference.
       layers:
         - topology-runtime
     - id: npp-0-to-spine1
@@ -1287,7 +1361,11 @@ graph:
         link: control
         layer: topology-runtime
         name: NPP connected
-      data: {}
+      data:
+        provenance: curated-association
+        detail: >-
+          Authored dependency/binding in the saved teaching model; not a measured network call or captured
+          owner reference.
       layers:
         - topology-runtime
     - id: npp-1-to-leaf1
@@ -1297,7 +1375,11 @@ graph:
         link: control
         layer: topology-runtime
         name: NPP connected
-      data: {}
+      data:
+        provenance: curated-association
+        detail: >-
+          Authored dependency/binding in the saved teaching model; not a measured network call or captured
+          owner reference.
       layers:
         - topology-runtime
     - id: npp-1-to-leaf2
@@ -1307,7 +1389,11 @@ graph:
         link: control
         layer: topology-runtime
         name: NPP connected
-      data: {}
+      data:
+        provenance: curated-association
+        detail: >-
+          Authored dependency/binding in the saved teaching model; not a measured network call or captured
+          owner reference.
       layers:
         - topology-runtime
     - id: npp-1-to-spine1
@@ -1317,323 +1403,435 @@ graph:
         link: control
         layer: topology-runtime
         name: NPP connected
-      data: {}
+      data:
+        provenance: curated-association
+        detail: >-
+          Authored dependency/binding in the saved teaching model; not a measured network call or captured
+          owner reference.
       layers:
         - topology-runtime
     - id: deploy-to-pod-cx-eda-leaf1-sim-cx-eda-leaf1-sim-777d7654d8-rj7vt
       source: deploy-cx-eda-leaf1-sim
       target: pod-cx-eda-leaf1-sim-777d7654d8-rj7vt
       labels:
-        link: owns
+        link: workload-association
         layer: topology-runtime
-        name: creates pod
-      data: {}
+        name: Pod association
+      data:
+        provenance: curated-association
+        detail: >-
+          Deployment-to-Pod correspondence in the saved model. ReplicaSet and ownerReferences are not
+          represented; this is not direct ownership.
       layers:
         - topology-runtime
     - id: deploy-to-pod-cx-eda-leaf2-sim-cx-eda-leaf2-sim-756565d7ff-jb8cx
       source: deploy-cx-eda-leaf2-sim
       target: pod-cx-eda-leaf2-sim-756565d7ff-jb8cx
       labels:
-        link: owns
+        link: workload-association
         layer: topology-runtime
-        name: creates pod
-      data: {}
+        name: Pod association
+      data:
+        provenance: curated-association
+        detail: >-
+          Deployment-to-Pod correspondence in the saved model. ReplicaSet and ownerReferences are not
+          represented; this is not direct ownership.
       layers:
         - topology-runtime
     - id: deploy-to-pod-cx-eda-spine1-sim-cx-eda-spine1-sim-7cdfb4bc99-fvxng
       source: deploy-cx-eda-spine1-sim
       target: pod-cx-eda-spine1-sim-7cdfb4bc99-fvxng
       labels:
-        link: owns
+        link: workload-association
         layer: topology-runtime
-        name: creates pod
-      data: {}
+        name: Pod association
+      data:
+        provenance: curated-association
+        detail: >-
+          Deployment-to-Pod correspondence in the saved model. ReplicaSet and ownerReferences are not
+          represented; this is not direct ownership.
       layers:
         - topology-runtime
     - id: deploy-to-pod-cx-eda-testman-default-sim-cx-eda-testman-default-sim-5bd4dc65b4-8vghl
       source: deploy-cx-eda-testman-default-sim
       target: pod-cx-eda-testman-default-sim-5bd4dc65b4-8vghl
       labels:
-        link: owns
+        link: workload-association
         layer: topology-runtime
-        name: creates pod
-      data: {}
+        name: Pod association
+      data:
+        provenance: curated-association
+        detail: >-
+          Deployment-to-Pod correspondence in the saved model. ReplicaSet and ownerReferences are not
+          represented; this is not direct ownership.
       layers:
         - topology-runtime
     - id: selects-eda-aggsvr-svc-eda-ce
       source: svc-eda-aggsvr-svc
       target: deploy-eda-ce
       labels:
-        link: selector
+        link: template-match
         layer: control-plane
-        name: selector
+        name: template match
       data:
         selector:
           eda.nokia.com/app: configengine
+        provenance: inferred
+        detail: >-
+          Service selector corresponds to Deployment Pod-template labels; Services select Pods, not
+          Deployments.
       layers:
         - control-plane
     - id: selects-eda-ai-eda-ai-engine
       source: svc-eda-ai
       target: deploy-eda-ai-engine
       labels:
-        link: selector
+        link: template-match
         layer: control-plane
-        name: selector
+        name: template match
       data:
         selector:
           eda.nokia.com/app: eda-ai-engine
+        provenance: inferred
+        detail: >-
+          Service selector corresponds to Deployment Pod-template labels; Services select Pods, not
+          Deployments.
       layers:
         - control-plane
     - id: selects-eda-api-eda-api
       source: svc-eda-api
       target: deploy-eda-api
       labels:
-        link: selector
+        link: template-match
         layer: control-plane
-        name: selector
+        name: template match
       data:
         selector:
           eda.nokia.com/app: apiserver
+        provenance: inferred
+        detail: >-
+          Service selector corresponds to Deployment Pod-template labels; Services select Pods, not
+          Deployments.
       layers:
         - control-plane
     - id: selects-eda-api-debug-grpc-eda-api
       source: svc-eda-api-debug-grpc
       target: deploy-eda-api
       labels:
-        link: selector
+        link: template-match
         layer: control-plane
-        name: selector
+        name: template match
       data:
         selector:
           eda.nokia.com/app: apiserver
+        provenance: inferred
+        detail: >-
+          Service selector corresponds to Deployment Pod-template labels; Services select Pods, not
+          Deployments.
       layers:
         - control-plane
     - id: selects-eda-appstore-eda-appstore
       source: svc-eda-appstore
       target: deploy-eda-appstore
       labels:
-        link: selector
+        link: template-match
         layer: control-plane
-        name: selector
+        name: template match
       data:
         selector:
           eda.nokia.com/app: appstore
+        provenance: inferred
+        detail: >-
+          Service selector corresponds to Deployment Pod-template labels; Services select Pods, not
+          Deployments.
       layers:
         - control-plane
     - id: selects-eda-asvr-eda-asvr
       source: svc-eda-asvr
       target: deploy-eda-asvr
       labels:
-        link: selector
+        link: template-match
         layer: control-plane
-        name: selector
+        name: template match
       data:
         selector:
           eda.nokia.com/app: artifactserver
+        provenance: inferred
+        detail: >-
+          Service selector corresponds to Deployment Pod-template labels; Services select Pods, not
+          Deployments.
       layers:
         - control-plane
     - id: selects-eda-bsvr-eda-bsvr
       source: svc-eda-bsvr
       target: deploy-eda-bsvr
       labels:
-        link: selector
+        link: template-match
         layer: control-plane
-        name: selector
+        name: template match
       data:
         selector:
           eda.nokia.com/app: bootstrapserver
+        provenance: inferred
+        detail: >-
+          Service selector corresponds to Deployment Pod-template labels; Services select Pods, not
+          Deployments.
       layers:
         - control-plane
     - id: selects-eda-ce-eda-ce
       source: svc-eda-ce
       target: deploy-eda-ce
       labels:
-        link: selector
+        link: template-match
         layer: control-plane
-        name: selector
+        name: template match
       data:
         selector:
           eda.nokia.com/app: configengine
+        provenance: inferred
+        detail: >-
+          Service selector corresponds to Deployment Pod-template labels; Services select Pods, not
+          Deployments.
       layers:
         - control-plane
     - id: selects-eda-cm-eda-cluster-manager
       source: svc-eda-cm
       target: deploy-eda-cluster-manager
       labels:
-        link: selector
+        link: template-match
         layer: control-plane
-        name: selector
+        name: template match
       data:
         selector:
           eda.nokia.com/app: eda-cluster-manager
+        provenance: inferred
+        detail: >-
+          Service selector corresponds to Deployment Pod-template labels; Services select Pods, not
+          Deployments.
       layers:
         - control-plane
     - id: selects-eda-cx-eda-cx
       source: svc-eda-cx
       target: deploy-eda-cx
       labels:
-        link: selector
+        link: template-match
         layer: control-plane
-        name: selector
+        name: template match
       data:
         selector:
           eda.nokia.com/app: cx
+        provenance: inferred
+        detail: >-
+          Service selector corresponds to Deployment Pod-template labels; Services select Pods, not
+          Deployments.
       layers:
         - control-plane
     - id: selects-eda-dhcp-eda-bsvr
       source: svc-eda-dhcp
       target: deploy-eda-bsvr
       labels:
-        link: selector
+        link: template-match
         layer: control-plane
-        name: selector
+        name: template match
       data:
         selector:
           eda.nokia.com/app: bootstrapserver
+        provenance: inferred
+        detail: >-
+          Service selector corresponds to Deployment Pod-template labels; Services select Pods, not
+          Deployments.
       layers:
         - control-plane
     - id: selects-eda-dhcpv6-eda-bsvr
       source: svc-eda-dhcpv6
       target: deploy-eda-bsvr
       labels:
-        link: selector
+        link: template-match
         layer: control-plane
-        name: selector
+        name: template match
       data:
         selector:
           eda.nokia.com/app: bootstrapserver
+        provenance: inferred
+        detail: >-
+          Service selector corresponds to Deployment Pod-template labels; Services select Pods, not
+          Deployments.
       layers:
         - control-plane
     - id: selects-eda-fe-eda-fe
       source: svc-eda-fe
       target: deploy-eda-fe
       labels:
-        link: selector
+        link: template-match
         layer: control-plane
-        name: selector
+        name: template match
       data:
         selector:
           eda.nokia.com/app: flowengine
+        provenance: inferred
+        detail: >-
+          Service selector corresponds to Deployment Pod-template labels; Services select Pods, not
+          Deployments.
       layers:
         - control-plane
     - id: selects-eda-git-eda-git
       source: svc-eda-git
       target: deploy-eda-git
       labels:
-        link: selector
+        link: template-match
         layer: control-plane
-        name: selector
+        name: template match
       data:
         selector:
           eda.nokia.com/app: git
+        provenance: inferred
+        detail: >-
+          Service selector corresponds to Deployment Pod-template labels; Services select Pods, not
+          Deployments.
       layers:
         - control-plane
     - id: selects-eda-git-replica-eda-git-replica
       source: svc-eda-git-replica
       target: deploy-eda-git-replica
       labels:
-        link: selector
+        link: template-match
         layer: control-plane
-        name: selector
+        name: template match
       data:
         selector:
           eda.nokia.com/app: git-replica
+        provenance: inferred
+        detail: >-
+          Service selector corresponds to Deployment Pod-template labels; Services select Pods, not
+          Deployments.
       layers:
         - control-plane
     - id: selects-eda-keycloak-eda-keycloak
       source: svc-eda-keycloak
       target: deploy-eda-keycloak
       labels:
-        link: selector
+        link: template-match
         layer: control-plane
-        name: selector
+        name: template match
       data:
         selector:
           eda.nokia.com/app: keycloak
+        provenance: inferred
+        detail: >-
+          Service selector corresponds to Deployment Pod-template labels; Services select Pods, not
+          Deployments.
       layers:
         - control-plane
     - id: selects-eda-postgres-eda-postgres
       source: svc-eda-postgres
       target: deploy-eda-postgres
       labels:
-        link: selector
+        link: template-match
         layer: control-plane
-        name: selector
+        name: template match
       data:
         selector:
           eda.nokia.com/app: postgres
+        provenance: inferred
+        detail: >-
+          Service selector corresponds to Deployment Pod-template labels; Services select Pods, not
+          Deployments.
       layers:
         - control-plane
     - id: selects-eda-sa-eda-sa
       source: svc-eda-sa
       target: deploy-eda-sa
       labels:
-        link: selector
+        link: template-match
         layer: control-plane
-        name: selector
+        name: template match
       data:
         selector:
           eda.nokia.com/app: stateaggregator
+        provenance: inferred
+        detail: >-
+          Service selector corresponds to Deployment Pod-template labels; Services select Pods, not
+          Deployments.
       layers:
         - control-plane
     - id: selects-eda-sc-eda-sc
       source: svc-eda-sc
       target: deploy-eda-sc
       labels:
-        link: selector
+        link: template-match
         layer: control-plane
-        name: selector
+        name: template match
       data:
         selector:
           eda.nokia.com/app: statecontroller
+        provenance: inferred
+        detail: >-
+          Service selector corresponds to Deployment Pod-template labels; Services select Pods, not
+          Deployments.
       layers:
         - control-plane
     - id: selects-logoutput-fluentbit-collector-eda-logoutput-fluentbit-collector
       source: svc-logoutput-fluentbit-collector
       target: deploy-eda-logoutput-fluentbit-collector
       labels:
-        link: selector
+        link: template-match
         layer: control-plane
-        name: selector
+        name: template match
       data:
         selector:
           eda.nokia.com/app: logoutput-collector
+        provenance: inferred
+        detail: >-
+          Service selector corresponds to Deployment Pod-template labels; Services select Pods, not
+          Deployments.
       layers:
         - control-plane
     - id: selects-trust-manager-trust-manager
       source: svc-trust-manager
       target: deploy-trust-manager
       labels:
-        link: selector
+        link: template-match
         layer: control-plane
-        name: selector
+        name: template match
       data:
         selector:
           app: trust-manager
+        provenance: inferred
+        detail: >-
+          Service selector corresponds to Deployment Pod-template labels; Services select Pods, not
+          Deployments.
       layers:
         - control-plane
     - id: selects-trust-manager-metrics-trust-manager
       source: svc-trust-manager-metrics
       target: deploy-trust-manager
       labels:
-        link: selector
+        link: template-match
         layer: control-plane
-        name: selector
+        name: template match
       data:
         selector:
           app: trust-manager
+        provenance: inferred
+        detail: >-
+          Service selector corresponds to Deployment Pod-template labels; Services select Pods, not
+          Deployments.
       layers:
         - control-plane
     - id: selects-try-eda-eda-api
       source: svc-try-eda
       target: deploy-eda-api
       labels:
-        link: selector
+        link: template-match
         layer: control-plane
-        name: selector
+        name: template match
       data:
         selector:
           eda.nokia.com/app: apiserver
+        provenance: inferred
+        detail: >-
+          Service selector corresponds to Deployment Pod-template labels; Services select Pods, not
+          Deployments.
       layers:
         - control-plane
   regions:
@@ -1744,6 +1942,11 @@ graph:
         - pod-cx-eda-testman-default-sim-5bd4dc65b4-8vghl
       layers:
         - topology-runtime
+  data:
+    scope: >-
+      Curated teaching snapshot, not live inventory or an observed request trace. Dashed matches are inferred;
+      ReplicaSets are omitted.
+    provenance: Curated EDA inventory snapshot with authored dependencies and domain associations.
 attention:
   aggregate:
     groups:
@@ -1771,11 +1974,4 @@ attention:
         by: region
         regionId: region-simulated-fabric
         label: Simulated fabric
-    expandedGroupIds:
-      - region-api-surface
-      - region-data-identity
-      - region-control-engine
-      - region-app-bootstrap
-      - region-topology-runtime
-      - region-simulated-fabric
     expandOnClick: true

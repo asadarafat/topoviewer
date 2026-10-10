@@ -6,8 +6,11 @@ layout:
 icons:
   router:
     glyph: R
-    fill: "#0f766e"
-    stroke: "#99f6e4"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
+    svg: |
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#f2f5f8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="48" height="48" rx="6" fill="#26313c" stroke="none"/><path d="M8 24h32M24 8v32M8 24l6-6m-6 6 6 6m26-6-6-6m6 6-6 6M24 8l-6 6m6-6 6 6M24 40l-6-6m6 6 6-6"/></svg>
+    alt: Router
 labelFields:
   - labels.name
 stylesheet:
@@ -16,21 +19,26 @@ stylesheet:
       icon: router
       width: 72
       height: 48
-      borderWidth: 3
+      borderWidth: 2
       labelColor: var(--topoviewer-fg-strong)
-      labelFontWeight: 800
+      labelFontWeight: 600
+      labelFontSize: 14
+      metaColor: transparent
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-edge-default)
   - selector: link
     style:
       lineWidth: 4
-      lineColor: "#0f766e"
+      lineColor: "var(--topoviewer-edge-default)"
       targetArrowShape: triangle
-      targetArrowColor: "#0f766e"
+      targetArrowColor: "var(--topoviewer-info)"
       targetArrowSize: 12
       sourceDistanceFromNode: 18
       targetDistanceFromNode: 18
       labelColor: var(--topoviewer-fg-strong)
-      labelFontWeight: 800
+      labelFontWeight: 600
       textBackgroundColor: var(--topoviewer-edge-label-bg)
+      labelFontSize: 12
   - selector: link[labels.route = "segment"]
     style:
       label: segmentDistances
@@ -41,8 +49,8 @@ stylesheet:
       segmentWeights:
         - 0.33
         - 0.67
-      lineColor: "#2563eb"
-      targetArrowColor: "#2563eb"
+      lineColor: "var(--topoviewer-accent)"
+      targetArrowColor: "var(--topoviewer-accent)"
   - selector: link[labels.route = "taxi"]
     style:
       label: taxiDirection
@@ -50,5 +58,5 @@ stylesheet:
       taxiDirection: rightward
       taxiTurn: 86
       taxiTurnMinDistance: 90
-      lineColor: "#f97316"
-      targetArrowColor: "#f97316"
+      lineColor: "var(--topoviewer-warning)"
+      targetArrowColor: "var(--topoviewer-warning)"

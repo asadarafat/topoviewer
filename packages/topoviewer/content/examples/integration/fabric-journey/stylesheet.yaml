@@ -8,16 +8,16 @@ icons:
   fabric-switch:
     alt: Fabric switch
     svg: |
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <rect x="3" y="8" width="26" height="16" rx="3" stroke="#cbd5e1" stroke-width="1.6"/>
-        <path d="M8 13h4m4 0h4m4 0h1M8 19h4m4 0h4" stroke="#67e8f9" stroke-width="2" stroke-linecap="round"/>
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="5" fill="#26313c"/>
+        <rect x="3" y="8" width="26" height="16" rx="3" stroke="#e6edf3" stroke-width="1.6"/>
+        <path d="M8 13h4m4 0h4m4 0h1M8 19h4m4 0h4" stroke="#87b6af" stroke-width="2" stroke-linecap="round"/>
       </svg>
   workload:
     alt: Workload server
     svg: |
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <rect x="6" y="4" width="20" height="24" rx="3" stroke="#cbd5e1" stroke-width="1.6"/>
-        <path d="M10 10h12M10 16h12M10 22h5" stroke="#c4b5fd" stroke-width="2" stroke-linecap="round"/>
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="5" fill="#26313c"/>
+        <rect x="6" y="4" width="20" height="24" rx="3" stroke="#e6edf3" stroke-width="1.6"/>
+        <path d="M10 10h12M10 16h12M10 22h5" stroke="#c8bce2" stroke-width="2" stroke-linecap="round"/>
       </svg>
 stylesheet:
   - selector: node
@@ -26,34 +26,34 @@ stylesheet:
       width: 132
       height: 54
       icon: fabric-switch
-      backgroundColor: "#0f172a"
-      borderColor: "#475569"
+      backgroundColor: "var(--topoviewer-panel-bg)"
+      borderColor: "var(--topoviewer-edge-default)"
       borderWidth: 2
-      labelColor: "#f8fafc"
+      labelColor: "var(--topoviewer-fg-strong)"
       labelFontSize: 14
-      labelFontWeight: 700
-      metaFontSize: 0
+      labelFontWeight: 600
+      metaFontSize: 12
       draggable: false
       nodeLayout:
         type: card
-        icon: {placement: left, width: 22, height: 22}
-        content: {align: left, titleField: labels.name}
+        icon: { placement: left, width: 22, height: 22 }
+        content: { align: left, titleField: labels.name }
   - selector: node[labels.role = "spine"]
     style:
-      borderColor: "#0891b2"
+      borderColor: "var(--topoviewer-info)"
       height: 60
   - selector: node[labels.role = "workload"]
     style:
       icon: workload
       height: 50
-      borderColor: "#64748b"
+      borderColor: "var(--topoviewer-accent)"
   - selector: node[labels.tenant = "42"]
     style:
-      borderColor: "#8b5cf6"
+      borderColor: "#8b78b8"
       badgeLabel: T42
-      badgeBackgroundColor: "#6d28d9"
-      badgeColor: "#ffffff"
-      badgeBorderColor: "#c4b5fd"
+      badgeBackgroundColor: "color-mix(in srgb, #8b78b8 12%, var(--topoviewer-panel-bg))"
+      badgeColor: "var(--topoviewer-fg-strong)"
+      badgeBorderColor: "var(--topoviewer-accent)"
       badgeFontSize: 12
       badgePadding: 3
       badgeOffset: 5
@@ -61,7 +61,7 @@ stylesheet:
     style:
       label: ""
       curveStyle: straight
-      lineColor: "#94a3b8"
+      lineColor: "var(--topoviewer-edge-default)"
       lineWidth: 2
       lineOpacity: 0.7
       targetArrowShape: none
@@ -88,10 +88,10 @@ stylesheet:
   - selector: linkDirection
     style:
       labelFontSize: 12
-      labelFontWeight: 700
+      labelFontWeight: 600
       labelColor: var(--topoviewer-fg-strong)
       textBackgroundColor: var(--topoviewer-edge-label-bg)
-      lineColor: "#64748b"
+      lineColor: "var(--topoviewer-accent)"
       lineWidth: 2
   - selector: linkDirection[direction = "sourceToTarget"]
     style:
@@ -104,25 +104,27 @@ stylesheet:
     style:
       label: ""
       curveStyle: straight
-      lineColor: "#0891b2"
+      lineColor: "var(--topoviewer-info)"
       lineWidth: 4
       laneWidth: 8
       laneGap: 8
       targetArrowShape: triangle
-      targetArrowColor: "#0891b2"
+      targetArrowColor: "var(--topoviewer-info)"
       animated: true
       zIndex: 8
+      labelFontSize: 12
+      labelFontWeight: 600
   - selector: region
     style:
-      backgroundColor: "rgba(15, 23, 42, 0.035)"
-      borderColor: "#cbd5e1"
+      backgroundColor: "var(--topoviewer-region-fill)"
+      borderColor: "var(--topoviewer-region-stroke)"
       borderWidth: 1
       labelColor: var(--topoviewer-fg-muted)
-      labelFontSize: 12
-      labelFontWeight: 700
+      labelFontSize: 14
+      labelFontWeight: 600
       labelPosition: topCenter
       labelMargin: 12
-      headerPadding: 32
+      headerPadding: 48
       paddingX: 22
       paddingY: 22
       nodeWidth: 132

@@ -1,6 +1,7 @@
 import { Position } from '@xyflow/react';
 import { SHAPE_CONNECTION_PORT_COUNT, shapeConnectionPortId } from '../core/connectionHandles';
 import { nodeShapeGeometry, type NodeShapeName } from '../core/nodeShapes';
+import { nodeShapeBoundaryPoint } from '../core/nodeShapeBoundary';
 
 export interface ShapeConnectionPort {
   active: boolean;
@@ -37,7 +38,11 @@ function portPosition([x, y]: [number, number]): Position {
 
 function activeShapePoints(shape: NodeShapeName, polygonPoints?: string): Array<[number, number]> {
   const geometry = nodeShapeGeometry(shape, polygonPoints);
-  if (geometry.element !== 'polygon') return cardinalPoints;
+  if (geometry.element !== 'polygon') return cardinalPoints.map(([x, y], index) => {
+    const side = [Position.Top, Position.Right, Position.Bottom, Position.Left][index];
+    const point = nodeShapeBoundaryPoint(shape, polygonPoints, { x: 0, y: 0, width: 100, height: 100 }, { x, y }, side);
+    return [point.x, point.y];
+  });
   const points = parseSvgPoints(geometry.attributes.points);
   if (shape === 'star') {
     return points

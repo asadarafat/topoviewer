@@ -34,8 +34,8 @@ graph:
         - transport
         - service
       position:
-        - 90
-        - 260
+        - 80
+        - 330
     - id: R03
       labels:
         node: router
@@ -47,7 +47,7 @@ graph:
         - igp
         - transport
       position:
-        - 320
+        - 290
         - 360
     - id: R05
       labels:
@@ -61,8 +61,8 @@ graph:
         - bgp
         - transport
       position:
-        - 610
-        - 260
+        - 480
+        - 330
     - id: R07
       labels:
         node: router
@@ -75,8 +75,8 @@ graph:
         - bgp
         - transport
       position:
-        - 900
-        - 170
+        - 670
+        - 360
     - id: R09
       labels:
         node: router
@@ -90,8 +90,8 @@ graph:
         - transport
         - service
       position:
-        - 1110
-        - 260
+        - 870
+        - 330
     - id: NSP
       labels:
         node: controller
@@ -100,8 +100,8 @@ graph:
       layers:
         - bgp
       position:
-        - 610
-        - 70
+        - 500
+        - 120
     - id: VSR-NRC
       labels:
         node: controller
@@ -110,8 +110,8 @@ graph:
       layers:
         - bgp
       position:
-        - 610
-        - 500
+        - 330
+        - 160
     - id: svc-1321-r01
       labels:
         node: service
@@ -121,8 +121,8 @@ graph:
       layers:
         - service
       position:
-        - 90
-        - 350
+        - 80
+        - 420
     - id: svc-1321-r09
       labels:
         node: service
@@ -132,8 +132,8 @@ graph:
       layers:
         - service
       position:
-        - 1110
-        - 350
+        - 870
+        - 420
   links:
     - id: phy-R01-R03
       source: R01
@@ -265,8 +265,8 @@ diagram:
     - id: canvas-frame
       locked: true
       position:
-        - 26
-        - 22
+        - 10
+        - 10
       labels:
         shape: canvas
         name: Documentation frame
@@ -275,8 +275,8 @@ diagram:
     - id: transport-plane-band
       locked: true
       position:
-        - 54
-        - 206
+        - 40
+        - 310
       labels:
         shape: band
         plane: transport
@@ -287,8 +287,8 @@ diagram:
     - id: controller-plane-band
       locked: true
       position:
-        - 322
-        - 38
+        - 280
+        - 90
       labels:
         shape: band
         plane: controller
@@ -299,8 +299,8 @@ diagram:
     - id: service-plane-band
       locked: true
       position:
-        - 54
-        - 396
+        - 40
+        - 550
       labels:
         shape: band
         plane: service
@@ -310,8 +310,8 @@ diagram:
         - diagram
     - id: route-db
       position:
-        - 470
-        - 560
+        - 730
+        - 205
       labels:
         shape: database
         name: Topology DB
@@ -320,8 +320,8 @@ diagram:
         - diagram
     - id: r01-sap
       position:
-        - 70
-        - 438
+        - 80
+        - 570
       labels:
         shape: sap
         side: left
@@ -340,8 +340,8 @@ diagram:
             - 18
     - id: r09-sap
       position:
-        - 1030
-        - 438
+        - 850
+        - 570
       labels:
         shape: sap
         side: right
@@ -360,8 +360,8 @@ diagram:
             - 18
     - id: packet-sid-list
       position:
-        - 458
-        - 154
+        - 310
+        - 570
       labels:
         shape: label-stack
         name: SR-MPLS stack
@@ -370,8 +370,8 @@ diagram:
         - diagram
     - id: packet-glyph
       position:
-        - 828
-        - 236
+        - 610
+        - 575
       labels:
         shape: packet
         name: Packet glyph
@@ -380,41 +380,38 @@ diagram:
         - diagram
   callouts:
     - id: route-db-note
-      title: BGP-LS topology database
-      markdown: |
-        - Node, link, and TE attributes
-        - Consumed by Path Control/PCE
+      title: Topology database
+      markdown: |-
+        BGP-LS node, link and TE attributes are consumed by Path Control.
       target: route-db
       position:
-        - 772
-        - 552
+        - 710
+        - 700
       labels:
         callout: database-note
       layers:
         - bgp
         - diagram
     - id: sid-list-note
-      title: Head-end imposed SID list
-      markdown: |
-        Adjacency SID -> adjacency SID -> adjacency SID.
-        The same model can show SR-TE, RSVP, SR Policy, or service paths.
+      title: Segment routing
+      markdown: |-
+        The head end imposes the SID list; the packet follows the programmed transport path.
       target: packet-sid-list
       position:
-        - 828
-        - 136
+        - 370
+        - 700
       labels:
         callout: sid-list-note
       layers:
         - transport
         - diagram
     - id: note-rich-text
-      title: Diagram primitive layer
-      markdown: |
-        Shapes and callouts are not topology facts.
-        They explain how the topology should be read.
+      title: Diagram objects
+      markdown: |-
+        Shapes and notes describe the view; they do not add network devices.
       position:
-        - 922
-        - 548
+        - 30
+        - 880
       labels:
         callout: primitive-note
       layers:
@@ -470,25 +467,23 @@ diagram:
         - diagram
     - id: srrp-decorative-arrow
       sourcePosition:
-        - 870
-        - 594
+        - 390
+        - 950
       targetPosition:
-        - 1010
-        - 594
+        - 620
+        - 950
       labels:
         callout: srrp
         name: Example dashed line-only callout
       layers:
         - diagram
     - id: callout-semantic-model
-      title: Semantic graph stays clean
+      title: Network and presentation
       position:
-        - 74
-        - 42
-      markdown: |
-        - Routers, links, regions, services, and LSP paths live under `graph.*`.
-        - Diagram notes are separate visual objects, not fake topology.
-      target: R05
+        - 30
+        - 30
+      markdown: |-
+        Routers, links, regions and paths are graph facts. Notes and shapes explain them.
       labels:
         callout: model
       layers:
@@ -498,15 +493,13 @@ diagram:
           position:
             - 310
             - 76
-      sourcePin: tip
     - id: callout-controller
       title: Controller visibility
       position:
-        - 898
-        - 42
-      markdown: |
-        - BGP-LS feeds topology into NSP.
-        - PCEP delegates LSP computation and path updates.
+        - 740
+        - 30
+      markdown: |-
+        BGP-LS supplies topology. PCEP carries path computation and updates.
       target: NSP
       labels:
         callout: controller
@@ -514,13 +507,12 @@ diagram:
         - bgp
         - diagram
     - id: callout-pin-anchor
-      title: Callout pin targets
+      title: Exact attachment
       position:
-        - 268
-        - 418
-      markdown: |
-        - The access callout attaches to the SAP `service` pin.
-        - The service node remains nested inside the physical PE.
+        - 30
+        - 700
+      markdown: |-
+        The access binding lands on the SAP service pin. The VPN stays inside its PE.
       target: r01-sap
       targetPin: service
       labels:
@@ -529,16 +521,15 @@ diagram:
         - service
         - diagram
     - id: callout-documentation-frame
-      title: Stable documentation frame
+      title: Export boundary
       position:
-        - 804
-        - 628
-      markdown: |
-        A locked callout or shape can create a stable visual boundary for
-        documentation, screenshots, or slide export.
+        - 710
+        - 880
+      markdown: |-
+        The locked frame keeps the extent stable for documentation and export.
       targetPosition:
-        - 1242
-        - 682
+        - 1030
+        - 1050
       labels:
         callout: export
       layers:

@@ -1,0 +1,14 @@
+/* Keep the documentation's attention cues crisp; source data owns status. */
+.topoviewer-embed .topoviewer-node-attention-focused .topoviewer-node-geometry,
+.topoviewer-embed .topoviewer-node-attention-related .topoviewer-node-geometry {
+  filter: none;
+}
+.topoviewer-embed .topoviewer-edge-attention-focused,
+.topoviewer-embed .topoviewer-edge-attention-related {
+  filter: none;
+}
+
+/* The parent's first 98 px are its device header; children occupy the body. */
+.topoviewer-embed .topoviewer-node-parent .topoviewer-node-icon-content {
+  max-height: 84px;
+}

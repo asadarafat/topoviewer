@@ -4,7 +4,8 @@
 .md-typeset .tv-gallery-card { display: flex; min-width: 0; flex-direction: column; overflow: hidden; color: var(--md-default-fg-color); background: var(--md-default-bg-color); border: 1px solid var(--md-default-fg-color--lightest); border-radius: 12px; text-decoration: none; transition: border-color 160ms ease, box-shadow 160ms ease; }
 .md-typeset .tv-gallery-card:hover { border-color: var(--md-accent-fg-color); box-shadow: 0 5px 20px #00000012; }
 .md-typeset .tv-gallery-card:focus-visible { outline: 3px solid var(--md-accent-fg-color); outline-offset: 4px; }
-.md-typeset .tv-gallery-card > img { display: block; width: 100%; height: auto; aspect-ratio: 1120 / 620; object-fit: contain; margin: 0; background: #0b1220; border-bottom: 1px solid var(--md-default-fg-color--lightest); }
+.md-typeset .tv-gallery-card > img { display: block; width: 100%; height: auto; aspect-ratio: 1120 / 620; object-fit: contain; margin: 0; background: #14191f; border-bottom: 1px solid var(--md-default-fg-color--lightest); }
+.md-typeset .tv-gallery-card:not(.tv-gallery-featured) > img { aspect-ratio: 1120 / 360; }
 .tv-gallery-card-body { display: flex; flex: 1; flex-direction: column; padding: 1rem; }
 .md-typeset .tv-gallery-card h3 { margin: .55rem 0 .5rem; font-size: 1rem; font-weight: 700; line-height: 1.35; letter-spacing: -.015em; }
 .md-typeset .tv-gallery-card p { margin: 0 0 1rem; font-size: .78rem; line-height: 1.6; color: var(--md-default-fg-color--light); }

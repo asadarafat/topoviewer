@@ -160,7 +160,7 @@ examples:
     feature: edges
     path: edges/floating-anchors
     page: topoviewer/examples/edges/floating-anchors
-    summary: Floating anchors connect to the nearest point on each node boundary.
+    summary: Floating anchors connect to the facing side of each visible node outline.
     render:
       height: 420px
       controls: true
@@ -193,9 +193,9 @@ examples:
     feature: edges
     path: edges/dense-clos-labels
     page: topoviewer/examples/edges/dense-clos-labels
-    summary: Show region, node, metadata, endpoint port, and bidirectional bandwidth labels in one compact CLOS fabric.
+    summary: Keep node names, endpoint ports, and bidirectional bandwidth values legible in a CLOS fabric.
     render:
-      height: 500px
+      height: 760px
       controls: true
       controlsOpen: false
       title: Dense CLOS labels
@@ -611,7 +611,7 @@ examples:
       name: Insert workflow
       order: 30
     render:
-      height: 520px
+      height: 600px
       controls: true
       controlsOpen: false
       title: Insert workflow
@@ -705,7 +705,7 @@ examples:
     page: topoviewer/examples/use-cases/grafana-topoviewer-panel
     summary: A production call-flow diagram for mounted TopoViewer bundles, Grafana plugin boundaries, Prometheus data frames, mapper execution, runtime overlays, and diagnostics.
     render:
-      height: 520px
+      height: 680px
       controls: true
       controlsOpen: false
       title: Grafana telemetry call flow
@@ -748,7 +748,7 @@ examples:
     feature: integration
     path: integration/kubernetes-service-map
     page: topoviewer/examples/use-cases/kubernetes-service-map
-    summary: A real EDA Playground Kubernetes service map showing services, deployments, pods, EDA TopoNodes, simulator pods, and runtime bindings.
+    summary: A curated EDA Playground snapshot showing Kubernetes resources, inferred Pod-template matches, and authored runtime associations.
     introMode: narrative
     extraFiles:
       - collect-eda-kubernetes-inventory.sh
@@ -857,7 +857,7 @@ examples:
     page: topoviewer/complete-network-demo
     summary: An integrated network example combining graph facts, regions, child nodes, paths, shapes, and callouts.
     render:
-      height: 640px
+      height: 1000px
       controls: true
       controlsOpen: false
       title: Complete network demo

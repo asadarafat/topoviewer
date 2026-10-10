@@ -6,7 +6,8 @@ dom:
   minRegions: 3
 assertions:
   controls: true
-  edgeMarkersMin: 2
+  edgeMarkersExact: 0
+  undirectedSessionLinkIds: bgp-fra-rr, bgp-lon-rr
   nodeBadgesMin: 1
 semantic:
   errors: []

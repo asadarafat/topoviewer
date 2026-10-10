@@ -6,29 +6,29 @@ layout:
 icons:
   core:
     glyph: C
-    fill: "#1d4ed8"
-    stroke: "#bfdbfe"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   edge:
     glyph: E
-    fill: "#0891b2"
-    stroke: "#cffafe"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   db:
     glyph: DB
-    fill: "#7c3aed"
-    stroke: "#ddd6fe"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   service:
     glyph: API
-    fill: "#059669"
-    stroke: "#bbf7d0"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
 stylesheet:
   - selector: node
     style:
       width: 120
       height: 76
       iconSize: 46
-      borderWidth: 3
+      borderWidth: 2
       labelColor: var(--topoviewer-fg-strong)
-      labelFontWeight: 800
+      labelFontWeight: 600
       labelBackgroundColor: var(--topoviewer-panel-bg)
       labelBackgroundOpacity: 0.94
       labelBorderColor: var(--topoviewer-border)
@@ -36,6 +36,11 @@ stylesheet:
       labelPadding: 4
       labelTextMaxWidth: 116
       labelTextOverflow: ellipsis
+      labelFontSize: 14
+      metaColor: transparent
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-edge-default)
+      iconColor: var(--topoviewer-fg-strong)
   - selector: node[labels.role = "core"]
     style:
       icon: core
@@ -60,12 +65,15 @@ stylesheet:
       icon: service
       shape: ellipse
       labelPosition: center
-      labelColor: "#052e16"
-      labelBackgroundColor: "#dcfce7"
+      labelColor: "var(--topoviewer-fg-strong)"
+      labelBackgroundColor: "color-mix(in srgb, var(--topoviewer-info) 12%,
+        var(--topoviewer-panel-bg))"
       labelBackgroundOpacity: 0.9
   - selector: link
     style:
       curveStyle: bezier
-      lineColor: "#94a3b8"
+      lineColor: "var(--topoviewer-edge-default)"
       lineWidth: 2
       targetArrowShape: none
+      labelFontSize: 12
+      labelFontWeight: 600

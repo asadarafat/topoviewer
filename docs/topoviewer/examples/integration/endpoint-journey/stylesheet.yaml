@@ -1,4 +1,4 @@
-version: "0.2"
+version: '0.2'
 layout:
   mode: manual
   width: 940
@@ -6,46 +6,65 @@ layout:
 icons:
   client:
     alt: Browser client
-    svg: |
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+    svg: >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#e6edf3"
+      stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="24"
+      height="24" rx="3" fill="#26313c" stroke="none"/><rect x="3" y="4" width="18" height="13" rx="2"/><path
+      d="M8 21h8M12 17v4"/></svg>
     glyph: UI
-    fill: "#102135"
-    stroke: "#94a3b8"
+    fill: '#26313c'
+    stroke: '#a3b0bd'
   service:
     alt: Service endpoint
-    svg: |
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#67e8f9" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 5v10l-9 5-9-5V7z"/><path d="M3 7l9 5 9-5M12 12v10"/></svg>
+    svg: >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#87b6af"
+      stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="24"
+      height="24" rx="3" fill="#26313c" stroke="none"/><path d="m12 2 9 5v10l-9 5-9-5V7z"/><path d="M3 7l9 5
+      9-5M12 12v10"/></svg>
     glyph: SVC
-    fill: "#123445"
-    stroke: "#67e8f9"
+    fill: '#26313c'
+    stroke: '#a3b0bd'
   deployment:
     alt: Deployment
-    svg: |
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#a5b4fc" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="13" height="13" rx="2"/><rect x="8" y="8" width="13" height="13" rx="2" fill="#25244c"/><path d="M11 12h7M11 16h5"/></svg>
+    svg: >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#b4a3d3"
+      stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="24"
+      height="24" rx="3" fill="#26313c" stroke="none"/><rect x="3" y="3" width="13" height="13" rx="2"/><rect
+      x="8" y="8" width="13" height="13" rx="2" fill="#26313c"/><path d="M11 12h7M11 16h5"/></svg>
     glyph: DEP
-    fill: "#25244c"
-    stroke: "#a5b4fc"
+    fill: '#26313c'
+    stroke: '#a3b0bd'
   resource:
     alt: Managed topology resource
-    svg: |
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5eead4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M6 10h3M15 10h3M8 14l4-3 4 3M12 11v5"/></svg>
+    svg: >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#87b6af"
+      stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="24"
+      height="24" rx="3" fill="#26313c" stroke="none"/><rect x="3" y="5" width="18" height="14" rx="2"/><path
+      d="M6 10h3M15 10h3M8 14l4-3 4 3M12 11v5"/></svg>
     glyph: CR
-    fill: "#14392f"
-    stroke: "#5eead4"
+    fill: '#26313c'
+    stroke: '#a3b0bd'
   pod:
     alt: Pod
-    svg: |
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5eead4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9zM4 7.5l8 4.5 8-4.5M12 12v9"/></svg>
+    svg: >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#87b6af"
+      stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="24"
+      height="24" rx="3" fill="#26313c" stroke="none"/><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9zM4 7.5l8 4.5
+      8-4.5M12 12v9"/></svg>
     glyph: POD
-    fill: "#14392f"
-    stroke: "#5eead4"
+    fill: '#26313c'
+    stroke: '#a3b0bd'
   group:
     alt: Expandable runtime group
-    svg: |
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#5eead4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="6" rx="1"/><rect x="2" y="16" width="8" height="6" rx="1"/><rect x="14" y="16" width="8" height="6" rx="1"/><path d="M12 8v4M6 16v-4h12v4"/></svg>
+    svg: >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#87b6af"
+      stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="24"
+      height="24" rx="3" fill="#26313c" stroke="none"/><rect x="8" y="2" width="8" height="6" rx="1"/><rect
+      x="2" y="16" width="8" height="6" rx="1"/><rect x="14" y="16" width="8" height="6" rx="1"/><path d="M12
+      8v4M6 16v-4h12v4"/></svg>
     glyph: MAP
-    fill: "#14392f"
-    stroke: "#5eead4"
+    fill: '#26313c'
+    stroke: '#a3b0bd'
 labelFields:
   - labels.name
 stylesheet:
@@ -54,15 +73,15 @@ stylesheet:
       shape: roundRectangle
       width: 168
       height: 82
-      backgroundColor: "#102135"
-      borderColor: "#475569"
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-edge-default)
       borderWidth: 2
-      labelColor: "#f1f5f9"
+      labelColor: var(--topoviewer-fg-strong)
       labelFontSize: 14
-      labelFontWeight: 700
+      labelFontWeight: 600
       metaFontSize: 12
-      metaColor: "#94a3b8"
-      iconColor: "#e2e8f0"
+      metaColor: var(--topoviewer-fg-muted)
+      iconColor: var(--topoviewer-border-strong)
       nodeLayout:
         type: card
         direction: horizontal
@@ -77,37 +96,37 @@ stylesheet:
   - selector: node[labels.object = "client"]
     style:
       icon: client
-      borderColor: "#64748b"
+      borderColor: var(--topoviewer-accent)
   - selector: node[labels.object = "service"]
     style:
       icon: service
-      borderColor: "#22d3ee"
+      borderColor: var(--topoviewer-info)
   - selector: node[labels.object = "deployment"]
     style:
       icon: deployment
-      borderColor: "#818cf8"
+      borderColor: var(--topoviewer-accent)
   - selector: node[labels.object = "toponode"]
     style:
       icon: resource
-      borderColor: "#2dd4bf"
+      borderColor: var(--topoviewer-info)
   - selector: node[labels.object = "pod"]
     style:
       icon: pod
-      borderColor: "#2dd4bf"
+      borderColor: var(--topoviewer-info)
   - selector: node[isAggregate = "true"][aggregateId = "managed-runtime"]
     style:
       icon: group
       width: 230
       height: 86
-      backgroundColor: "#122d34"
-      borderColor: "#2dd4bf"
+      backgroundColor: color-mix(in srgb, var(--topoviewer-info) 12%, var(--topoviewer-panel-bg))
+      borderColor: var(--topoviewer-info)
       borderWidth: 2
-      labelColor: "#f0fdfa"
+      labelColor: var(--topoviewer-fg-strong)
       labelFontSize: 14
       metaFontSize: 0
-      badgeColor: "#ccfbf1"
-      badgeBackgroundColor: "#134e4a"
-      badgeBorderColor: "#2dd4bf"
+      badgeColor: var(--topoviewer-fg-strong)
+      badgeBackgroundColor: color-mix(in srgb, var(--topoviewer-info) 12%, var(--topoviewer-panel-bg))
+      badgeBorderColor: var(--topoviewer-info)
       badgeBorderWidth: 1
       badgeFontSize: 12
       badgeFontWeight: 700
@@ -117,52 +136,76 @@ stylesheet:
   - selector: link
     style:
       curveStyle: smooth-step
-      lineColor: "#22d3ee"
+      lineColor: var(--topoviewer-edge-default)
       lineWidth: 2
       targetArrowShape: triangle
-      targetArrowColor: "#22d3ee"
-      labelColor: "#e2e8f0"
+      targetArrowColor: var(--topoviewer-info)
+      labelColor: var(--topoviewer-fg-strong)
       labelFontSize: 12
       labelFontWeight: 600
-      textBackgroundColor: "#0f172a"
+      textBackgroundColor: color-mix(in srgb, var(--topoviewer-accent) 12%, var(--topoviewer-panel-bg))
       textBackgroundOpacity: 0.94
       textBackgroundPadding: 4
-  - selector: link[labels.relation = "selector"]
+  - selector: link[labels.relation = "template-match"]
     style:
-      lineColor: "#2dd4bf"
-      targetArrowColor: "#2dd4bf"
+      lineColor: var(--topoviewer-info)
+      targetArrowColor: var(--topoviewer-info)
+      lineStyle: dashed
   - selector: link[labels.relation = "binding"]
     style:
-      lineColor: "#2dd4bf"
-      targetArrowColor: "#2dd4bf"
-  - selector: link[labels.relation = "ownership"]
+      lineColor: var(--topoviewer-info)
+      targetArrowColor: var(--topoviewer-info)
+  - selector: link[labels.relation = "workload-association"]
     style:
-      lineColor: "#2dd4bf"
-      targetArrowColor: "#2dd4bf"
+      lineColor: var(--topoviewer-info)
+      targetArrowColor: var(--topoviewer-info)
+      lineStyle: dashed
   - selector: link[labels.relation = "control"]
     style:
-      lineColor: "#64748b"
-      targetArrowColor: "#94a3b8"
+      lineColor: var(--topoviewer-accent)
+      targetArrowColor: var(--topoviewer-accent)
   - selector: link[labels.relation = "context"]
     style:
-      lineColor: "#818cf8"
-      targetArrowColor: "#818cf8"
+      lineColor: var(--topoviewer-accent)
+      targetArrowColor: var(--topoviewer-accent)
       lineStyle: dashed
       lineDashPattern: 6 5
   - selector: link[isAggregate = "true"]
     style:
-      lineColor: "#818cf8"
-      targetArrowColor: "#818cf8"
+      lineColor: var(--topoviewer-accent)
+      targetArrowColor: var(--topoviewer-accent)
       lineStyle: dashed
       lineDashPattern: 6 5
   - selector: region
     style:
-      backgroundColor: "#312e8122"
-      borderColor: "#818cf8"
+      backgroundColor: var(--topoviewer-region-fill)
+      borderColor: var(--topoviewer-region-stroke)
       borderWidth: 1
       borderRadius: 14
-      labelColor: "#a5b4fc"
+      labelColor: var(--topoviewer-fg-strong)
       labelFontSize: 14
-      labelFontWeight: 700
+      labelFontWeight: 600
       padding: 24
       zIndex: -20
+      headerPadding: 48
+  - selector: link[labels.relation = "shared-selector"]
+    style:
+      lineStyle: dashed
+      sourceArrowShape: none
+      targetArrowShape: none
+      lineColor: var(--topoviewer-edge-default)
+  - selector: link[labels.relation = "entry"]
+    style:
+      labelYOffset: -60
+  - selector: link[labels.relation = "binding"]
+    style:
+      labelYOffset: -60
+  - selector: link[labels.relation = "template-match"]
+    style:
+      labelYOffset: -60
+  - selector: link[labels.relation = "shared-selector"]
+    style:
+      labelYOffset: -60
+  - selector: link[labels.relation = "workload-association"]
+    style:
+      labelYOffset: -60

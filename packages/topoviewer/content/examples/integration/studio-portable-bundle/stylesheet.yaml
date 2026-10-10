@@ -12,9 +12,17 @@ stylesheet:
       width: 96
       height: 58
       borderWidth: 2
+      labelFontSize: 14
+      labelFontWeight: 600
+      metaColor: transparent
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-edge-default)
+      iconColor: var(--topoviewer-fg-strong)
   - selector: link
     style:
       curveStyle: bezier
-      lineColor: "#1976d2"
+      lineColor: "var(--topoviewer-edge-default)"
       lineWidth: 3
       targetArrowShape: triangle
+      labelFontSize: 12
+      labelFontWeight: 600

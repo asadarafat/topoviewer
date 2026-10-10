@@ -24,6 +24,7 @@ function ShapeSvg({
   rotation: number;
 }) {
   const common: SVGAttributes<SVGElement> = {
+    vectorEffect: 'non-scaling-stroke',
     fill,
     stroke,
     strokeWidth,
@@ -31,6 +32,7 @@ function ShapeSvg({
     strokeLinecap: 'round'
   };
   const line: SVGAttributes<SVGElement> = {
+    vectorEffect: 'non-scaling-stroke',
     fill: 'none',
     stroke,
     strokeWidth,
@@ -39,6 +41,7 @@ function ShapeSvg({
     opacity: 0.82
   };
   const facet: SVGAttributes<SVGElement> = {
+    vectorEffect: 'non-scaling-stroke',
     fill,
     fillOpacity: 0.58,
     stroke,
@@ -105,7 +108,7 @@ function ShapeSvg({
         return (
           <>
             <path d="M50 10 L86 78 A36 10 0 0 1 14 78 Z" {...common} />
-            <ellipse cx="50" cy="78" rx="36" ry="10" {...line} />
+            <path d="M14 78 A36 10 0 0 1 86 78" {...line} strokeDasharray="4 3" />
           </>
         );
       case 'cylinder':
@@ -113,28 +116,28 @@ function ShapeSvg({
           <>
             <path d="M16 28 A34 12 0 0 1 84 28 V76 A34 12 0 0 1 16 76 Z" {...common} />
             <ellipse cx="50" cy="28" rx="34" ry="12" {...facet} />
-            <path d="M16 76 A34 12 0 0 0 84 76" {...line} />
+            <path d="M16 76 A34 12 0 0 1 84 76" {...line} strokeDasharray="4 3" />
           </>
         );
       case 'pyramid':
         return (
           <>
-            <polygon points={points([[50, 10], [90, 82], [14, 82]])} {...common} />
-            <path d="M50 10 L48 82 M14 82 L48 66 L90 82" {...line} />
+            <polygon points={points([[50, 10], [90, 70], [48, 90], [14, 70]])} {...common} />
+            <path d="M50 10 L48 90" {...line} />
+            <path d="M14 70 L52 54 L90 70 M50 10 L52 54" {...line} strokeDasharray="4 3" />
           </>
         );
       case 'prism':
         return (
           <>
-            <polygon points={points([[24, 30], [72, 30], [50, 10]])} {...facet} />
-            <polygon points={points([[24, 30], [72, 30], [86, 74], [38, 74]])} {...common} />
-            <polygon points={points([[50, 10], [72, 30], [86, 74], [64, 54]])} {...facet} />
-            <path d="M24 30 L38 74 L86 74 M50 10 L64 54 L38 74" {...line} />
+            <polygon points={points([[45, 20], [65, 5], [95, 65], [75, 80]])} {...facet} />
+            <polygon points={points([[15, 80], [45, 20], [75, 80]])} {...common} />
+            <path d="M15 80 L35 65 L65 5 M35 65 L95 65" {...line} strokeDasharray="4 3" />
           </>
         );
       case 'rectangle':
       default:
-        return <rect x="10" y="25" width="80" height="50" rx="4" {...common} />;
+        return <rect x="1" y="1" width="98" height="98" rx="4" {...common} />;
     }
   };
 
@@ -160,10 +163,10 @@ function ShapeNodeComponent({ data }: { data: CompiledNodeData }) {
     >
       {resizer}
       <Handle className="topoviewer-authoring-object-handle" type="target" position={Position.Left} />
-      <svg className="topoviewer-shape-geometry" viewBox="0 0 100 100" role="presentation" focusable="false">
+      <svg className="topoviewer-shape-geometry" viewBox="0 0 100 100" preserveAspectRatio={['circle', 'square', 'sphere', 'cube'].includes(shapeType) ? 'xMidYMid meet' : 'none'} role="presentation" focusable="false">
         <ShapeSvg type={shapeType} fill={fill} stroke={stroke} strokeWidth={strokeWidth} rotation={rotation} />
       </svg>
-      <span className="topoviewer-shape-label">{displayName(data)}</span>
+      <span className="topoviewer-shape-label" style={data.labelStyle as CSSProperties}>{displayName(data)}</span>
       <Handle className="topoviewer-authoring-object-handle" type="source" position={Position.Right} />
     </div>
   );

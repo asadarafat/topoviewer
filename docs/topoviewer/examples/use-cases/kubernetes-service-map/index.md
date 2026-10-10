@@ -25,20 +25,24 @@ helperLines: false
 title: What sits behind this endpoint?
 ```
 
-Cyan links explain service entry and routing; teal links explain selectors,
-bindings, and ownership. The dashed indigo branch adds **authored runtime
-context**, not a measured network call. Card subtitles name the object kind;
+Neutral links show service entry and a dashed **shared selector** comparison.
+Teal marks **template match**, domain binding, and **Pod association**. Dashed
+matching/association links do not assert traffic or ownership. Blue marks curated
+control relationships; the dashed blue **runtime context** is an authored scope
+connection, not a measured network call. Card subtitles name the object kind;
 colors do not report health.
 
 ## Take The Three-Step Tour
 
 1. **Follow the endpoint.** Read Browser → try-eda → eda-api → API workload.
-   The last edge is a Kubernetes selector relationship. It explains which
-   deployment backs the service; it is not another HTTP hop.
+   The two Services have a shared selector; they are alternate frontends, not
+   successive HTTP hops. The last edge matches a Service selector to a
+   Deployment Pod template. Services actually select **Pods**.
 2. **Expand the managed runtime.** Click the **Managed runtime** summary card.
    Its badge counts three member objects. The region opens to show **leaf1**
    (TopoNode), **Simulator** (Deployment), and **leaf1 pod** (Pod), joined
-   by **backed by** and **owns** relationships. Eight cards are now visible.
+   by **backed by** and dashed **Pod association** relationships. The
+   intermediate ReplicaSet is omitted; no direct Deployment ownership is claimed. Eight cards are now visible.
 3. **Return to the overview.** Click the expanded **Managed runtime** region
    to collapse it again. Open the viewer controls and turn the **Managed
    runtime** layer off: only the four endpoint/workload cards remain. Turn it
@@ -78,28 +82,33 @@ that saved snapshot; they are not a live health feed.
 
 The upper layer is the Kubernetes control-plane view for the EDA system. Service
 nodes represent Kubernetes `Service` objects. Deployment nodes represent
-Kubernetes `Deployment` objects. Pod nodes represent runtime Pods. Green
-selector links show which deployments are selected by services. Blue runtime
-links show service-to-service dependencies that are useful for reading the
-platform flow.
+Kubernetes `Deployment` objects. Pod nodes represent runtime Pods. Teal
+**template match** links show selector correspondence with Deployment Pod
+templates. Services select Pods, not Deployments. Blue runtime links show
+curated service dependencies, not measured traffic. The dashed **shared selector**
+connector compares the two API frontends and does not claim forwarding.
 
 The lower layer is the topology runtime view. The `NetworkTopology` resource
-contains the `TopoNode` objects for `leaf1`, `leaf2`, and `spine1`. Those
+groups the `TopoNode` objects in this curated model for `leaf1`, `leaf2`, and `spine1`. Those
 `TopoNode` objects are backed by simulator deployments and pods. NPP pods keep
 control connectivity to the managed nodes.
 
 Regions group the map into API/UI, identity and persistence, control engines,
 applications and bootstrap services, topology runtime, and simulated fabric.
-Expanded regions can be dragged to clean up the view. Clicking a region
-collapses it into a summary node; clicking the summary expands it again.
+The captured map starts with six region summaries, so the overview remains
+readable. The badge counts the captured objects in each region. Click a summary
+to inspect its members; use **Fit View** after expanding and zoom in to read
+individual resource names. Clicking an expanded region collapses it again.
+Use the full inventory as detail, rather than interpreting every dependency
+at once.
 
 ```topoviewer
 topology: examples/integration/kubernetes-service-map/topology.yaml
 stylesheet: examples/integration/kubernetes-service-map/stylesheet.yaml
-height: 620px
+height: 760px
 controls: true
-controlsOpen: true
-title: Kubernetes service map
+controlsOpen: false
+title: Captured EDA regions — click to inspect
 ```
 
 ## Advanced: Build A Map From Your Inventory
@@ -112,18 +121,21 @@ review the resulting relationships before publishing them.
 ```topoviewer
 topology: examples/integration/kubernetes-service-map/service-map-flow-topology.yaml
 stylesheet: examples/integration/kubernetes-service-map/service-map-flow-stylesheet.yaml
-height: 360px
+height: 760px
 controls: false
 controlsOpen: false
 title: Inventory to service map
 ```
+
+The collection flow reads left to right across the upper row, then follows the
+generated YAML down to the renderer and its controls on the lower row.
 
 ## Inventory Collection
 
 Inventory collection means reading source-of-truth objects and preserving their
 identity before anything is styled. For this example, the source inventory is:
 
-- Kubernetes `Service`, `Deployment`, and `Pod` objects in the EDA namespace;
+- Kubernetes `Service`, `Deployment`, `ReplicaSet`, and `Pod` objects in the EDA namespace;
 - Kubernetes selectors and ownership relationships;
 - EDA custom resources such as topology and node objects;
 - selected runtime facts, including ports, image names, readiness, and status.
@@ -191,7 +203,7 @@ validate.
 ```topoviewer
 topology: examples/integration/kubernetes-service-map/converter-flow-topology.yaml
 stylesheet: examples/integration/kubernetes-service-map/converter-flow-stylesheet.yaml
-height: 500px
+height: 600px
 controls: false
 controlsOpen: false
 title: Converter zoom-in
@@ -219,8 +231,9 @@ this:
 - object names become `graph.nodes[].labels.name`;
 - object family and status become `labels`;
 - ports, selectors, images, readiness, and status details become `data`;
-- selectors, ownership, containment, runtime calls, and control relationships
-  become `graph.links[]`;
+- same-namespace Pod selection, inferred Pod-template correspondence, and
+  captured owner references become `graph.links[]`;
+- domain membership and runtime calls require additional source evidence;
 - object families become `graph.regions[]`;
 - Kubernetes and topology-runtime views become `graph.layers[]`;
 - dense groups become `attention.aggregate.groups[]` so regions can collapse;
@@ -245,7 +258,7 @@ against the same inventory should produce the same IDs, links, regions, and
 attention groups. That makes the output reviewable in Git and usable in CI.
 
 That separation matters. The same collected facts can be rendered as a compact
-service dependency map, a Kubernetes ownership view, a topology runtime view, or
+service dependency map, a Kubernetes inventory view, a topology runtime view, or
 a Grafana overlay target without rewriting the source inventory. Layer hiding
 uses the generated `graph.layers[]`; collapse and expand behavior uses the
 generated `attention.aggregate` groups.
@@ -260,8 +273,9 @@ For another platform, use the same sequence:
 
 1. collect the standard Kubernetes objects and the domain-specific resources;
 2. preserve stable object IDs so links and telemetry can attach later;
-3. convert selectors, ownership, containment, and runtime relationships into
-   typed links;
+3. derive Pod selection from same-namespace selectors and ownership from
+   captured `metadata.ownerReferences` UIDs; label template correspondence
+   separately and avoid inventing domain containment or runtime calls;
 4. keep raw source facts in `labels` and `data`;
 5. style object families separately from source facts;
 6. use layers and collapsible regions to keep the view usable as the system
@@ -269,3 +283,23 @@ For another platform, use the same sequence:
 
 TopoViewer becomes useful when the map explains the system shape without
 forcing the reader to reconstruct it from tables, command output, or screenshots.
+
+## Relationship Evidence
+
+The saved diagram is curated: its domain containment, bindings, and service
+calls are teaching associations rather than verified owner references or traces.
+The dashed Deployment-to-Pod associations omit ReplicaSets. Kubernetes
+[Services select Pods](https://kubernetes.io/docs/concepts/services-networking/service/);
+[Deployments manage ReplicaSets](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/),
+which in turn manage Pods.
+
+The collector includes ReplicaSets. The converter creates Service-to-Pod
+selector links only within the same namespace, marks Service-to-Deployment
+Pod-template matches as inferred, and derives ownership only from captured UID
+references to present objects. It does not turn matching workload labels into
+ownership or connect every NetworkTopology to every TopoNode. Missing owners and
+selectorless Services remain unlinked; actual endpoints for selectorless Services
+would require EndpointSlice inventory, which this collector does not include.
+Pod readiness requires its `Ready` condition; a `Running` phase alone is not
+readiness. Missing status remains `unknown`, and a Deployment scaled to zero is
+marked `scaled-down`.

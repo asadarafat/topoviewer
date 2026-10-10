@@ -14,8 +14,10 @@ graph:
       data:
         subtitle: ingress / active
         badge: "4"
-      layers: [services]
-      position: [120, 140]
+      layers: [ services ]
+      position:
+        - 100
+        - 150
     - id: orders
       labels:
         role: service
@@ -24,8 +26,10 @@ graph:
       data:
         subtitle: checkout path
         badge: "12"
-      layers: [services]
-      position: [360, 140]
+      layers: [ services ]
+      position:
+        - 410
+        - 150
     - id: database
       labels:
         role: database
@@ -34,18 +38,20 @@ graph:
       data:
         subtitle: primary / eu-west
         badge: "1"
-      layers: [services]
-      position: [600, 140]
+      layers: [ services ]
+      position:
+        - 720
+        - 150
   links:
     - id: api-orders
       source: api
       target: orders
-      layers: [services]
+      layers: [ services ]
       labels:
         name: REST
     - id: orders-database
       source: orders
       target: database
-      layers: [services]
+      layers: [ services ]
       labels:
         name: SQL

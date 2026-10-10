@@ -188,3 +188,94 @@ npm run ci:docs
 
 The docs lint gate checks canonical pages, generated examples, style reference coverage, API reference coverage,
 public links, and route consistency.
+
+## Diagram design standard
+
+A diagram should answer one question before showing optional detail. Give it a
+specific title and a caption that states the takeaway. Explain abbreviations,
+color, line styles, direction and the boundary of the view in nearby prose.
+Keep the graph facts intact; change the view, spacing or selected layers when
+an overview becomes crowded.
+
+Use these checks, adapted from [Dieter Rams’ ten principles](https://www.vitsoe.com/us/about/good-design):
+
+| Principle | Documentation check |
+|---|---|
+| Innovative | Use interaction to reveal useful detail, rather than adding decoration. |
+| Useful | Every object helps answer the question or demonstrate the named feature. |
+| Aesthetic | Align comparable objects and use consistent spacing, typography and strokes. |
+| Understandable | Name nodes and relationships; explain arrows, boundaries and abbreviations. |
+| Unobtrusive | Keep context quiet and give the selected path or state clear emphasis. |
+| Honest | Distinguish authored scenarios from live data and preserve actual relationships. |
+| Long-lasting | Prefer stable notation and editable source over visual trends. |
+| Thorough | Check labels, attachment points, crossings and framing in the rendered view. |
+| Environmentally friendly | Reuse native vector symbols and existing rendering tools. |
+| As little design as possible | Remove repeated metadata, ornamental shadows and redundant frames. |
+
+Start with 14–16 px node labels, at least 12 px relationship labels and 13 px
+callout bodies in source coordinates. Judge the **rendered** size after fitting:
+a large canvas can shrink otherwise readable type. Reserve a header lane in
+regions; keep leaders outside unrelated node bodies. Side labels need an
+explicit maximum width when wrapping is intentional. Avoid long callouts over
+network objects; give explanations a separate reading lane.
+
+Review actual captures at the documentation content width, in light and dark
+mode, and at a narrow width. An overview must show its primary names without
+clipping. Dense detail may require zoom or layer controls; say what to reveal.
+Use compact capture heights for small gallery examples rather than filling the
+thumbnail with empty space. Preserve demonstrations of wrapping, shapes,
+status, density and invalid input instead of making every fixture identical.
+
+The [C4 diagram review checklist](https://c4model.com/diagrams/checklist) provides
+useful checks for scope, notation and relationships, even for diagrams that do
+not use C4 notation. [Google’s technical illustration guidance](https://developers.google.com/tech-writing/two/illustrations)
+reinforces purposeful detail, readable contrast and iterative visual review.
+These are design references, not claims of formal compliance or certification.
+
+### Information and notation
+
+Check the model before styling it. Read each connector as a sentence from its
+source to its target; its label and arrow must agree. Distinguish physical links,
+protocol sessions, ordered traffic paths, component data flow, and explanatory
+associations. An undirected session is not a one-way traffic claim. Name payloads
+on data-flow arrows; a filesystem artifact may be a node, but an edge label is
+not a processing component. Use explicit scope captions for authored scenarios,
+captured snapshots, inferred matches, and omitted intermediary objects.
+
+Use [Kubernetes Service](https://kubernetes.io/docs/concepts/services-networking/service/)
+and [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+semantics: Services select Pods in their namespace; Deployments manage ReplicaSets,
+which manage Pods. Label matches cannot establish ownership. Use captured UID
+owner references, and leave absent evidence unknown. A Pod's Running phase does
+not establish its Ready condition. Do not invent custom-resource containment.
+
+In Grafana, [panel plugins consume data frames from data sources](https://grafana.com/developers/plugin-tools/how-to-guides/panel-plugins/).
+Verify plugin boundaries against the implementation; TopoViewer's bundle backend
+serves source files rather than querying Prometheus. In spine/leaf diagrams,
+verify every stated leaf-to-spine connection. Explain custom role symbols; do not
+imply UML, flowchart, or vendor notation merely by using a diamond or cylinder.
+
+Renderer acceptance must check visible SVG geometry as well as layout boxes:
+floating and parallel links touch the rendered outline, named ports retain their
+attachment, circles remain circular, and hidden 3D edges are dashed or omitted.
+A feature fixture may demonstrate generic geometry without asserting engineering
+projection or protocol semantics.
+
+### Color palette
+
+Use the shared renderer's graphite and paper surfaces. Most devices and ordinary
+connections should stay neutral; tint a card lightly when its role matters.
+Use blue for emphasis, teal for the reverse direction or a control relationship,
+and muted violet for service overlays. Warning and failure examples use amber
+and rose red. A shape or color-control fixture may demonstrate additional hues;
+explain them rather than treating them as operational status.
+
+Keep text on theme-aware surfaces with `--topoviewer-fg-strong` or
+`--topoviewer-fg-muted`. Use the theme's paired foreground and accent colors for
+filled controls. Avoid white text on pastel cards and pale icons on paper.
+Retain labels, directional arrows, dashed alternatives, and status cues so
+meaning survives when colors are difficult to distinguish.
+
+The palette follows the neutral foundation and purposeful accents described in
+[IBM's color guidance](https://www.ibm.com/design/language/color/), with redundant
+color and line-style cues from its [architecture diagram guidance](https://ibm.github.io/itaa-docs/Archi-diagrs-v3.pdf).

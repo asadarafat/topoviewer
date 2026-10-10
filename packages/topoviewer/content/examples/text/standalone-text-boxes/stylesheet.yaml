@@ -8,7 +8,7 @@ stylesheet:
     style:
       color: var(--topoviewer-fg-strong)
       backgroundColor: var(--topoviewer-panel-bg)
-      borderColor: rgba(100, 181, 246, 0.48)
+      borderColor: color-mix(in srgb, var(--topoviewer-accent) 48%, transparent)
       borderWidth: 1
       borderRadius: 6
       fontSize: 16
@@ -17,8 +17,8 @@ stylesheet:
       selectable: true
   - selector: text[id = "title"]
     style:
-      backgroundColor: rgba(25, 118, 210, 0.14)
-      borderColor: "#64b5f6"
+      backgroundColor: color-mix(in srgb, var(--topoviewer-accent) 12%, var(--topoviewer-panel-bg))
+      borderColor: "var(--topoviewer-accent)"
       borderWidth: 2
       fontSize: 24
       fontWeight: 800
@@ -27,8 +27,8 @@ stylesheet:
       height: 64
   - selector: text[id = "rotated-note"]
     style:
-      backgroundColor: rgba(46, 125, 50, 0.16)
-      borderColor: "#4caf50"
+      backgroundColor: color-mix(in srgb, var(--topoviewer-info) 12%, var(--topoviewer-panel-bg))
+      borderColor: "var(--topoviewer-info)"
       color: var(--topoviewer-fg-strong)
       fontWeight: 800
       width: 180

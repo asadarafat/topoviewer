@@ -13,7 +13,7 @@ A path sequence models ordered traversal through graph nodes.
 ### Try It
 
 1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `path[labels.protocol = "sr-te"]`.
-2. Change its `lineColor` from `"#fb7185"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+2. Change its `lineColor` from `"var(--topoviewer-danger)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
 3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
@@ -49,8 +49,8 @@ A child service path can stitch from child endpoints into a parent transport pat
 
 ### Try It
 
-1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `path[labels.path = "service"]`.
-2. Change its `lineColor` from `"#22c55e"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `path`.
+2. Change its `labelFontSize` from `12` to `14`, then reload your page. Compare the label size of objects matching that selector; their IDs and relationships should stay unchanged.
 3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"

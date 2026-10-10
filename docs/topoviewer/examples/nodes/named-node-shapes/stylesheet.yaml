@@ -6,45 +6,53 @@ layout:
 icons:
   core:
     glyph: C
-    fill: "#0f766e"
-    stroke: "#99f6e4"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   rr:
     glyph: RR
-    fill: "#334155"
-    stroke: "#cbd5e1"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   pe:
     glyph: PE
-    fill: "#2563eb"
-    stroke: "#bfdbfe"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   firewall:
     glyph: FW
-    fill: "#dc2626"
-    stroke: "#fecaca"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   service:
     glyph: VPN
-    fill: "#7c3aed"
-    stroke: "#ddd6fe"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
+    svg: |
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#f2f5f8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="48" height="48" rx="6" fill="#26313c" stroke="none"/><rect x="7" y="9" width="34" height="30" rx="5"/><path d="M15 20h18M15 28h18"/><circle cx="24" cy="24" r="2"/></svg>
+    alt: Virtual private network service
   client:
     glyph: C
-    fill: "#059669"
-    stroke: "#bbf7d0"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   aggregate:
     glyph: M
-    fill: "#0891b2"
-    stroke: "#cffafe"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   switch:
     glyph: SW
-    fill: "#ea580c"
-    stroke: "#fed7aa"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
 stylesheet:
   - selector: node
     style:
       width: 98
       height: 78
       iconSize: 52
-      borderWidth: 3
-      labelFontWeight: 800
+      borderWidth: 2
+      labelFontWeight: 600
       labelColor: var(--topoviewer-fg-strong)
+      labelFontSize: 14
+      metaColor: transparent
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-edge-default)
+      iconColor: var(--topoviewer-fg-strong)
   - selector: node[labels.role = "core"]
     style:
       icon: core
@@ -83,6 +91,8 @@ stylesheet:
       height: 78
   - selector: link
     style:
-      lineColor: "#94a3b8"
+      lineColor: "var(--topoviewer-edge-default)"
       lineWidth: 2
       targetArrowShape: none
+      labelFontSize: 12
+      labelFontWeight: 600

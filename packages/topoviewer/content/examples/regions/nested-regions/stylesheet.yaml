@@ -6,16 +6,25 @@ layout:
 icons:
   router:
     glyph: R
-    fill: "#2563eb"
-    stroke: "#bfdbfe"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
+    svg: |
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#f2f5f8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="48" height="48" rx="6" fill="#26313c" stroke="none"/><path d="M8 24h32M24 8v32M8 24l6-6m-6 6 6 6m26-6-6-6m6 6-6 6M24 8l-6 6m6-6 6 6M24 40l-6-6m6 6 6-6"/></svg>
+    alt: Router
   service:
     glyph: VPN
-    fill: "#7c3aed"
-    stroke: "#ddd6fe"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
+    svg: |
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#f2f5f8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="48" height="48" rx="6" fill="#26313c" stroke="none"/><rect x="7" y="9" width="34" height="30" rx="5"/><path d="M15 20h18M15 28h18"/><circle cx="24" cy="24" r="2"/></svg>
+    alt: Virtual private network service
   controller:
     glyph: NSP
-    fill: "#f59e0b"
-    stroke: "#fde68a"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
+    svg: |
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#f2f5f8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="48" height="48" rx="6" fill="#26313c" stroke="none"/><rect x="6" y="8" width="36" height="26" rx="4"/><path d="M18 40h12M24 34v6M13 18h8m-8 7h18"/></svg>
+    alt: Network controller
 labelFields:
   - labels.name
 stylesheet:
@@ -24,40 +33,48 @@ stylesheet:
       icon: router
       width: 84
       height: 60
-      borderWidth: 3
+      borderWidth: 2
       labelColor: var(--topoviewer-fg-strong)
-      labelFontWeight: 800
+      labelFontWeight: 600
+      labelFontSize: 14
+      metaColor: transparent
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-edge-default)
   - selector: link
     style:
-      label: Link
-      lineColor: "#60a5fa"
+      lineColor: "var(--topoviewer-edge-default)"
       lineWidth: 1
       targetArrowShape: none
       labelColor: var(--topoviewer-fg-strong)
       textBackgroundColor: var(--topoviewer-edge-label-bg)
+      labelFontSize: 12
+      labelFontWeight: 600
   - selector: region
     style:
-      backgroundColor: rgba(14, 165, 233, 0.11)
-      borderColor: rgba(125, 211, 252, 0.58)
+      backgroundColor: var(--topoviewer-region-fill)
+      borderColor: var(--topoviewer-region-stroke)
       borderWidth: 1
       labelColor: var(--topoviewer-region-label-fg)
       draggable: true
       selectable: true
       zIndex: -20
+      labelFontSize: 14
+      labelFontWeight: 600
+      headerPadding: 48
   - selector: region[labels.level = "l1"]
     style:
-      backgroundColor: rgba(34, 197, 94, 0.12)
-      borderColor: rgba(134, 239, 172, 0.62)
+      backgroundColor: color-mix(in srgb, var(--topoviewer-info) 5%, var(--topoviewer-panel-bg))
+      borderColor: var(--topoviewer-region-stroke)
   - selector: region[id = "as65000"]
     style:
-      backgroundColor: rgba(251, 146, 60, 0.10)
-      borderColor: rgba(251, 191, 36, 0.50)
+      backgroundColor: color-mix(in srgb, var(--topoviewer-warning) 5%, var(--topoviewer-panel-bg))
+      borderColor: var(--topoviewer-region-stroke)
       zIndex: -40
-      headerPadding: 28
+      headerPadding: 48
       paddingX: 56
       paddingY: 36
       parentPaddingX: 28
-      parentPaddingY: 18
+      parentPaddingY: 42
   - selector: region[id = "isis-l1"]
     style:
       minHeight: 132

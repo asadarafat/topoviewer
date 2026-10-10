@@ -23,7 +23,7 @@ icons:
         fill="none"
       >
         <style type="text/css">
-          .st0 { fill: #001135; }
+          .st0 { fill: #26313c; }
           .st1 { fill: none; stroke: #FFFFFF; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 10; }
         </style>
         <rect height="120" width="120" class="st0" />
@@ -48,30 +48,31 @@ icons:
       </svg>
   service:
     glyph: SVC
-    fill: "#2e7d32"
-    stroke: "#a5d6a7"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   database:
     glyph: DB
-    fill: "#7b1fa2"
-    stroke: "#ce93d8"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
 labelFields:
   - labels.name
 stylesheet:
   - selector: node
     style:
       shape: roundRectangle
-      width: 190
+      width: 240
       height: 64
-      backgroundColor: "#0f172a"
-      borderColor: "#334155"
+      backgroundColor: "var(--topoviewer-panel-bg)"
+      borderColor: "var(--topoviewer-edge-default)"
       borderWidth: 2
       color: "#e2e8f0"
-      labelColor: "#f8fafc"
-      metaColor: "#94a3b8"
+      labelColor: "var(--topoviewer-fg-strong)"
+      metaColor: "var(--topoviewer-fg-muted)"
       iconPadding: 6
-      badgeColor: "#0f172a"
-      badgeBackgroundColor: "#e0f2fe"
-      badgeBorderColor: "#38bdf8"
+      badgeColor: "var(--topoviewer-fg-strong)"
+      badgeBackgroundColor: "color-mix(in srgb, var(--topoviewer-info) 12%,
+        var(--topoviewer-panel-bg))"
+      badgeBorderColor: "var(--topoviewer-info)"
       badgeBorderWidth: 2
       badgeFontSize: 11
       badgeFontWeight: 900
@@ -93,36 +94,43 @@ stylesheet:
           align: left
           titleField: name
           subtitleField: data.subtitle
+      labelFontSize: 14
+      labelFontWeight: 600
+      metaFontSize: 12
+      iconColor: var(--topoviewer-fg-strong)
   - selector: node[labels.role = "frontend"]
     style:
       icon: router.nokia
-      borderColor: "#60a5fa"
+      borderColor: "var(--topoviewer-accent)"
       badgeLabel: "4"
   - selector: node[labels.role = "service"]
     style:
       icon: service
-      borderColor: "#86efac"
+      borderColor: "var(--topoviewer-info)"
       badgeLabel: "12"
   - selector: node[labels.role = "database"]
     style:
       icon: database
-      borderColor: "#d8b4fe"
+      borderColor: "#8b78b8"
       badgeLabel: "1"
   - selector: node[labels.state = "healthy"]
     style:
-      statusColor: "#22c55e"
+      statusColor: "var(--topoviewer-success)"
   - selector: node[labels.state = "busy"]
     style:
-      statusColor: "#f59e0b"
-      outlineColor: "#f59e0b"
+      statusColor: "var(--topoviewer-warning)"
+      outlineColor: "var(--topoviewer-warning)"
       outlineWidth: 2
       outlineOpacity: 0.45
   - selector: link
     style:
       curveStyle: bezier
-      lineColor: "#64748b"
+      lineColor: "var(--topoviewer-edge-default)"
       lineWidth: 3
       targetArrowShape: triangle
-      targetArrowColor: "#64748b"
-      labelColor: "#cbd5e1"
-      textBackgroundColor: "#0f172a"
+      targetArrowColor: "var(--topoviewer-accent)"
+      labelColor: "var(--topoviewer-fg-strong)"
+      textBackgroundColor: "color-mix(in srgb, var(--topoviewer-accent) 12%,
+        var(--topoviewer-panel-bg))"
+      labelFontSize: 12
+      labelFontWeight: 600

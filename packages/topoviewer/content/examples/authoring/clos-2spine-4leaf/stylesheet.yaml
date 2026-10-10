@@ -27,7 +27,7 @@ icons:
         fill="none"
       >
         <style type="text/css">
-          .st0 { fill: #001135; }
+          .st0 { fill: #26313c; }
           .st1 { fill: none; stroke: #FFFFFF; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 10; }
         </style>
         <rect height="120" width="120" class="st0" />
@@ -51,8 +51,8 @@ icons:
           </g>
         </g>
       </svg>
-    fill: "#001135"
-    stroke: "#90caf9"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   router.leaf:
     glyph: L
     alt: Leaf router
@@ -72,7 +72,7 @@ icons:
         fill="none"
       >
         <style type="text/css">
-          .st0 { fill: #001135; }
+          .st0 { fill: #26313c; }
           .st1 { fill: none; stroke: #FFFFFF; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 10; }
         </style>
         <rect height="120" width="120" class="st0" />
@@ -100,32 +100,35 @@ icons:
           </g>
         </g>
       </svg>
-    fill: "#001135"
-    stroke: "#90caf9"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
 labelFields:
   - labels.name
 stylesheet:
   - selector: region
     style:
       labelZIndex: 9
-      backgroundColor: "rgba(25, 118, 210, 0.1)"
-      borderColor: "rgba(66, 165, 245, 0.54)"
+      backgroundColor: "var(--topoviewer-region-fill)"
+      borderColor: "var(--topoviewer-region-stroke)"
       borderWidth: 2
       labelPosition: topCenter
       labelMargin: 12
       labelColor: var(--topoviewer-region-label-fg)
       labelBackgroundColor: var(--topoviewer-region-label-bg)
+      labelFontSize: 14
+      labelFontWeight: 600
+      headerPadding: 48
   - selector: node
     style:
       icon: router.leaf
       shape: square
       width: 48
       height: 48
-      borderWidth: 3
-      borderColor: "#90caf9"
+      borderWidth: 2
+      borderColor: "var(--topoviewer-edge-default)"
       iconFit: fill
       iconPadding: 0
-      labelFontWeight: 800
+      labelFontWeight: 600
       labelColor: var(--topoviewer-fg-strong)
       labelBackgroundColor: var(--topoviewer-panel-bg)
       labelBackgroundOpacity: 0.92
@@ -135,10 +138,12 @@ stylesheet:
       labelYOffset: 8
       labelPadding: 4
       metaColor: "transparent"
+      labelFontSize: 14
+      backgroundColor: var(--topoviewer-panel-bg)
   - selector: node[labels.node = "spine"]
     style:
       icon: router.spine
-      outlineColor: "#9c27b0"
+      outlineColor: "#8b78b8"
       outlineWidth: 4
       outlineOpacity: 0.55
       labelPosition: top
@@ -146,17 +151,19 @@ stylesheet:
   - selector: node[labels.node = "leaf"]
     style:
       icon: router.leaf
-      outlineColor: "#1976d2"
+      outlineColor: "var(--topoviewer-accent)"
       outlineWidth: 3
       outlineOpacity: 0.38
   - selector: link
     style:
       lineWidth: 4
-      lineColor: "#42a5f5"
+      lineColor: "var(--topoviewer-edge-default)"
       targetArrowShape: none
       curveStyle: straight
       label: ""
       textBackgroundColor: var(--topoviewer-edge-label-bg)
+      labelFontSize: 12
+      labelFontWeight: 600
   - selector: region[id = "spine-pair"]
     style:
       paddingX: 48

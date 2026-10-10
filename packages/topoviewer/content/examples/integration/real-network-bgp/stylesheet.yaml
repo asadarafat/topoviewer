@@ -1,25 +1,25 @@
-version: "0.2"
+version: '0.2'
 layout:
   mode: manual
   width: 980
   height: 520
 icons:
   router.pe:
-    glyph: ""
-    fill: "#2563eb"
-    stroke: "#bfdbfe"
+    glyph: PE
+    fill: '#26313c'
+    stroke: '#a3b0bd'
   router.p:
-    glyph: ""
-    fill: "#0f766e"
-    stroke: "#99f6e4"
+    glyph: P
+    fill: '#26313c'
+    stroke: '#a3b0bd'
   router.rr:
-    glyph: ""
-    fill: "#7c3aed"
-    stroke: "#ddd6fe"
+    glyph: RR
+    fill: '#26313c'
+    stroke: '#a3b0bd'
   router.ce:
-    glyph: ""
-    fill: "#f59e0b"
-    stroke: "#fde68a"
+    glyph: CE
+    fill: '#26313c'
+    stroke: '#a3b0bd'
 labelFields: []
 stylesheet:
   - selector: node
@@ -29,42 +29,43 @@ stylesheet:
       width: 112
       height: 82
       iconSize: 52
-      backgroundColor: "#ffffff"
-      borderColor: "#94a3b8"
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-edge-default)
       borderWidth: 2
-      labelColor: "#0f172a"
-      labelFontSize: 12
-      labelFontWeight: 800
-      labelBackgroundColor: "#ffffff"
+      labelColor: var(--topoviewer-fg-strong)
+      labelFontSize: 14
+      labelFontWeight: 600
+      labelBackgroundColor: var(--topoviewer-panel-bg)
       labelPadding: 4
-      metaColor: "transparent"
+      metaColor: transparent
       metaFontSize: 0
-      statusColor: "#22c55e"
+      statusColor: var(--topoviewer-success)
       statusPlacement: topRight
       statusSize: 11
+      iconColor: var(--topoviewer-fg-strong)
   - selector: node[labels.role = "pe"]
     style:
       icon: router.pe
       shape: hexagon
-      borderColor: "#2563eb"
-      underlayColor: "#bfdbfe"
+      borderColor: var(--topoviewer-accent)
+      underlayColor: color-mix(in srgb, var(--topoviewer-accent) 18%, var(--topoviewer-panel-bg))
       underlayOpacity: 0.24
       underlayPadding: 8
   - selector: node[labels.role = "p"]
     style:
       icon: router.p
       shape: ellipse
-      borderColor: "#0f766e"
+      borderColor: var(--topoviewer-info)
   - selector: node[labels.role = "rr"]
     style:
       icon: router.rr
       shape: diamond
-      borderColor: "#7c3aed"
+      borderColor: '#8b78b8'
       badgeLabel: RR
-      badgeBackgroundColor: "#7c3aed"
-      badgeColor: "#ffffff"
-      badgeBorderColor: "#ddd6fe"
-      underlayColor: "#ddd6fe"
+      badgeBackgroundColor: 'color-mix(in srgb, #8b78b8 12%, var(--topoviewer-panel-bg))'
+      badgeColor: var(--topoviewer-fg-strong)
+      badgeBorderColor: var(--topoviewer-accent)
+      underlayColor: color-mix(in srgb, var(--topoviewer-accent) 18%, var(--topoviewer-panel-bg))
       underlayOpacity: 0.28
       underlayPadding: 10
   - selector: node[labels.role = "ce"]
@@ -74,16 +75,17 @@ stylesheet:
   - selector: link
     style:
       curveStyle: straight
-      lineColor: "#64748b"
+      lineColor: var(--topoviewer-edge-default)
       lineWidth: 4
       targetArrowShape: none
-      labelColor: "#475569"
-      labelFontSize: 11
-      textBackgroundColor: "#ffffff"
+      labelColor: var(--topoviewer-fg-strong)
+      labelFontSize: 12
+      textBackgroundColor: var(--topoviewer-edge-label-bg)
+      labelFontWeight: 600
   - selector: link[labels.layer = "underlay"]
     style:
       curveStyle: straight
-      lineColor: "#64748b"
+      lineColor: var(--topoviewer-accent)
       lineWidth: 4
   - selector: link[labels.protocol = "bgp"]
     style:
@@ -91,50 +93,55 @@ stylesheet:
       sourceLabel: iBGP
       targetLabel: RR
       curveStyle: unbundled-bezier
-      lineColor: "#7c3aed"
+      lineColor: '#8b78b8'
       lineWidth: 4
       lineStyle: dashed
       lineDashPattern: 7 7
       lineOpacity: 0.96
-      targetArrowShape: triangle
-      targetArrowColor: "#7c3aed"
-      sourceLabelColor: "#7c3aed"
-      targetLabelColor: "#7c3aed"
-      textBackgroundColor: "#ffffff"
+      targetArrowShape: none
+      targetArrowColor: '#8b78b8'
+      sourceLabelColor: var(--topoviewer-fg-strong)
+      targetLabelColor: var(--topoviewer-fg-strong)
+      textBackgroundColor: var(--topoviewer-edge-label-bg)
+      sourceArrowShape: none
   - selector: link[labels.tenant = "payments"]
     style:
       display: none
   - selector: path
     style:
       display: none
+      labelFontSize: 12
+      labelFontWeight: 600
   - selector: region
     style:
       borderWidth: 1
       labelColor: var(--topoviewer-region-label-fg)
-      labelFontSize: 12
-      labelFontWeight: 800
+      labelFontSize: 14
+      labelFontWeight: 600
       labelPosition: topCenter
       labelMargin: 12
       zIndex: -20
       selectable: true
       draggable: true
+      headerPadding: 48
+      backgroundColor: var(--topoviewer-region-fill)
   - selector: region[id = "fra-metro"]
     style:
-      headerPadding: 34
+      headerPadding: 48
       nodeHeight: 82
       nodeWidth: 112
       paddingX: 28
       paddingY: 24
   - selector: region[id = "transit-core"]
     style:
-      headerPadding: 34
+      headerPadding: 48
       nodeHeight: 82
       nodeWidth: 112
       paddingX: 34
       paddingY: 28
   - selector: region[id = "lon-metro"]
     style:
-      headerPadding: 34
+      headerPadding: 48
       nodeHeight: 82
       nodeWidth: 112
       paddingX: 28

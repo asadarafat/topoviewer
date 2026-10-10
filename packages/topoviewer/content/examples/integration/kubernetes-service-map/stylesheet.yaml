@@ -1,4 +1,4 @@
-version: "0.2"
+version: '0.2'
 layout:
   mode: manual
   width: 2120
@@ -6,39 +6,54 @@ layout:
 icons:
   client:
     glyph: UI
-    fill: '#1976d2'
-    stroke: '#bbdefb'
+    fill: '#26313c'
+    stroke: '#a3b0bd'
   service:
     glyph: SVC
-    fill: '#1565c0'
-    stroke: '#90caf9'
+    fill: '#26313c'
+    stroke: '#a3b0bd'
   deploy:
     glyph: DEP
-    fill: '#2e7d32'
-    stroke: '#a5d6a7'
+    fill: '#26313c'
+    stroke: '#a3b0bd'
   pod:
     glyph: POD
-    fill: '#0288d1'
-    stroke: '#81d4fa'
+    fill: '#26313c'
+    stroke: '#a3b0bd'
   data:
     glyph: DB
-    fill: '#7b1fa2'
-    stroke: '#ce93d8'
+    fill: '#26313c'
+    stroke: '#a3b0bd'
   fabric:
     glyph: SRL
-    fill: '#001135'
-    stroke: '#90caf9'
+    fill: '#26313c'
+    stroke: '#a3b0bd'
   resource:
     glyph: CR
-    fill: '#ed6c02'
-    stroke: '#ffcc80'
+    fill: '#26313c'
+    stroke: '#a3b0bd'
+  replicaSet:
+    glyph: RS
+    fill: '#26313c'
+    stroke: '#a3b0bd'
+  group:
+    alt: Expandable runtime group
+    svg: >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#87b6af"
+      stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="24"
+      height="24" rx="3" fill="#26313c" stroke="none"/><rect x="8" y="2" width="8" height="6" rx="1"/><rect
+      x="2" y="16" width="8" height="6" rx="1"/><rect x="14" y="16" width="8" height="6" rx="1"/><path d="M12
+      8v4M6 16v-4h12v4"/></svg>
+    glyph: MAP
+    fill: '#26313c'
+    stroke: '#a3b0bd'
 labelFields:
   - labels.name
 stylesheet:
   - selector: region
     style:
-      backgroundColor: rgba(25, 118, 210, 0.08)
-      borderColor: rgba(66, 165, 245, 0.46)
+      backgroundColor: var(--topoviewer-region-fill)
+      borderColor: var(--topoviewer-region-stroke)
       borderWidth: 2
       draggable: true
       selectable: true
@@ -47,6 +62,9 @@ stylesheet:
       labelColor: var(--topoviewer-region-label-fg)
       labelBackgroundColor: var(--topoviewer-region-label-bg)
       labelZIndex: 6
+      labelFontSize: 14
+      labelFontWeight: 600
+      headerPadding: 48
   - selector: node
     style:
       shape: rectangle
@@ -56,134 +74,151 @@ stylesheet:
       iconFit: fill
       iconPadding: 0
       labelColor: var(--topoviewer-fg-strong)
-      labelFontWeight: 800
+      labelFontWeight: 600
       labelBackgroundColor: var(--topoviewer-panel-bg)
       labelBackgroundOpacity: 0.92
       labelPadding: 4
-      metaColor: var(--topoviewer-fg-muted)
+      metaColor: transparent
+      labelFontSize: 14
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-edge-default)
+      iconColor: var(--topoviewer-fg-strong)
   - selector: node[labels.object = "client"]
     style:
       icon: client
-      backgroundColor: '#1976d2'
-      borderColor: '#90caf9'
+      backgroundColor: color-mix(in srgb, var(--topoviewer-accent) 12%, var(--topoviewer-panel-bg))
+      borderColor: var(--topoviewer-accent)
       width: 92
       height: 56
   - selector: node[labels.object = "service"]
     style:
       icon: service
-      backgroundColor: '#1565c0'
-      borderColor: '#90caf9'
+      backgroundColor: color-mix(in srgb, var(--topoviewer-accent) 12%, var(--topoviewer-panel-bg))
+      borderColor: var(--topoviewer-accent)
   - selector: node[labels.object = "deployment"]
     style:
       icon: deploy
-      backgroundColor: '#2e7d32'
-      borderColor: '#a5d6a7'
+      backgroundColor: color-mix(in srgb, var(--topoviewer-info) 12%, var(--topoviewer-panel-bg))
+      borderColor: var(--topoviewer-info)
   - selector: node[labels.object = "pod"]
     style:
       icon: pod
-      backgroundColor: '#0288d1'
-      borderColor: '#81d4fa'
+      backgroundColor: color-mix(in srgb, var(--topoviewer-info) 12%, var(--topoviewer-panel-bg))
+      borderColor: var(--topoviewer-info)
   - selector: node[labels.object = "toponode"]
     style:
       icon: fabric
-      backgroundColor: '#001135'
-      borderColor: '#90caf9'
+      backgroundColor: color-mix(in srgb, var(--topoviewer-accent) 12%, var(--topoviewer-panel-bg))
+      borderColor: var(--topoviewer-accent)
       width: 112
       height: 64
   - selector: node[labels.object = "edaResource"]
     style:
       icon: resource
-      backgroundColor: '#ed6c02'
-      borderColor: '#ffcc80'
+      backgroundColor: color-mix(in srgb, var(--topoviewer-warning) 12%, var(--topoviewer-panel-bg))
+      borderColor: var(--topoviewer-warning)
       width: 132
       height: 62
   - selector: node[isAggregate = "true"]
     style:
       shape: roundRectangle
-      width: 150
-      height: 76
-      backgroundColor: '#1565c0'
-      borderColor: '#90caf9'
+      width: 380
+      height: 100
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-border)
       borderWidth: 3
-      labelPosition: bottom
-      labelFontWeight: 800
-      badgeBackgroundColor: '#e3f2fd'
-      badgeColor: '#0d47a1'
-      badgeBorderColor: '#90caf9'
+      labelPosition: center
+      labelFontWeight: 600
+      badgeBackgroundColor: color-mix(in srgb, var(--topoviewer-accent) 12%, var(--topoviewer-panel-bg))
+      badgeColor: var(--topoviewer-fg-strong)
+      badgeBorderColor: var(--topoviewer-accent)
       statusPlacement: topRight
       statusSize: 12
-      outlineColor: '#42a5f5'
+      outlineColor: var(--topoviewer-accent)
       outlineWidth: 3
       outlineOpacity: 0.55
-      underlayColor: '#42a5f5'
+      underlayColor: color-mix(in srgb, var(--topoviewer-accent) 18%, var(--topoviewer-panel-bg))
       underlayPadding: 10
       underlayOpacity: 0.18
+      labelFontSize: 28
+      labelTextMaxWidth: 420
+      metaColor: transparent
+      iconOpacity: 0
+      badgeFontSize: 22
+      badgeMinWidth: 30
+      badgeMinHeight: 30
+      icon: group
   - selector: node[labels.role = "database"]
     style:
       icon: data
-      backgroundColor: '#7b1fa2'
-      borderColor: '#ce93d8'
+      backgroundColor: 'color-mix(in srgb, #8b78b8 12%, var(--topoviewer-panel-bg))'
+      borderColor: '#8b78b8'
   - selector: node[labels.status = "ready"]
     style:
-      statusColor: '#4caf50'
+      statusColor: var(--topoviewer-success)
   - selector: node[labels.status = "connected"]
     style:
-      statusColor: '#4caf50'
+      statusColor: var(--topoviewer-success)
       badgeLabel: NPP
   - selector: link
     style:
       curveStyle: bezier
-      lineColor: '#90a4ae'
+      lineColor: var(--topoviewer-edge-default)
       lineWidth: 2
       targetArrowShape: triangle
-      targetArrowColor: '#90a4ae'
+      targetArrowColor: var(--topoviewer-info)
       labelColor: var(--topoviewer-fg-strong)
-      labelFontSize: 10
+      labelFontSize: 12
       textBackgroundColor: var(--topoviewer-edge-label-bg)
       labelZIndex: 8
+      labelFontWeight: 600
   - selector: link[labels.link = "entry"]
     style:
-      lineColor: '#1976d2'
-      targetArrowColor: '#1976d2'
+      lineColor: var(--topoviewer-accent)
+      targetArrowColor: var(--topoviewer-accent)
       lineWidth: 4
       label: HTTPS
   - selector: link[labels.link = "runtime-flow"]
     style:
       curveStyle: bezier
-      lineColor: '#42a5f5'
-      targetArrowColor: '#42a5f5'
+      lineColor: var(--topoviewer-accent)
+      targetArrowColor: var(--topoviewer-accent)
       lineWidth: 3
-  - selector: link[labels.link = "selector"]
+  - selector: link[labels.link = "template-match"]
     style:
-      lineColor: '#4caf50'
-      targetArrowColor: '#4caf50'
+      lineColor: var(--topoviewer-info)
+      targetArrowColor: var(--topoviewer-info)
       lineWidth: 3
-      label: selects
-  - selector: link[labels.link = "topology"]
+      label: template match
+      lineStyle: dashed
+  - selector: link[labels.link = "domain-grouping"]
     style:
-      lineColor: '#ed6c02'
-      targetArrowColor: '#ed6c02'
+      lineColor: var(--topoviewer-warning)
+      targetArrowColor: var(--topoviewer-warning)
       lineWidth: 3
-      label: contains
+      label: modeled membership
+      lineStyle: dashed
+      targetArrowShape: none
   - selector: link[labels.link = "runtime-binding"]
     style:
-      lineColor: '#9c27b0'
-      targetArrowColor: '#9c27b0'
+      lineColor: '#8b78b8'
+      targetArrowColor: '#8b78b8'
       lineWidth: 3
       lineStyle: dashed
   - selector: link[labels.link = "control"]
     style:
-      lineColor: '#0288d1'
-      targetArrowColor: '#0288d1'
+      lineColor: var(--topoviewer-info)
+      targetArrowColor: var(--topoviewer-info)
       lineWidth: 2
       lineStyle: dashed
       label: NPP
-  - selector: link[labels.link = "owns"]
+  - selector: link[labels.link = "workload-association"]
     style:
-      lineColor: '#78909c'
-      targetArrowColor: '#78909c'
+      lineColor: var(--topoviewer-info)
+      targetArrowColor: var(--topoviewer-info)
       lineWidth: 2
-      label: pod
+      label: Pod association
+      lineStyle: dashed
   - selector: region[id = "region-api-surface"]
     style:
       paddingX: 46
@@ -200,6 +235,7 @@ stylesheet:
     style:
       paddingX: 46
       paddingY: 42
+      headerPadding: 120
   - selector: region[id = "region-topology-runtime"]
     style:
       paddingX: 52
@@ -208,3 +244,26 @@ stylesheet:
     style:
       paddingX: 52
       paddingY: 46
+  - selector: link[labels.link = "shared-selector"]
+    style:
+      lineStyle: dashed
+      sourceArrowShape: none
+      targetArrowShape: none
+      lineColor: var(--topoviewer-edge-default)
+  - selector: link[labels.link = "selector"]
+    style:
+      lineColor: var(--topoviewer-info)
+      targetArrowColor: var(--topoviewer-info)
+  - selector: link[labels.link = "owns"]
+    style:
+      lineColor: var(--topoviewer-info)
+      targetArrowColor: var(--topoviewer-info)
+  - selector: node[labels.object = "replicaSet"]
+    style:
+      icon: replicaSet
+      backgroundColor: color-mix(in srgb, var(--topoviewer-accent) 12%, var(--topoviewer-panel-bg))
+      borderColor: var(--topoviewer-accent)
+  - selector: node[labels.object = "customResource"]
+    style:
+      icon: resource
+      borderColor: var(--topoviewer-warning)

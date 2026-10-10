@@ -13,7 +13,7 @@ graph:
       layers:
         - services
       position:
-        - 120
+        - 100
         - 150
     - id: P-1
       labels:
@@ -22,7 +22,7 @@ graph:
       layers:
         - services
       position:
-        - 320
+        - 430
         - 150
     - id: PE-2
       labels:
@@ -31,7 +31,7 @@ graph:
       layers:
         - services
       position:
-        - 520
+        - 760
         - 150
   links:
     - id: service-a

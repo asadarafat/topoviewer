@@ -23,8 +23,8 @@ graph:
         name: CE-FRA
       data:
         status: ok
-      layers: [service]
-      position: [48, 382]
+      layers: [ service ]
+      position: [ 48, 382 ]
     - id: pe-fra-1
       labels:
         role: pe
@@ -32,8 +32,8 @@ graph:
         name: FRA-PE1
       data:
         status: ok
-      layers: [underlay, bgp, service, operations]
-      position: [160, 250]
+      layers: [ underlay, bgp, service, operations ]
+      position: [ 160, 250 ]
     - id: p-ams-1
       labels:
         role: p
@@ -41,8 +41,8 @@ graph:
         name: AMS-P1
       data:
         status: ok
-      layers: [underlay, service, operations]
-      position: [380, 250]
+      layers: [ underlay, service, operations ]
+      position: [ 380, 250 ]
     - id: rr-ams-1
       labels:
         role: rr
@@ -51,8 +51,10 @@ graph:
         name: AMS-RR1
       data:
         status: ok
-      layers: [bgp]
-      position: [490, 108]
+      layers: [ bgp ]
+      position:
+        - 490
+        - 50
     - id: p-par-1
       labels:
         role: p
@@ -61,8 +63,8 @@ graph:
       data:
         status: critical
         severity: critical
-      layers: [underlay, service, operations]
-      position: [600, 250]
+      layers: [ underlay, service, operations ]
+      position: [ 600, 250 ]
     - id: pe-lon-1
       labels:
         role: pe
@@ -71,8 +73,8 @@ graph:
       data:
         status: degraded
         severity: major
-      layers: [underlay, bgp, service, operations]
-      position: [820, 250]
+      layers: [ underlay, bgp, service, operations ]
+      position: [ 820, 250 ]
     - id: ce-lon
       labels:
         role: ce
@@ -81,8 +83,8 @@ graph:
         name: CE-LON
       data:
         status: ok
-      layers: [service]
-      position: [918, 382]
+      layers: [ service ]
+      position: [ 918, 382 ]
   links:
     - id: access-fra
       source: ce-fra
@@ -91,7 +93,7 @@ graph:
         layer: service
         tenant: payments
         name: Payments CE to FRA PE
-      layers: [service]
+      layers: [ service ]
       data:
         status: ok
     - id: underlay-fra-ams
@@ -101,7 +103,7 @@ graph:
         layer: underlay
         media: fiber
         name: FRA to AMS 400G
-      layers: [underlay]
+      layers: [ underlay ]
       data:
         capacity: 400G
         status: ok
@@ -112,7 +114,7 @@ graph:
         layer: underlay
         media: fiber
         name: AMS to PAR 400G
-      layers: [underlay]
+      layers: [ underlay ]
       data:
         capacity: 400G
         status: critical
@@ -124,7 +126,7 @@ graph:
         layer: underlay
         media: fiber
         name: PAR to LON 400G
-      layers: [underlay]
+      layers: [ underlay ]
       data:
         capacity: 400G
         status: degraded
@@ -136,7 +138,7 @@ graph:
         layer: control
         protocol: bgp
         name: FRA PE to route reflector
-      layers: [bgp]
+      layers: [ bgp ]
       data:
         status: established
     - id: bgp-lon-rr
@@ -146,7 +148,7 @@ graph:
         layer: control
         protocol: bgp
         name: LON PE to route reflector
-      layers: [bgp]
+      layers: [ bgp ]
       data:
         status: established
     - id: access-lon
@@ -156,7 +158,7 @@ graph:
         layer: service
         tenant: payments
         name: LON PE to Payments CE
-      layers: [service]
+      layers: [ service ]
       data:
         status: ok
   paths:
@@ -165,7 +167,7 @@ graph:
         service: payments
         type: l3vpn
         name: Payments L3VPN primary
-      layers: [service]
+      layers: [ service ]
       data:
         status: degraded
         severity: critical
@@ -181,14 +183,14 @@ graph:
       labels:
         site: fra
         name: Frankfurt edge
-      layers: [underlay]
+      layers: [ underlay ]
       members:
         - pe-fra-1
     - id: transit-core
       labels:
         site: core
         name: Transit core
-      layers: [underlay]
+      layers: [ underlay ]
       members:
         - p-ams-1
         - p-par-1
@@ -196,6 +198,6 @@ graph:
       labels:
         site: lon
         name: London edge
-      layers: [underlay]
+      layers: [ underlay ]
       members:
         - pe-lon-1

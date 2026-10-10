@@ -24,6 +24,9 @@ k get services -n "$workload_namespace" -o json \
 k get deployments -n "$workload_namespace" -o json \
   > "$output_dir/deployments.json"
 
+k get replicasets -n "$workload_namespace" -o json \
+  > "$output_dir/replicasets.json"
+
 k get pods -n "$workload_namespace" -o json \
   > "$output_dir/pods.json"
 

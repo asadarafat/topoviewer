@@ -6,16 +6,25 @@ layout:
 icons:
   router:
     glyph: R
-    fill: "#2563eb"
-    stroke: "#bfdbfe"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
+    svg: |
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#f2f5f8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="48" height="48" rx="6" fill="#26313c" stroke="none"/><path d="M8 24h32M24 8v32M8 24l6-6m-6 6 6 6m26-6-6-6m6 6-6 6M24 8l-6 6m6-6 6 6M24 40l-6-6m6 6 6-6"/></svg>
+    alt: Router
   service:
     glyph: VPN
-    fill: "#7c3aed"
-    stroke: "#ddd6fe"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
+    svg: |
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#f2f5f8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="48" height="48" rx="6" fill="#26313c" stroke="none"/><rect x="7" y="9" width="34" height="30" rx="5"/><path d="M15 20h18M15 28h18"/><circle cx="24" cy="24" r="2"/></svg>
+    alt: Virtual private network service
   controller:
     glyph: NSP
-    fill: "#f59e0b"
-    stroke: "#fde68a"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
+    svg: |
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#f2f5f8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="48" height="48" rx="6" fill="#26313c" stroke="none"/><rect x="6" y="8" width="36" height="26" rx="4"/><path d="M18 40h12M24 34v6M13 18h8m-8 7h18"/></svg>
+    alt: Network controller
 labelFields:
   - labels.name
 stylesheet:
@@ -24,37 +33,46 @@ stylesheet:
       icon: router
       width: 84
       height: 60
-      borderWidth: 3
+      borderWidth: 2
       labelColor: var(--topoviewer-fg-strong)
-      labelFontWeight: 800
+      labelFontWeight: 600
+      labelFontSize: 14
+      metaColor: transparent
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-edge-default)
   - selector: callout
     style:
-      backgroundColor: rgba(15, 23, 42, 0.94)
-      borderColor: rgba(148, 163, 184, 0.42)
+      backgroundColor: color-mix(in srgb, var(--topoviewer-accent) 12%, var(--topoviewer-panel-bg))
+      borderColor: color-mix(in srgb, var(--topoviewer-accent) 42%, transparent)
       borderWidth: 1
-      borderRadius: 14
-      titleBackgroundColor: rgba(30, 41, 59, 0.88)
-      titleColor: "#f8fafc"
-      titleFontSize: 13
-      titleFontWeight: 900
-      bodyColor: "#cbd5e1"
-      bodyFontSize: 11
-      bodyLineHeight: 1.38
+      borderRadius: 8
+      titleBackgroundColor: color-mix(in srgb, var(--topoviewer-accent) 18%, var(--topoviewer-panel-bg))
+      titleColor: "var(--topoviewer-fg-strong)"
+      titleFontSize: 14
+      titleFontWeight: 600
+      bodyColor: "var(--topoviewer-fg-muted)"
+      bodyFontSize: 13
+      bodyLineHeight: 1.5
       curveStyle: smoothstep
-      lineColor: rgba(226, 232, 240, 0.72)
-      arrowColor: rgba(226, 232, 240, 0.82)
+      lineColor: var(--topoviewer-edge-default)
+      arrowColor: var(--topoviewer-edge-default)
       lineWidth: 1
       targetArrowShape: triangle
       zIndex: 40
+      boxShadow: none
   - selector: shape
     style:
       shape: rectangle
       width: 142
       height: 42
-      fill: rgba(168, 85, 247, 0.18)
-      stroke: rgba(216, 180, 254, 0.85)
+      fill: "color-mix(in srgb, #8b78b8 16%, var(--topoviewer-panel-bg))"
+      stroke: "color-mix(in srgb, #8b78b8 85%, transparent)"
       borderWidth: 2
+      labelFontSize: 14
+      labelFontWeight: 600
+      bodyFontSize: 13
+      bodyLineHeight: 1.5
   - selector: callout[id = "pin-callout"]
     style:
-      width: 250
-      height: 96
+      width: 270
+      height: 100

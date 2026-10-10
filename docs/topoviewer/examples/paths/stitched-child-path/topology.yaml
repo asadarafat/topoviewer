@@ -90,39 +90,47 @@ graph:
       target: PE1
       labels:
         link: physical
-        name: AGG1 to PE1 physical link
+        name: ""
       layers:
         - physical
+      data:
+        description: AGG1 to PE1 physical link
     - id: phy-pe1-p
       source: PE1
       target: P
       labels:
         link: physical
-        name: PE1 to P physical link
+        name: ""
       layers:
         - physical
+      data:
+        description: PE1 to P physical link
     - id: phy-p-pe2
       source: P
       target: PE2
       labels:
         link: physical
-        name: P to PE2 physical link
+        name: ""
       layers:
         - physical
+      data:
+        description: P to PE2 physical link
     - id: phy-pe2-agg2
       source: PE2
       target: AGG2
       labels:
         link: physical
-        name: PE2 to AGG2 physical link
+        name: ""
       layers:
         - physical
+      data:
+        description: PE2 to AGG2 physical link
   paths:
     - id: transport-agg1-agg2
       labels:
         path: transport
         protocol: sr-te
-        name: AGG transport carrier
+        name: ""
       layers:
         - transport
         - service
@@ -132,6 +140,8 @@ graph:
         - P
         - PE2
         - AGG2
+      data:
+        description: AGG transport carrier
     - id: stitched-services-a-j
       source: services-1-10-agg1
       target: services-1-10-agg2

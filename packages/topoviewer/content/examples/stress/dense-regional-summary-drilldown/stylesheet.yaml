@@ -1,4 +1,4 @@
-version: "0.2"
+version: '0.2'
 icons:
   pe:
     glyph: PE
@@ -24,6 +24,7 @@ stylesheet:
       borderWidth: 1.4
       labelFontSize: 9
       labelColor: var(--topoviewer-fg-muted)
+      iconColor: var(--topoviewer-fg-strong)
   - selector: node[labels.role="pe"]
     style:
       icon: pe
@@ -64,7 +65,7 @@ stylesheet:
       lineColor: '#7c3aed'
       lineWidth: 1.8
       opacity: 0.42
-  - selector: link[aggregate = "true"]
+  - selector: link[isAggregate = "true"]
     style:
       lineColor: '#7c3aed'
       lineWidth: 4
@@ -81,8 +82,8 @@ stylesheet:
       opacity: 0.95
   - selector: region
     style:
-      backgroundColor: '#0ea5e91a'
-      borderColor: '#38bdf8aa'
+      backgroundColor: var(--topoviewer-region-fill)
+      borderColor: var(--topoviewer-region-stroke)
       borderWidth: 1.2
       borderRadius: 8
       zIndex: -30

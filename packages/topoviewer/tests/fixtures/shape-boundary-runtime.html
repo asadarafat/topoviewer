@@ -1,0 +1,17 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Shape outline regression</title></head><body>
+<div id="root" style="height:760px"></div><script type="module">
+import React from 'react';import {createRoot} from 'react-dom/client';import {TopoViewer} from '../../src/components/TopoViewer.tsx';
+import '@xyflow/react/dist/style.css';import '../../src/styles.css';
+const shapes=['triangle','rhomboid','polygon','ellipse','barrel','roundRectangle'];
+const nodes=shapes.flatMap((shape,i)=>[0,1].map(col=>({id:`${shape}-${col}`,labels:{name:shape,shape},layers:['test'],position:[100+col*350,80+i*105]})));
+const links=shapes.flatMap(shape=>[0,1,2].map(i=>({id:`${shape}-link-${i}`,source:`${shape}-0`,target:`${shape}-1`,layers:['test']})));
+links.push({id:'triangle-link-pin',source:'triangle-0',target:'triangle-1',sourceHandle:'shape-port-1',targetHandle:'shape-port-1',layers:['test']});
+links.push({id:'barrel-link-pin',source:'barrel-0',target:'barrel-1',sourceHandle:'shape-port-2',targetHandle:'shape-port-4',layers:['test']});
+const documentSpec={layout:{mode:'manual',width:1000,height:760},graph:{id:'shape-boundary',layers:[{id:'test'}],nodes,links},diagram:{shapes:['circle','square','sphere','cube','rectangle'].map((geometry,i)=>({id:`primitive-${geometry}`,labels:{name:geometry,geometry},layers:['test'],position:[700,70+i*120]}))},stylesheet:[
+{selector:'node',style:{width:100,height:80,iconOpacity:0,labelPosition:'bottom',labelFontSize:12,borderWidth:3}},
+...shapes.map(shape=>({selector:`node[labels.shape = "${shape}"]`,style:{shape,...(shape==='polygon'?{shapePolygonPoints:'-1 -1 1 -1 0.7 1 -0.8 0.6'}:{})}})),
+{selector:'link',style:{curveStyle:'straight',lineWidth:2,targetArrowShape:'none',sourceArrowShape:'none'}},
+{selector:'shape',style:{shape:'rectangle',width:180,height:80,labelPosition:'bottom'}},
+...['circle','square','sphere','cube'].map(type=>({selector:`shape[labels.geometry = "${type}"]`,style:{shape:type}}))]};
+createRoot(document.getElementById('root')).render(React.createElement(TopoViewer,{document:documentSpec,controls:false,helperLines:false}));
+</script></body></html>

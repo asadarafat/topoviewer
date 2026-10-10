@@ -4,6 +4,22 @@ import { attentionFixture } from './attention-fixture';
 import { compileTopoGraph } from '../../src/core/compiler';
 
 describe('deriveAggregateGraph', () => {
+  it('lets authored aggregate geometry override the reduction defaults', () => {
+    const document: TopoDocument = {
+      graph: {
+        layers: [{ id: 'physical' }],
+        nodes: [{ id: 'a', layers: ['physical'] }, { id: 'b', layers: ['physical'] }],
+        regions: [{ id: 'site', members: ['a', 'b'], layers: ['physical'] }]
+      },
+      stylesheet: [{ selector: 'node[isAggregate="true"]', style: { width: 380, height: 100 } }]
+    };
+    const derived = deriveAggregateGraph(document, buildAttentionIndex(document), {
+      groups: [{ id: 'site', by: 'region', regionId: 'site' }]
+    }).document;
+    const aggregate = compileTopoGraph(derived).nodes.find((node) => node.id === 'aggregate:site');
+    expect(aggregate?.data.edgeAnchor).toMatchObject({ width: 380, height: 100 });
+  });
+
   it('preserves distinct link layer memberships and counts when collapsing nodes', () => {
     const document: TopoDocument = {
       layout: { mode: 'manual' },

@@ -21,6 +21,13 @@ describe('shape-aware connection ports', () => {
     expect(activePorts('octagon')).toHaveLength(8);
   });
 
+  it('places barrel ports on its curved outline rather than the bounding box', () => {
+    const ports = activePorts('barrel');
+    expect(ports[1].x).toBeCloseTo(95.5, 2);
+    expect(ports[3].x).toBeCloseTo(4.5, 2);
+    expect(ports[1].y).toBe(50);
+  });
+
   it('keeps eight stable compatibility IDs when visible geometry changes', () => {
     const square = shapeConnectionPorts('square');
     const hexagon = shapeConnectionPorts('hexagon');

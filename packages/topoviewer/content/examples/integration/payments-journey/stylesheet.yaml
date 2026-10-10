@@ -7,22 +7,15 @@ icons:
   router:
     alt: Router
     svg: >-
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><rect x="4" y="7" width="32" height="26"
-      rx="7" fill="#123344" stroke="#67e8f9" stroke-width="1.5"/><path d="M11 15h18M11 25h18M15 11l-4 4 4 4m10
-      2 4 4-4 4" fill="none" stroke="#a5f3fc" stroke-width="2" stroke-linecap="round"
-      stroke-linejoin="round"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><rect x="4" y="7" width="32" height="26" rx="7" fill="#263b40" stroke="#87b6af" stroke-width="1.5"/><path d="M11 15h18M11 25h18M15 11l-4 4 4 4m10 2 4 4-4 4" fill="none" stroke="#c5dfd9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
   application:
     alt: Application service
     svg: >-
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><rect x="5" y="5" width="30" height="30"
-      rx="8" fill="#123c39" stroke="#5eead4" stroke-width="1.5"/><path d="m11 20 6 6 12-12" fill="none"
-      stroke="#99f6e4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><rect x="5" y="5" width="30" height="30" rx="8" fill="#263b36" stroke="#87b6af" stroke-width="1.5"/><path d="m11 20 6 6 12-12" fill="none" stroke="#c5dfd9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
   protection:
     alt: Protected alternative route
     svg: >-
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><path d="m20 4 13 5v11c0 8-7 13-13 16C14 33
-      7 28 7 20V9Z" fill="#162b40" stroke="#94a3b8" stroke-width="1.5"/><path d="m13 20 5 5 9-10" fill="none"
-      stroke="#cbd5e1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><path d="m20 4 13 5v11c0 8-7 13-13 16C14 33 7 28 7 20V9Z" fill="#26313c" stroke="#a3b0bd" stroke-width="1.5"/><path d="m13 20 5 5 9-10" fill="none" stroke="#e6edf3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
 labelFields:
   - labels.name
 stylesheet:
@@ -31,18 +24,18 @@ stylesheet:
       shape: roundRectangle
       width: 194
       height: 70
-      backgroundColor: '#0f2033'
-      borderColor: '#365168'
+      backgroundColor: 'var(--topoviewer-panel-bg)'
+      borderColor: 'var(--topoviewer-edge-default)'
       borderWidth: 1.5
       icon: router
       iconPadding: 0
-      labelColor: '#f0f9ff'
+      labelColor: 'var(--topoviewer-fg-strong)'
       labelFontSize: 14
-      labelFontWeight: 700
-      metaColor: '#b8cbd9'
+      labelFontWeight: 600
+      metaColor: 'var(--topoviewer-fg-muted)'
       metaFontSize: 12
       metaFontWeight: 500
-      statusColor: '#2dd4bf'
+      statusColor: 'var(--topoviewer-success)'
       statusSize: 9
       statusPlacement: topRight
       nodeLayout:
@@ -60,27 +53,27 @@ stylesheet:
   - selector: node[labels.role = "application"]
     style:
       icon: application
-      borderColor: '#0d9488'
-      backgroundColor: '#102e35'
+      borderColor: 'var(--topoviewer-info)'
+      backgroundColor: 'color-mix(in srgb, var(--topoviewer-info) 12%, var(--topoviewer-panel-bg))'
   - selector: node[labels.role = "protection"]
     style:
       icon: protection
-      borderColor: '#475569'
-      statusColor: '#94a3b8'
+      borderColor: 'var(--topoviewer-accent)'
+      statusColor: 'var(--topoviewer-fg-muted)'
   - selector: node[data.severity = "major"]
     style:
-      borderColor: '#f59e0b'
-      statusColor: '#f59e0b'
-      outlineColor: '#f59e0b'
+      borderColor: 'var(--topoviewer-warning)'
+      statusColor: 'var(--topoviewer-warning)'
+      outlineColor: 'var(--topoviewer-warning)'
       outlineWidth: 1.5
   - selector: node[labels.state = "protected"]
     style:
-      borderColor: '#2dd4bf'
-      statusColor: '#2dd4bf'
+      borderColor: 'var(--topoviewer-info)'
+      statusColor: 'var(--topoviewer-success)'
   - selector: link
     style:
       curveStyle: straight
-      lineColor: '#64748b'
+      lineColor: 'var(--topoviewer-edge-default)'
       lineWidth: 2.5
       labelFontSize: 12
       labelColor: var(--topoviewer-fg-strong)
@@ -89,82 +82,87 @@ stylesheet:
       labelCollisionPolicy: avoid
       zIndex: 2
       opacity: 0.48
+      labelFontWeight: 600
   - selector: link[labels.corridor = "protection"]
     style:
       lineStyle: dashed
       lineDashPattern: 6 7
-      lineColor: '#8294a8'
+      lineColor: 'var(--topoviewer-accent)'
       lineWidth: 2
   - selector: link[labels.state = "down"]
     style:
-      lineColor: '#ef4444'
+      lineColor: 'var(--topoviewer-danger)'
       lineWidth: 4
       lineStyle: dashed
       lineDashPattern: 4 5
-      labelColor: '#dc2626'
+      labelColor: 'var(--topoviewer-fg-strong)'
       opacity: 1
   - selector: path
     style:
       label: ''
       curveStyle: bezier
-      lineColor: '#06b6d4'
+      lineColor: 'var(--topoviewer-info)'
       lineWidth: 5
       opacity: 1
       targetArrowShape: triangle
       targetArrowSize: 7
-      targetArrowColor: '#06b6d4'
+      targetArrowColor: 'var(--topoviewer-info)'
       zIndex: 8
       controlPointDistance: 30
       controlPointWeight: 0.5
+      labelFontSize: 12
+      labelFontWeight: 600
   - selector: path[labels.state = "impacted"]
     style:
-      lineColor: '#f59e0b'
-      targetArrowColor: '#f59e0b'
+      lineColor: 'var(--topoviewer-warning)'
+      targetArrowColor: 'var(--topoviewer-warning)'
       lineStyle: dashed
       lineDashPattern: 10 6
   - selector: path[labels.state = "protected"]
     style:
-      lineColor: '#14b8a6'
-      targetArrowColor: '#14b8a6'
+      lineColor: 'var(--topoviewer-info)'
+      targetArrowColor: 'var(--topoviewer-info)'
   - selector: region
     style:
       width: 250
       height: 480
       shape: roundRectangle
-      backgroundColor: rgba(15, 118, 110, 0.035)
-      borderColor: '#71879b'
+      backgroundColor: var(--topoviewer-region-fill)
+      borderColor: 'var(--topoviewer-region-stroke)'
       borderWidth: 1
       labelPosition: topCenter
       labelMargin: 20
       labelFontSize: 14
-      labelFontWeight: 800
+      labelFontWeight: 600
       labelColor: var(--topoviewer-fg-strong)
       labelBackgroundColor: var(--topoviewer-region-label-bg)
       selectable: false
       draggable: false
       zIndex: -20
+      headerPadding: 48
   - selector: callout
     style:
       width: 214
       height: 112
-      backgroundColor: '#102437'
-      borderColor: '#31546a'
+      backgroundColor: 'color-mix(in srgb, var(--topoviewer-accent) 12%, var(--topoviewer-panel-bg))'
+      borderColor: 'var(--topoviewer-info)'
       borderWidth: 1
-      borderRadius: 10
-      titleColor: '#67e8f9'
-      titleBackgroundColor: '#102437'
-      titleFontSize: 13
-      titleFontWeight: 800
-      bodyColor: '#d7e6ef'
-      bodyFontSize: 12
+      borderRadius: 8
+      titleColor: 'var(--topoviewer-fg-strong)'
+      titleBackgroundColor: 'color-mix(in srgb, var(--topoviewer-accent) 18%, var(--topoviewer-panel-bg))'
+      titleFontSize: 14
+      titleFontWeight: 600
+      bodyColor: 'var(--topoviewer-fg-muted)'
+      bodyFontSize: 13
       bodyLineHeight: 1.5
       textAlign: left
       draggable: false
+      boxShadow: none
   - selector: callout[labels.state = "impacted"]
     style:
-      titleColor: '#fbbf24'
-      borderColor: '#b7791f'
+      titleColor: 'var(--topoviewer-fg-strong)'
+      borderColor: 'var(--topoviewer-warning)'
   - selector: callout[labels.state = "protected"]
     style:
-      titleColor: '#5eead4'
-      borderColor: '#0d9488'
+      titleColor: 'var(--topoviewer-fg-strong)'
+      borderColor: 'var(--topoviewer-info)'

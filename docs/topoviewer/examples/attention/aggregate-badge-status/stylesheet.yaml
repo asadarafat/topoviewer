@@ -6,8 +6,11 @@ layout:
 icons:
   router:
     glyph: R
-    fill: "#2563eb"
-    stroke: "#bfdbfe"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
+    svg: |
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#f2f5f8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="48" height="48" rx="6" fill="#26313c" stroke="none"/><path d="M8 24h32M24 8v32M8 24l6-6m-6 6 6 6m26-6-6-6m6 6-6 6M24 8l-6 6m6-6 6 6M24 40l-6-6m6 6 6-6"/></svg>
+    alt: Router
 stylesheet:
   - selector: node
     style:
@@ -15,39 +18,48 @@ stylesheet:
       width: 92
       height: 68
       iconSize: 46
-      borderWidth: 3
+      borderWidth: 2
       labelColor: var(--topoviewer-fg-strong)
-      labelFontWeight: 800
+      labelFontWeight: 600
+      labelFontSize: 14
+      metaColor: transparent
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-edge-default)
   - selector: node[isAggregate = "true"]
     style:
       shape: roundRectangle
       labelPosition: bottom
-      badgeBackgroundColor: "#fee2e2"
-      badgeColor: "#991b1b"
-      badgeBorderColor: "#fecaca"
+      badgeBackgroundColor: "color-mix(in srgb, var(--topoviewer-danger) 12%, var(--topoviewer-panel-bg))"
+      badgeColor: "var(--topoviewer-fg-strong)"
+      badgeBorderColor: "var(--topoviewer-danger)"
       statusPlacement: topRight
       statusSize: 13
-      outlineColor: "#dc2626"
+      outlineColor: "var(--topoviewer-danger)"
       outlineWidth: 4
       outlineOpacity: 0.72
-      underlayColor: "#fee2e2"
+      underlayColor: "color-mix(in srgb, var(--topoviewer-danger) 18%, var(--topoviewer-panel-bg))"
       underlayPadding: 10
       underlayOpacity: 0.58
   - selector: node[labels.role = "pe"]
     style:
-      backgroundColor: "#16a34a"
-      borderColor: "#bbf7d0"
+      backgroundColor: "color-mix(in srgb, var(--topoviewer-info) 12%, var(--topoviewer-panel-bg))"
+      borderColor: "var(--topoviewer-info)"
   - selector: link
     style:
-      lineColor: "#94a3b8"
+      lineColor: "var(--topoviewer-edge-default)"
       lineWidth: 2
       targetArrowShape: none
+      labelFontSize: 12
+      labelFontWeight: 600
   - selector: region
     style:
-      backgroundColor: "#0ea5e922"
-      borderColor: "#38bdf8aa"
+      backgroundColor: "var(--topoviewer-region-fill)"
+      borderColor: "var(--topoviewer-region-stroke)"
       borderWidth: 1
       zIndex: -20
+      labelFontSize: 14
+      labelFontWeight: 600
+      headerPadding: 48
   - selector: region[id = "access-region"]
     style:
       minHeight: 250

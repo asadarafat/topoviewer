@@ -6,9 +6,13 @@ layout:
 stylesheet:
   - selector: shape
     style:
-      fill: rgba(56, 189, 248, 0.18)
-      stroke: rgba(125, 211, 252, 0.86)
+      fill: color-mix(in srgb, var(--topoviewer-info) 16%, var(--topoviewer-panel-bg))
+      stroke: color-mix(in srgb, var(--topoviewer-info) 86%, transparent)
       borderWidth: 2
+      labelFontSize: 14
+      labelFontWeight: 600
+      bodyFontSize: 13
+      bodyLineHeight: 1.5
   - selector: shape[labels.geometry = "star"]
     style:
       shape: star
@@ -28,5 +32,5 @@ stylesheet:
   - selector: shape[labels.rotation = "styled"]
     style:
       rotation: -6
-      fill: rgba(168, 85, 247, 0.18)
-      stroke: rgba(216, 180, 254, 0.86)
+      fill: "color-mix(in srgb, #8b78b8 16%, var(--topoviewer-panel-bg))"
+      stroke: "color-mix(in srgb, #8b78b8 86%, transparent)"

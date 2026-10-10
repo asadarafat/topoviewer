@@ -6,21 +6,26 @@ layout:
 icons:
   collector:
     glyph: T
-    fill: "#0f766e"
-    stroke: "#99f6e4"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   site:
     glyph: S
-    fill: "#f59e0b"
-    stroke: "#fde68a"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
 stylesheet:
   - selector: node
     style:
       width: 108
       height: 82
       iconSize: 58
-      borderWidth: 3
-      labelFontWeight: 800
+      borderWidth: 2
+      labelFontWeight: 600
       labelColor: var(--topoviewer-fg-strong)
+      labelFontSize: 14
+      metaColor: transparent
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-edge-default)
+      iconColor: var(--topoviewer-fg-strong)
   - selector: node[labels.role = "collector"]
     style:
       icon: collector
@@ -32,10 +37,12 @@ stylesheet:
       shapePolygonPoints: "0 -1 0.92 -0.12 0.58 1 -0.58 1 -0.92 -0.12"
   - selector: link
     style:
-      lineColor: "#14b8a6"
+      lineColor: "var(--topoviewer-edge-default)"
       lineWidth: 2
       lineDashPattern: 6 4
       targetArrowShape: triangle
+      labelFontSize: 12
+      labelFontWeight: 600
   - selector: node[id = "site-b"]
     style:
       shape: polygon

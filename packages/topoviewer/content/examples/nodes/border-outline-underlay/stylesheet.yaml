@@ -6,25 +6,30 @@ layout:
 icons:
   pe:
     glyph: PE
-    fill: "#2563eb"
-    stroke: "#bfdbfe"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   firewall:
     glyph: FW
-    fill: "#f97316"
-    stroke: "#fed7aa"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   app:
     glyph: APP
-    fill: "#dc2626"
-    stroke: "#fecaca"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
 stylesheet:
   - selector: node
     style:
       width: 108
       height: 76
       iconSize: 52
-      borderWidth: 3
+      borderWidth: 2
       labelColor: var(--topoviewer-fg-strong)
-      labelFontWeight: 800
+      labelFontWeight: 600
+      labelFontSize: 14
+      metaColor: transparent
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-edge-default)
+      iconColor: var(--topoviewer-fg-strong)
   - selector: node[labels.role = "pe"]
     style:
       icon: pe
@@ -34,12 +39,13 @@ stylesheet:
       icon: firewall
       shape: cutRectangle
       borderStyle: dashed
-      borderDashPattern: [7, 4]
+      borderDashPattern: [ 7, 4 ]
       borderOpacity: 0.86
-      outlineColor: "#f59e0b"
+      outlineColor: "var(--topoviewer-warning)"
       outlineWidth: 4
       outlineOpacity: 0.74
-      underlayColor: "#fef3c7"
+      underlayColor: "color-mix(in srgb, var(--topoviewer-warning) 18%,
+        var(--topoviewer-panel-bg))"
       underlayPadding: 10
       underlayOpacity: 0.65
   - selector: node[labels.state = "critical"]
@@ -48,14 +54,17 @@ stylesheet:
       shape: roundRectangle
       borderStyle: dotted
       borderOpacity: 0.92
-      outlineColor: "#dc2626"
+      outlineColor: "var(--topoviewer-danger)"
       outlineWidth: 5
       outlineOpacity: 0.82
-      underlayColor: "#fee2e2"
+      underlayColor: "color-mix(in srgb, var(--topoviewer-danger) 18%,
+        var(--topoviewer-panel-bg))"
       underlayPadding: 12
       underlayOpacity: 0.7
   - selector: link
     style:
-      lineColor: "#94a3b8"
+      lineColor: "var(--topoviewer-edge-default)"
       lineWidth: 2
       targetArrowShape: none
+      labelFontSize: 12
+      labelFontWeight: 600

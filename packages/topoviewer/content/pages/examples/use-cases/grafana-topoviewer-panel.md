@@ -53,7 +53,8 @@ The cleaned `st-clos` view uses a deliberate label contract:
 - node labels identify devices;
 - node metadata stays separate from the node name;
 - region labels identify spine, leaf, and client groups;
-- `sourceLabel` and `targetLabel` identify physical ports;
+- `sourceLabel` and `targetLabel` identify physical ports; reveal them with the
+  **Physical ports** display toggle when inspecting a link;
 - `linkDirection` labels carry bandwidth values from telemetry;
 - runtime mapper overlays style directional lanes without changing the parent
   link identity.
@@ -122,7 +123,7 @@ plugin loading, and local-only assumptions. Keep it on a trusted workstation.
 ```topoviewer
 topology: examples/integration/grafana-telemetry-call-flow/topology.yaml
 stylesheet: examples/integration/grafana-telemetry-call-flow/stylesheet.yaml
-height: 520px
+height: 680px
 controls: true
 controlsOpen: false
 title: Grafana telemetry call flow
@@ -133,14 +134,20 @@ selectedLayerIds:
   - diagnostics
 ```
 
-The diagram uses numbered edges so payloads remain link labels instead of fake
-processing nodes:
+This component data-flow view names payloads on its arrows. Regions mark
+component scope; the mounted YAML node is a filesystem artifact. Dashed arrows
+mean manual transfer or diagnostic output; they do not represent network
+protocols or call timing.
 
-1. Studio writes a mounted bundle: `*.topo.tv.yaml`,
+1. Studio exports a bundle; an operator or deployment mounts its files. The
+   backend reads `*.topo.tv.yaml`,
    `*.style.tv.yaml`, and `*.mapper.tv.yaml`.
 2. The TopoViewer plugin backend serves the selected bundle YAML to the plugin
    frontend.
-3. Grafana queries Prometheus and returns telemetry data frames.
+3. Grafana’s Prometheus data source receives query results (**3a**) and supplies
+   data frames to the panel via `PanelProps.data.series` (**3b**). The arrow from
+   Prometheus shows response data; the query request goes the other way.
+   TopoViewer’s bundle backend does not query Prometheus.
 4. The plugin frontend passes mapper rules and telemetry samples into the
    mapper runtime.
 5. The plugin frontend passes topology and stylesheet state to the embedded
@@ -150,6 +157,8 @@ processing nodes:
    overlays, and render-facing warnings.
 8. The backend reports source diagnostics such as discovery, parse, schema, and
    bundle-selection errors.
+
+The data-frame boundary follows Grafana’s [panel plugin model](https://grafana.com/developers/plugin-tools/how-to-guides/panel-plugins/).
 
 ## Lab Files
 

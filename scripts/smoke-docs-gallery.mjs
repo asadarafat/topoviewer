@@ -293,9 +293,9 @@ async function fabric(page, host) {
 
 async function payments(page, host) {
   const states = [
-    { tab: 'Normal · 14:02', file: 'topology.yaml', state: 'normal', via: 'ams-primary', p95: 42, color: 'rgb(6, 182, 212)' },
-    { tab: 'Degraded · 14:07', file: 'degraded.yaml', state: 'impacted', via: 'ams-primary', p95: 860, color: 'rgb(245, 158, 11)' },
-    { tab: 'Recovered · 14:09', file: 'recovered.yaml', state: 'protected', via: 'ams-protection', p95: 58, color: 'rgb(20, 184, 166)' }
+    { tab: 'Normal · 14:02', file: 'topology.yaml', state: 'normal', via: 'ams-primary', p95: 42, color: 'rgb(51, 124, 118)' },
+    { tab: 'Degraded · 14:07', file: 'degraded.yaml', state: 'impacted', via: 'ams-primary', p95: 860, color: 'rgb(146, 96, 24)' },
+    { tab: 'Recovered · 14:09', file: 'recovered.yaml', state: 'protected', via: 'ams-protection', p95: 58, color: 'rgb(51, 124, 118)' }
   ];
   let positions;
   for (const snapshot of states) {
@@ -317,7 +317,7 @@ async function payments(page, host) {
     await expect(graphNode(embed, 'payments-api')).toContainText(`API p95 · ${snapshot.p95}ms`);
     if (snapshot.state !== 'normal') {
       assert.equal(source.graph.links.find((item) => item.id === 'primary-east').labels.state, 'down');
-      await expect(edge(embed, 'primary-east').locator('.topoviewer-edge-visible-path').first()).toHaveCSS('stroke', 'rgb(239, 68, 68)');
+      await expect(edge(embed, 'primary-east').locator('.topoviewer-edge-visible-path').first()).toHaveCSS('stroke', 'rgb(182, 78, 91)');
     }
     await captureHero(page, embed, `${host}-payments-${snapshot.state}`);
     if (snapshot.state === 'impacted') {

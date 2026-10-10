@@ -710,8 +710,8 @@ examples:
     topology: docs/topoviewer/examples/integration/grafana-telemetry-call-flow/topology.yaml
     stylesheet: docs/topoviewer/examples/integration/grafana-telemetry-call-flow/stylesheet.yaml
     expected:
-      graphNodes: 7
-      minVisibleEdges: 8
+      graphNodes: 10
+      minVisibleEdges: 10
       minRegions: 5
     readme: docs/topoviewer/examples/integration/grafana-telemetry-call-flow/README.md
   - id: integration-studio-portable-bundle
@@ -747,9 +747,8 @@ examples:
     topology: docs/topoviewer/examples/integration/kubernetes-service-map/topology.yaml
     stylesheet: docs/topoviewer/examples/integration/kubernetes-service-map/stylesheet.yaml
     expected:
-      graphNodes: 59
-      minVisibleEdges: 52
-      minRegions: 6
+      graphNodes: 6
+      minVisibleEdges: 1
     markdown: docs/topoviewer/examples/use-cases/kubernetes-service-map/index.md
   - id: integration-real-network-underlay
     title: Real network underlay

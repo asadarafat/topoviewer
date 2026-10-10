@@ -5,8 +5,11 @@ layout:
 icons:
   router:
     glyph: R
-    fill: "#2563eb"
-    stroke: "#bfdbfe"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
+    svg: |
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#f2f5f8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="48" height="48" rx="6" fill="#26313c" stroke="none"/><path d="M8 24h32M24 8v32M8 24l6-6m-6 6 6 6m26-6-6-6m6 6-6 6M24 8l-6 6m6-6 6 6M24 40l-6-6m6 6 6-6"/></svg>
+    alt: Router
 labelFields:
   - labels.name
 stylesheet:
@@ -15,31 +18,40 @@ stylesheet:
       icon: router
       width: 82
       height: 60
-      borderWidth: 3
+      borderWidth: 2
       labelColor: var(--topoviewer-fg-strong)
-      labelFontWeight: 800
+      labelFontWeight: 600
+      labelFontSize: 14
+      metaColor: transparent
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-edge-default)
   - selector: node[labels.role = "pe"]
     style:
-      borderColor: "#bbf7d0"
-      backgroundColor: "#16a34a"
+      borderColor: "var(--topoviewer-info)"
+      backgroundColor: "color-mix(in srgb, var(--topoviewer-info) 12%, var(--topoviewer-panel-bg))"
   - selector: link
     style:
       curveStyle: smooth-step
-      lineColor: "#64748b"
+      lineColor: "var(--topoviewer-edge-default)"
       lineWidth: 1.8
       targetArrowShape: none
       opacity: 0.8
+      labelFontSize: 12
+      labelFontWeight: 600
   - selector: link[labels.link = "uplink"]
     style:
-      lineColor: "#22c55e"
+      lineColor: "var(--topoviewer-info)"
       lineWidth: 2.6
   - selector: region
     style:
-      backgroundColor: "#0ea5e922"
-      borderColor: "#38bdf8aa"
+      backgroundColor: "var(--topoviewer-region-fill)"
+      borderColor: "var(--topoviewer-region-stroke)"
       borderRadius: 6
       borderWidth: 1
       padding: 70
       minWidth: 420
       minHeight: 260
       zIndex: -20
+      labelFontSize: 14
+      labelFontWeight: 600
+      headerPadding: 48

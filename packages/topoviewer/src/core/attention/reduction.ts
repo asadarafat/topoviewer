@@ -421,9 +421,9 @@ export function deriveAggregateGraph(source: TopoDocument, index: AttentionGraph
       regions: remapRegions(graph.regions || [], memberToAggregate, collapsedRegionIds)
     },
     stylesheet: [
-      ...(source.stylesheet || []).map((rule) => cloneDeep(rule)),
       AGGREGATE_STYLE_RULE,
-      LINK_AGGREGATE_STYLE_RULE
+      LINK_AGGREGATE_STYLE_RULE,
+      ...(source.stylesheet || []).map((rule) => cloneDeep(rule))
     ]
   };
 

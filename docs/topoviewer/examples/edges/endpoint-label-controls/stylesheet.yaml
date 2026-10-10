@@ -1,13 +1,16 @@
 version: "0.2"
 layout:
   mode: manual
-  width: 640
+  width: 900
   height: 320
 icons:
   router:
     glyph: R
-    fill: "#2563eb"
-    stroke: "#bfdbfe"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
+    svg: |
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#f2f5f8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="48" height="48" rx="6" fill="#26313c" stroke="none"/><path d="M8 24h32M24 8v32M8 24l6-6m-6 6 6 6m26-6-6-6m6 6-6 6M24 8l-6 6m6-6 6 6M24 40l-6-6m6 6 6-6"/></svg>
+    alt: Router
 labelFields:
   - labels.name
 stylesheet:
@@ -16,56 +19,63 @@ stylesheet:
       icon: router
       width: 84
       height: 60
-      borderWidth: 3
+      borderWidth: 2
       labelColor: var(--topoviewer-fg-strong)
-      labelFontWeight: 800
+      labelFontWeight: 600
+      labelFontSize: 14
+      metaColor: transparent
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-edge-default)
   - selector: link
     style:
       curveStyle: bezier
       lineWidth: 3
-      lineColor: "#2563eb"
+      lineColor: "var(--topoviewer-edge-default)"
       controlPointDistance: -38
       sourceArrowShape: circle
       targetArrowShape: square
-      sourceArrowColor: "#16a34a"
-      targetArrowColor: "#dc2626"
+      sourceArrowColor: "var(--topoviewer-info)"
+      targetArrowColor: "var(--topoviewer-danger)"
       sourceArrowSize: 18
       targetArrowSize: 18
       labelColor: var(--topoviewer-fg-strong)
-      labelFontWeight: 800
+      labelFontWeight: 600
       labelFontStyle: italic
-      labelBorderColor: "#94a3b8"
+      labelBorderColor: "var(--topoviewer-accent)"
       labelBorderWidth: 1
       textBackgroundColor: var(--topoviewer-edge-label-bg)
-      sourceLabelColor: "#0369a1"
-      sourceLabelBackgroundColor: "#e0f2fe"
-      sourceLabelBorderColor: "#38bdf8"
+      sourceLabelColor: "var(--topoviewer-fg-strong)"
+      sourceLabelBackgroundColor: "color-mix(in srgb, var(--topoviewer-info) 12%, var(--topoviewer-panel-bg))"
+      sourceLabelBorderColor: "var(--topoviewer-info)"
       sourceLabelBorderWidth: 1
       sourceLabelFontWeight: 800
       sourceLabelOpacity: 0.94
-      targetLabelColor: "#991b1b"
-      targetLabelBackgroundColor: "#fee2e2"
-      targetLabelBorderColor: "#f87171"
+      targetLabelColor: "var(--topoviewer-fg-strong)"
+      targetLabelBackgroundColor: "color-mix(in srgb, var(--topoviewer-danger) 12%, var(--topoviewer-panel-bg))"
+      targetLabelBorderColor: "var(--topoviewer-danger)"
       targetLabelBorderWidth: 1
       targetLabelFontWeight: 800
       targetLabelOpacity: 0.94
       endpointLabelAutoPosition: true
       endpointLabelDistance: 22
       endpointLabelMaxDistance: 46
-      endpointLabelSideOffset: 8
+      endpointLabelSideOffset: -26
+      labelFontSize: 12
+      labelYOffset: -45
+      labelCollisionPolicy: avoid
   - selector: link[labels.class = "gold"]
     style:
       label: Gold
-      lineColor: "#f59e0b"
-      sourceArrowColor: "#0f766e"
-      targetArrowColor: "#b45309"
+      lineColor: "var(--topoviewer-warning)"
+      sourceArrowColor: "var(--topoviewer-info)"
+      targetArrowColor: "var(--topoviewer-warning)"
       sourceLabelXOffset: -2
       targetLabelYOffset: -2
   - selector: link[labels.class = "silver"]
     style:
       label: Silver
-      lineColor: "#64748b"
-      sourceArrowColor: "#475569"
-      targetArrowColor: "#475569"
+      lineColor: "var(--topoviewer-accent)"
+      sourceArrowColor: "var(--topoviewer-accent)"
+      targetArrowColor: "var(--topoviewer-accent)"
       sourceLabelSideOffset: -10
       targetLabelSideOffset: -10

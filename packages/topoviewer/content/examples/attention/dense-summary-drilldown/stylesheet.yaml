@@ -1,17 +1,28 @@
-version: "0.2"
+version: '0.2'
 icons:
   pe:
     glyph: PE
-    fill: '#6d28d9'
-    stroke: '#ddd6fe'
+    fill: '#26313c'
+    stroke: '#a3b0bd'
   aggregation:
     glyph: A
-    fill: '#0369a1'
-    stroke: '#bae6fd'
+    fill: '#26313c'
+    stroke: '#a3b0bd'
   edge:
     glyph: E
-    fill: '#0f766e'
-    stroke: '#ccfbf1'
+    fill: '#26313c'
+    stroke: '#a3b0bd'
+  group:
+    alt: Expandable runtime group
+    svg: >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#87b6af"
+      stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="24"
+      height="24" rx="3" fill="#26313c" stroke="none"/><rect x="8" y="2" width="8" height="6" rx="1"/><rect
+      x="2" y="16" width="8" height="6" rx="1"/><rect x="14" y="16" width="8" height="6" rx="1"/><path d="M12
+      8v4M6 16v-4h12v4"/></svg>
+    glyph: MAP
+    fill: '#26313c'
+    stroke: '#a3b0bd'
 labelFields:
   - labels.name
   - label
@@ -22,76 +33,89 @@ stylesheet:
       width: 76
       height: 58
       borderWidth: 1.5
-      labelFontSize: 11
+      labelFontSize: 14
+      labelFontWeight: 600
+      metaColor: transparent
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-edge-default)
+      iconColor: var(--topoviewer-fg-strong)
   - selector: node[labels.role = "pe"]
     style:
       icon: pe
       width: 92
       height: 64
       borderWidth: 2.5
-      labelFontWeight: 800
-      labelColor: '#4c1d95'
+      labelFontWeight: 600
+      labelColor: var(--topoviewer-fg-strong)
   - selector: node[labels.role = "aggregation"]
     style:
       icon: aggregation
       width: 84
       height: 60
       borderWidth: 2
-      labelColor: '#075985'
+      labelColor: var(--topoviewer-fg-strong)
   - selector: node[labels.role = "edge"]
     style:
       icon: edge
-      labelColor: '#115e59'
+      labelColor: var(--topoviewer-fg-strong)
   - selector: node[isAggregate = "true"]
     style:
       width: 176
       height: 104
-      backgroundColor: '#1e1b4b'
-      borderColor: '#c4b5fd'
+      backgroundColor: color-mix(in srgb, var(--topoviewer-accent) 12%, var(--topoviewer-panel-bg))
+      borderColor: var(--topoviewer-accent)
       borderWidth: 3
-      labelColor: '#f5f3ff'
+      labelColor: var(--topoviewer-fg-strong)
       labelFontSize: 15
-      labelFontWeight: 900
+      labelFontWeight: 600
+      icon: group
+      shape: roundRectangle
+      iconSize: 48
   - selector: link
     style:
       curveStyle: bezier
       controlPointStepSize: 40
-      lineColor: '#94a3b8'
+      lineColor: var(--topoviewer-edge-default)
       lineWidth: 1.8
       opacity: 0.72
       targetArrowShape: none
+      labelFontSize: 12
+      labelFontWeight: 600
   - selector: link[labels.relation = "inter-metro-full-mesh"]
     style:
-      lineColor: '#7c3aed'
+      lineColor: '#8b78b8'
       lineWidth: 2.2
       opacity: 0.52
-  - selector: link[aggregate = "true"]
+  - selector: link[isAggregate = "true"]
     style:
-      lineColor: '#7c3aed'
+      lineColor: '#8b78b8'
       lineWidth: 4
       lineDashPattern: 12 6
-      labelColor: '#312e81'
-      textBackgroundColor: '#ede9fe'
+      labelColor: var(--topoviewer-fg-strong)
+      textBackgroundColor: var(--topoviewer-edge-label-bg)
       textBackgroundOpacity: 0.96
       opacity: 0.95
   - selector: link[isLinkAggregate = "true"]
     style:
-      lineColor: '#7c3aed'
+      lineColor: '#8b78b8'
       lineWidth: 4
       lineDashPattern: 12 6
-      labelColor: '#312e81'
-      textBackgroundColor: '#ede9fe'
+      labelColor: var(--topoviewer-fg-strong)
+      textBackgroundColor: var(--topoviewer-edge-label-bg)
       textBackgroundOpacity: 0.96
       opacity: 0.95
   - selector: region
     style:
-      backgroundColor: '#0ea5e914'
-      borderColor: '#38bdf8aa'
+      backgroundColor: var(--topoviewer-region-fill)
+      borderColor: var(--topoviewer-region-stroke)
       borderWidth: 1.2
       borderRadius: 8
       selectable: true
       draggable: true
       zIndex: -30
+      labelFontSize: 14
+      labelFontWeight: 600
+      headerPadding: 48
   - selector: region[id = "north-metro"]
     style:
       minHeight: 300
@@ -107,6 +131,51 @@ stylesheet:
       minHeight: 300
       minWidth: 300
       padding: 58
+  - selector: link[source = "aggregate:north-metro"][target = "aggregate:west-metro"]
+    style:
+      curveStyle: unbundled-bezier
+      controlPointDistance: -280
+      controlPointWeight: 0.5
+  - selector: link[source = "aggregate:north-metro"][target = "west-pe-a"]
+    style:
+      curveStyle: unbundled-bezier
+      controlPointDistance: -280
+      controlPointWeight: 0.5
+  - selector: link[source = "aggregate:north-metro"][target = "west-pe-b"]
+    style:
+      curveStyle: unbundled-bezier
+      controlPointDistance: -280
+      controlPointWeight: 0.5
+  - selector: link[source = "north-pe-a"][target = "aggregate:west-metro"]
+    style:
+      curveStyle: unbundled-bezier
+      controlPointDistance: -280
+      controlPointWeight: 0.5
+  - selector: link[source = "north-pe-a"][target = "west-pe-a"]
+    style:
+      curveStyle: unbundled-bezier
+      controlPointDistance: -280
+      controlPointWeight: 0.5
+  - selector: link[source = "north-pe-a"][target = "west-pe-b"]
+    style:
+      curveStyle: unbundled-bezier
+      controlPointDistance: -280
+      controlPointWeight: 0.5
+  - selector: link[source = "north-pe-b"][target = "aggregate:west-metro"]
+    style:
+      curveStyle: unbundled-bezier
+      controlPointDistance: -280
+      controlPointWeight: 0.5
+  - selector: link[source = "north-pe-b"][target = "west-pe-a"]
+    style:
+      curveStyle: unbundled-bezier
+      controlPointDistance: -280
+      controlPointWeight: 0.5
+  - selector: link[source = "north-pe-b"][target = "west-pe-b"]
+    style:
+      curveStyle: unbundled-bezier
+      controlPointDistance: -280
+      controlPointWeight: 0.5
 layout:
   mode: manual
   width: 1360

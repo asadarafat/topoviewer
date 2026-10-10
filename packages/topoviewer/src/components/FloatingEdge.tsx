@@ -15,6 +15,8 @@ import { normalizeTaxiDirection, numberList, stringList } from '../core/edgeStyl
 import { linkDirectionGeometryForPath, linkDirectionSegment, trimPolylinePathEnd, type LinkDirectionGeometry } from '../core/linkDirectionGeometry';
 import { styleDefaultNumber } from '../core/styleDefaults';
 import type { Bounds } from '../core/types';
+import { nodeShapeBoundaryPoint } from '../core/nodeShapeBoundary';
+import { normalizeNodeShape } from '../core/nodeShapes';
 import { directionLabelPoint, edgeLabelLayouts, endpointLabelPoint, type DirectionStroke, type EdgeLabelRole, type LinkDirectionKey } from './floatingEdgeLabels';
 
 function internalNodeBox(node: ReturnType<typeof useInternalNode> | undefined): Bounds & { centerX: number; centerY: number } | null {
@@ -67,6 +69,11 @@ function floatingPoint(box: NonNullable<ReturnType<typeof internalNodeBox>>, sid
   return { x: box.centerX, y: box.y + box.height };
 }
 
+function outlinePoint(node: ReturnType<typeof useInternalNode>, box: NonNullable<ReturnType<typeof internalNodeBox>>, point: { x: number; y: number }, side: Position) {
+  const shape = normalizeNodeShape(node?.data?.nodeShapeType);
+  return shape ? nodeShapeBoundaryPoint(shape, node?.data?.nodeShapePoints as string | undefined, box, point, side) : point;
+}
+
 function floatingEndpoints(sourceNode: ReturnType<typeof useInternalNode> | undefined, targetNode: ReturnType<typeof useInternalNode> | undefined, fallback: EdgeProps) {
   if (fallback.sourceHandleId || fallback.targetHandleId) {
     return {
@@ -84,8 +91,8 @@ function floatingEndpoints(sourceNode: ReturnType<typeof useInternalNode> | unde
   if (!sourceBox || !targetBox) return fallback;
   const sourcePosition = floatingSide(sourceBox, targetBox);
   const targetPosition = floatingSide(targetBox, sourceBox);
-  const sourcePoint = floatingPoint(sourceBox, sourcePosition);
-  const targetPoint = floatingPoint(targetBox, targetPosition);
+  const sourcePoint = outlinePoint(sourceNode, sourceBox, floatingPoint(sourceBox, sourcePosition), sourcePosition);
+  const targetPoint = outlinePoint(targetNode, targetBox, floatingPoint(targetBox, targetPosition), targetPosition);
 
   return {
     sourceX: sourcePoint.x,
@@ -109,15 +116,14 @@ function edgePathForCurve(curveType: string, props: EdgeProps, data: Record<stri
     if (route) return [route.path, route.labelX, route.labelY] as [string, number, number];
   }
 
-  if (curveType === 'bezier') {
+  if (curveType === 'bezier' || curveType === 'simplebezier') {
     const distance = bezierControlPointDistance(data);
     if (distance !== undefined) return quadraticBezierPathForEndpoints(props, endpoints, distance, numeric(data.controlPointWeight, 0.5));
-    return getBezierPath({ ...props, ...endpoints });
+    return curveType === 'simplebezier' ? getSimpleBezierPath({ ...props, ...endpoints }) : getBezierPath({ ...props, ...endpoints });
   }
   if (curveType === 'straight') return getStraightPath({ ...props, ...endpoints });
   if (curveType === 'step') return getSmoothStepPath({ ...props, ...endpoints, borderRadius: 0 });
   if (curveType === 'smoothstep') return getSmoothStepPath({ ...props, ...endpoints });
-  if (curveType === 'simplebezier') return getSimpleBezierPath({ ...props, ...endpoints });
   return getBezierPath({ ...props, ...endpoints });
 }
 
@@ -537,7 +543,7 @@ function FloatingEdgeComponent(props: EdgeProps) {
   const curveType = String(props.data?.curveType || 'default');
   const sourceBox = internalNodeBox(sourceNode);
   const targetBox = internalNodeBox(targetNode);
-  const straightLaneEndpoints = curveType === 'straight' && data.parallelLinkGroup
+  const straightLaneEndpoints = curveType === 'straight' && data.parallelLinkGroup && !props.sourceHandleId && !props.targetHandleId
     ? parallelStraightLaneEndpoints(rawEndpoints, {
       laneCount: numeric(data.laneCount, 1),
       laneIndex: numeric(data.laneIndex, 0),
@@ -549,14 +555,16 @@ function FloatingEdgeComponent(props: EdgeProps) {
       endpointPadding: Math.max(6, numeric(data.lineWidth, 1) * 2)
     })
     : rawEndpoints;
+  const sourcePoint = sourceBox && !props.sourceHandleId ? outlinePoint(sourceNode, sourceBox, { x: straightLaneEndpoints.sourceX, y: straightLaneEndpoints.sourceY }, straightLaneEndpoints.sourcePosition) : { x: straightLaneEndpoints.sourceX, y: straightLaneEndpoints.sourceY };
+  const targetPoint = targetBox && !props.targetHandleId ? outlinePoint(targetNode, targetBox, { x: straightLaneEndpoints.targetX, y: straightLaneEndpoints.targetY }, straightLaneEndpoints.targetPosition) : { x: straightLaneEndpoints.targetX, y: straightLaneEndpoints.targetY };
   const endpoints = applyEndpointSpacing(
-    straightLaneEndpoints,
+    { ...straightLaneEndpoints, sourceX: sourcePoint.x, sourceY: sourcePoint.y, targetX: targetPoint.x, targetY: targetPoint.y },
     numeric(data.sourceDistanceFromNode, 0),
     numeric(data.targetDistanceFromNode, 0)
   );
   const attentionState = data.attentionState ? `topoviewer-edge-attention-${data.attentionState}` : '';
   const [edgePath, labelX, labelY] = edgePathForCurve(curveType, { ...props, ...endpoints }, data, endpoints);
-  const usesEndpointPreservingLane = (curveType === 'bezier' || curveType === 'straight') && !!data.parallelLinkGroup;
+  const usesEndpointPreservingLane = (curveType === 'bezier' || curveType === 'simplebezier' || curveType === 'straight') && !!data.parallelLinkGroup;
   const offset = usesEndpointPreservingLane ? { x: 0, y: 0 } : laneOffset(data, endpoints);
   const transform = pathTransform(offset);
   const isPipe = !!data.isPipe || data.pipe === true;

@@ -1,17 +1,17 @@
 version: "0.2"
 layout:
   mode: manual
-  width: 900
-  height: 460
+  width: 1050
+  height: 760
 icons:
   router.spine:
     glyph: S
-    fill: "#001135"
-    stroke: "#90caf9"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   router.leaf:
     glyph: L
-    fill: "#001135"
-    stroke: "#90caf9"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
 labelFields:
   - labels.name
 stylesheet:
@@ -19,42 +19,48 @@ stylesheet:
     style:
       labelZIndex: 40
       labelCollisionPolicy: avoid
-      backgroundColor: "rgba(25, 118, 210, 0.08)"
-      borderColor: "rgba(66, 165, 245, 0.42)"
+      backgroundColor: "var(--topoviewer-region-fill)"
+      borderColor: "var(--topoviewer-region-stroke)"
       borderWidth: 2
       labelPosition: topCenter
       labelMargin: 12
       labelColor: var(--topoviewer-region-label-fg)
       labelBackgroundColor: var(--topoviewer-region-label-bg)
-      labelFontWeight: 800
+      labelFontWeight: 600
+      labelFontSize: 14
+      headerPadding: 48
   - selector: node
     style:
       icon: router.leaf
       shape: square
       width: 58
       height: 58
-      borderWidth: 3
+      borderWidth: 2
       iconFit: fill
       iconPadding: 0
       labelZIndex: 80
       metaZIndex: 70
       labelCollisionPolicy: avoid
       labelColor: var(--topoviewer-fg-strong)
-      labelFontWeight: 800
+      labelFontWeight: 600
       labelBackgroundColor: var(--topoviewer-panel-bg)
       labelBackgroundOpacity: 0.92
       labelBorderColor: var(--topoviewer-border)
       labelBorderWidth: 1
       labelPadding: 4
-      metaColor: var(--topoviewer-fg-muted)
+      metaColor: transparent
       metaFontSize: 9
       metaFontWeight: 650
+      labelFontSize: 14
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-edge-default)
+      iconColor: var(--topoviewer-fg-strong)
   - selector: node[labels.node = "spine"]
     style:
       icon: router.spine
       labelPosition: top
       labelYOffset: -8
-      outlineColor: "#9c27b0"
+      outlineColor: "#8b78b8"
       outlineWidth: 4
       outlineOpacity: 0.55
   - selector: node[labels.node = "leaf"]
@@ -62,56 +68,61 @@ stylesheet:
       icon: router.leaf
       labelPosition: bottom
       labelYOffset: 8
-      outlineColor: "#1976d2"
+      outlineColor: "var(--topoviewer-accent)"
       outlineWidth: 3
       outlineOpacity: 0.42
   - selector: link
     style:
       curveStyle: bezier
-      lineColor: "rgba(148, 163, 184, 0.34)"
-      lineWidth: 7
+      lineColor: "var(--topoviewer-edge-default)"
+      lineWidth: 4
       lineCap: round
       directionalStrokes: true
       directionStartGap: 10
       directionCenterGap: 66
-      directionLabelOffset: 30
+      directionLabelOffset: 16
       directionLabelRotation: auto
       endpointLabelAutoPosition: true
       endpointLabelDistance: 22
       endpointLabelSideOffset: 0
-      labelCollisionPolicy: fade
+      labelCollisionPolicy: avoid
       targetArrowShape: none
       sourceLabelZIndex: 91
       targetLabelZIndex: 91
-      sourceLabelColor: "#dbeafe"
-      targetLabelColor: "#dbeafe"
-      sourceLabelBackgroundColor: "#0f172a"
-      targetLabelBackgroundColor: "#0f172a"
-      sourceLabelBorderColor: "#334155"
-      targetLabelBorderColor: "#334155"
+      sourceLabelColor: "var(--topoviewer-fg-strong)"
+      targetLabelColor: "var(--topoviewer-fg-strong)"
+      sourceLabelBackgroundColor: "color-mix(in srgb, var(--topoviewer-accent) 12%,
+        var(--topoviewer-panel-bg))"
+      targetLabelBackgroundColor: "color-mix(in srgb, var(--topoviewer-accent) 12%,
+        var(--topoviewer-panel-bg))"
+      sourceLabelBorderColor: "var(--topoviewer-accent)"
+      targetLabelBorderColor: "var(--topoviewer-accent)"
       sourceLabelBorderWidth: 1
       targetLabelBorderWidth: 1
       labelZIndex: 90
-      labelFontSize: 10
-      labelFontWeight: 800
+      labelFontSize: 12
+      labelFontWeight: 600
       textBackgroundColor: var(--topoviewer-edge-label-bg)
       labelColor: var(--topoviewer-fg-strong)
+      sourceLabelOpacity: 1
+      targetLabelOpacity: 1
   - selector: linkDirection
     style:
       lineCap: round
-      labelFontWeight: 800
+      labelFontWeight: 600
       labelColor: var(--topoviewer-fg-strong)
       textBackgroundColor: var(--topoviewer-edge-label-bg)
+      labelFontSize: 12
   - selector: linkDirection[direction = "sourceToTarget"]
     style:
-      lineColor: "#42a5f5"
+      lineColor: "var(--topoviewer-accent)"
       targetArrowShape: triangle
-      targetArrowColor: "#42a5f5"
+      targetArrowColor: "var(--topoviewer-accent)"
   - selector: linkDirection[direction = "targetToSource"]
     style:
-      lineColor: "#4caf50"
+      lineColor: "var(--topoviewer-info)"
       sourceArrowShape: triangle
-      sourceArrowColor: "#4caf50"
+      sourceArrowColor: "var(--topoviewer-info)"
       lineStyle: dashed
       lineDashPattern: 10 7
   - selector: region[id = "spine-region"]
@@ -122,3 +133,18 @@ stylesheet:
     style:
       paddingX: 54
       paddingY: 48
+      labelPosition: topLeft
+  - selector: link[id = "Leaf-1-Spine-1"]
+    style:
+      targetLabelXOffset: -30
+  - selector: link[id = "Leaf-2-Spine-1"]
+    style:
+      sourceLabelXOffset: -30
+      targetLabelXOffset: 30
+  - selector: link[id = "Leaf-2-Spine-2"]
+    style:
+      sourceLabelXOffset: 30
+      targetLabelXOffset: -30
+  - selector: link[id = "Leaf-3-Spine-2"]
+    style:
+      targetLabelXOffset: 30

@@ -13,7 +13,7 @@ Different `curveStyle` values produce different edge routing models.
 ### Try It
 
 1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link[labels.curve = "unbundled-bezier"]`.
-2. Change its `lineColor` from `"#c084fc"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+2. Change its `lineColor` from `"#8b78b8"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
 3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
@@ -50,7 +50,7 @@ Edges can carry labels, arrows, dash patterns, and dash offsets without changing
 ### Try It
 
 1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link[labels.direction = "reply"]`.
-2. Change its `lineColor` from `"#38bdf8"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+2. Change its `lineColor` from `"var(--topoviewer-info)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
 3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
@@ -97,7 +97,7 @@ Endpoint labels can show physical ports while arrow markers remain pure geometry
 ### Try It
 
 1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link[labels.class = "silver"]`.
-2. Change its `lineColor` from `"#64748b"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+2. Change its `lineColor` from `"var(--topoviewer-accent)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
 3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
@@ -134,7 +134,7 @@ Endpoint spacing, segment controls, and taxi controls make edge routes explicit.
 ### Try It
 
 1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link[labels.route = "taxi"]`.
-2. Change its `lineColor` from `"#f97316"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+2. Change its `lineColor` from `"var(--topoviewer-warning)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
 3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
@@ -171,7 +171,7 @@ Linear gradients and interaction flags can be declared directly on edge style ru
 ### Try It
 
 1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link[labels.mode = "reference"]`.
-2. Change its `lineColor` from `"#94a3b8"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+2. Change its `lineColor` from `"var(--topoviewer-accent)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
 3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
@@ -203,12 +203,12 @@ Floating anchors are the default edge behavior. The renderer computes a boundary
 
 ### Expected Result
 
-Floating anchors connect to the nearest point on each node boundary.
+Floating anchors connect to the facing side of each visible node outline.
 
 ### Try It
 
 1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link`.
-2. Change its `lineColor` from `"#22c55e"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+2. Change its `lineColor` from `"var(--topoviewer-edge-default)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
 3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
@@ -245,7 +245,7 @@ A child link can be visually carried inside a parent transport link.
 ### Try It
 
 1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link[labels.link = "service"]`.
-2. Change its `lineColor` from `"#22c55e"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+2. Change its `lineColor` from `"var(--topoviewer-info)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
 3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
@@ -294,7 +294,7 @@ One physical link can show two independently styled traffic directions.
 ### Try It
 
 1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `linkDirection[direction = "targetToSource"]`.
-2. Change its `lineColor` from `"#ff9800"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+2. Change its `lineColor` from `"var(--topoviewer-warning)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
 3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
@@ -323,9 +323,9 @@ One physical link can show two independently styled traffic directions.
 ## Dense CLOS labels
 
 Dense CLOS labels show the label-placement problem that appears in operational
-fabric dashboards: region names, node names, node metadata, endpoint port
-labels, and bidirectional bandwidth values all want space around the same small
-set of links.
+fabric dashboards: region names, node names, endpoint ports, and bidirectional
+bandwidth values all need space around the same set of links. The two rows have
+enough separation to keep throughput labels out of the central crossing area.
 
 The topology keeps one parent link per fabric adjacency. Physical port names
 live on `sourceLabel` and `targetLabel`; bandwidth values live on
@@ -333,14 +333,20 @@ live on `sourceLabel` and `targetLabel`; bandwidth values live on
 stylesheet assigns independent label z-index values and uses the shared
 collision policy so labels can move without changing node or link geometry.
 
+Raw node metadata and redundant relationship names stay in inspection so they
+do not compete with operational names and values on the canvas. Port names
+already identify each adjacency. Blue indicates leaf-to-spine traffic; teal
+dashed strokes indicate spine-to-leaf traffic. Values are authored examples,
+not live telemetry.
+
 ### Expected Result
 
-Show region, node, metadata, endpoint port, and bidirectional bandwidth labels in one compact CLOS fabric.
+Keep node names, endpoint ports, and bidirectional bandwidth values legible in a CLOS fabric.
 
 ### Try It
 
 1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `linkDirection[direction = "targetToSource"]`.
-2. Change its `lineColor` from `"#4caf50"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+2. Change its `lineColor` from `"var(--topoviewer-info)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
 3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
@@ -348,7 +354,7 @@ Show region, node, metadata, endpoint port, and bidirectional bandwidth labels i
     ```topoviewer
     topology: dense-clos-labels/topology.yaml
     stylesheet: dense-clos-labels/stylesheet.yaml
-    height: 500px
+    height: 760px
     controls: true
     controlsOpen: false
     title: Dense CLOS labels

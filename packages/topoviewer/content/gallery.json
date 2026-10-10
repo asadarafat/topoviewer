@@ -33,11 +33,47 @@
     }
   ],
   "patterns": [
-    {"id": "cards", "exampleId": "nodes-card-node-layout", "title": "Service cards", "summary": "Give names, roles, and status a clear place."},
-    {"id": "directions", "exampleId": "edges-directional-link-strokes", "title": "Two traffic directions", "summary": "Read both directions on one physical link."},
-    {"id": "regions", "exampleId": "regions-nested-regions", "title": "Regions within regions", "summary": "Explain sites, domains, and shared membership."},
-    {"id": "focus", "exampleId": "attention-object-focus", "title": "Focus and context", "summary": "Follow one object without losing the network."},
-    {"id": "callouts", "exampleId": "callouts-pins-and-leaders", "title": "Anchored explanations", "summary": "Attach a short explanation to the right object."},
-    {"id": "layout", "exampleId": "layout-clos", "title": "An orderly fabric", "summary": "Arrange stages with a repeatable CLOS layout."}
+    {
+      "id": "cards",
+      "exampleId": "nodes-card-node-layout",
+      "title": "Service cards",
+      "summary": "Give names, roles, and status a clear place.",
+      "height": 300
+    },
+    {
+      "id": "directions",
+      "exampleId": "edges-directional-link-strokes",
+      "title": "Two traffic directions",
+      "summary": "Read both directions on one physical link.",
+      "height": 280
+    },
+    {
+      "id": "regions",
+      "exampleId": "regions-nested-regions",
+      "title": "Regions within regions",
+      "summary": "Explain sites, domains, and shared membership.",
+      "height": 360
+    },
+    {
+      "id": "focus",
+      "exampleId": "attention-object-focus",
+      "title": "Focus and context",
+      "summary": "Follow one object without losing the network.",
+      "height": 360
+    },
+    {
+      "id": "callouts",
+      "exampleId": "callouts-pins-and-leaders",
+      "title": "Anchored explanations",
+      "summary": "Attach a short explanation to the right object.",
+      "height": 360
+    },
+    {
+      "id": "layout",
+      "exampleId": "layout-clos",
+      "title": "An orderly fabric",
+      "summary": "Arrange stages with a repeatable CLOS layout.",
+      "height": 460
+    }
   ]
 }

@@ -6,20 +6,20 @@ layout:
 icons:
   source:
     glyph: SRC
-    fill: "#1565c0"
-    stroke: "#90caf9"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   converter:
     glyph: CVT
-    fill: "#6a1b9a"
-    stroke: "#ce93d8"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   bundle:
     glyph: YAML
-    fill: "#2e7d32"
-    stroke: "#a5d6a7"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   surface:
     glyph: OUT
-    fill: "#ef6c00"
-    stroke: "#ffcc80"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
 labelFields:
   - labels.name
 stylesheet:
@@ -28,49 +28,55 @@ stylesheet:
       shape: rectangle
       width: 170
       height: 68
-      borderWidth: 3
+      borderWidth: 2
       iconFit: fill
       iconPadding: 0
-      labelFontSize: 12
-      labelFontWeight: 800
+      labelFontSize: 14
+      labelFontWeight: 600
       labelColor: var(--topoviewer-fg-strong)
       labelBackgroundColor: var(--topoviewer-panel-bg)
       labelBackgroundOpacity: 0.92
       labelPadding: 4
       metaColor: transparent
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-edge-default)
+      iconColor: var(--topoviewer-fg-strong)
   - selector: node[labels.object = "source"]
     style:
       icon: source
-      backgroundColor: "#1565c0"
-      borderColor: "#90caf9"
+      backgroundColor: "color-mix(in srgb, var(--topoviewer-accent) 12%,
+        var(--topoviewer-panel-bg))"
+      borderColor: "var(--topoviewer-accent)"
   - selector: node[labels.object = "converter"]
     style:
       icon: converter
-      backgroundColor: "#6a1b9a"
-      borderColor: "#ce93d8"
+      backgroundColor: "color-mix(in srgb, #8b78b8 12%, var(--topoviewer-panel-bg))"
+      borderColor: "#8b78b8"
   - selector: node[labels.object = "bundle"]
     style:
       icon: bundle
-      backgroundColor: "#2e7d32"
-      borderColor: "#a5d6a7"
+      backgroundColor: "color-mix(in srgb, var(--topoviewer-info) 12%,
+        var(--topoviewer-panel-bg))"
+      borderColor: "var(--topoviewer-info)"
   - selector: node[labels.object = "surface"]
     style:
       icon: surface
-      backgroundColor: "#ef6c00"
-      borderColor: "#ffcc80"
+      backgroundColor: "color-mix(in srgb, var(--topoviewer-warning) 12%,
+        var(--topoviewer-panel-bg))"
+      borderColor: "var(--topoviewer-warning)"
   - selector: link
     style:
       curveStyle: straight
       lineWidth: 4
-      lineColor: "#90a4ae"
+      lineColor: "var(--topoviewer-edge-default)"
       targetArrowShape: triangle
-      targetArrowColor: "#90a4ae"
+      targetArrowColor: "var(--topoviewer-info)"
       labelColor: var(--topoviewer-fg-strong)
-      labelFontSize: 11
-      labelFontWeight: 800
+      labelFontSize: 12
+      labelFontWeight: 600
       textBackgroundColor: var(--topoviewer-edge-label-bg)
       labelZIndex: 10
   - selector: link[labels.link = "contract"]
     style:
-      lineColor: "#4caf50"
-      targetArrowColor: "#4caf50"
+      lineColor: "var(--topoviewer-info)"
+      targetArrowColor: "var(--topoviewer-info)"

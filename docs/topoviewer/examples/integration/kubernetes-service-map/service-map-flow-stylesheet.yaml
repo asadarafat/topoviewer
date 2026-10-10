@@ -6,78 +6,88 @@ layout:
 icons:
   source:
     glyph: API
-    fill: "#1565c0"
-    stroke: "#90caf9"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   collector:
     glyph: RUN
-    fill: "#7b1fa2"
-    stroke: "#ce93d8"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   artifact:
     glyph: ARTIFACT
-    fill: "#2e7d32"
-    stroke: "#a5d6a7"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   model:
     glyph: ID
-    fill: "#00695c"
-    stroke: "#80cbc4"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   renderer:
     glyph: TV
-    fill: "#ed6c02"
-    stroke: "#ffcc80"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   controls:
     glyph: UX
-    fill: "#5d4037"
-    stroke: "#d7ccc8"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
   map:
     glyph: MAP
-    fill: "#455a64"
-    stroke: "#b0bec5"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
 labelFields:
   - labels.name
 stylesheet:
   - selector: region
     style:
-      backgroundColor: "rgba(25, 118, 210, 0.06)"
-      borderColor: "rgba(66, 165, 245, 0.36)"
+      backgroundColor: "var(--topoviewer-region-fill)"
+      borderColor: "var(--topoviewer-region-stroke)"
       borderWidth: 1
       labelColor: var(--topoviewer-region-label-fg)
       labelBackgroundColor: var(--topoviewer-region-label-bg)
       labelPosition: topCenter
       labelMargin: 10
-      labelFontWeight: 800
+      labelFontWeight: 600
+      labelFontSize: 18
+      headerPadding: 48
   - selector: node
     style:
       shape: rectangle
       width: 126
       height: 62
-      borderWidth: 3
+      borderWidth: 2
       iconFit: contain
-      labelFontWeight: 800
+      labelFontWeight: 600
       labelColor: var(--topoviewer-fg-strong)
       labelBackgroundColor: var(--topoviewer-panel-bg)
-      labelBackgroundOpacity: 0.92
+      labelBackgroundOpacity: 0
       labelBorderColor: var(--topoviewer-border)
-      labelBorderWidth: 1
+      labelBorderWidth: 0
       labelPadding: 4
       metaColor: transparent
+      labelFontSize: 18
+      iconOpacity: 0
+      labelPosition: center
+      labelTextMaxWidth: 200
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-edge-default)
+      iconColor: var(--topoviewer-fg-strong)
   - selector: node[labels.object = "source"]
     style:
       icon: source
-      backgroundColor: "rgba(25, 118, 210, 0.16)"
-      borderColor: "#42a5f5"
+      backgroundColor: "color-mix(in srgb, var(--topoviewer-accent) 12%,
+        var(--topoviewer-panel-bg))"
+      borderColor: "var(--topoviewer-accent)"
   - selector: node[labels.object = "process"]
     style:
       icon: collector
-      backgroundColor: "rgba(156, 39, 176, 0.14)"
-      borderColor: "#ba68c8"
+      backgroundColor: "color-mix(in srgb, #8b78b8 12%, var(--topoviewer-panel-bg))"
+      borderColor: "#8b78b8"
   - selector: node[labels.object = "parentProcess"]
     style:
       icon: collector
-      backgroundColor: "rgba(156, 39, 176, 0.08)"
-      borderColor: "#ba68c8"
+      backgroundColor: "color-mix(in srgb, #8b78b8 12%, var(--topoviewer-panel-bg))"
+      borderColor: "#8b78b8"
       width: 210
       height: 230
-      labelPosition: bottom
+      labelPosition: top
   - selector: node[labels.role = "converterStep"]
     style:
       labelPosition: center
@@ -91,86 +101,91 @@ stylesheet:
   - selector: node[labels.object = "artifact"]
     style:
       icon: artifact
-      backgroundColor: "rgba(46, 125, 50, 0.14)"
-      borderColor: "#4caf50"
+      backgroundColor: "color-mix(in srgb, var(--topoviewer-info) 12%,
+        var(--topoviewer-panel-bg))"
+      borderColor: "var(--topoviewer-info)"
   - selector: node[labels.object = "model"]
     style:
       icon: model
-      backgroundColor: "rgba(0, 105, 92, 0.14)"
-      borderColor: "#26a69a"
+      backgroundColor: "color-mix(in srgb, var(--topoviewer-info) 12%,
+        var(--topoviewer-panel-bg))"
+      borderColor: "var(--topoviewer-info)"
   - selector: node[labels.object = "renderer"]
     style:
       icon: renderer
-      backgroundColor: "rgba(237, 108, 2, 0.14)"
-      borderColor: "#ff9800"
+      backgroundColor: "color-mix(in srgb, var(--topoviewer-warning) 12%,
+        var(--topoviewer-panel-bg))"
+      borderColor: "var(--topoviewer-warning)"
   - selector: node[labels.object = "behavior"]
     style:
       icon: controls
-      backgroundColor: "rgba(93, 64, 55, 0.14)"
-      borderColor: "#bcaaa4"
+      backgroundColor: "color-mix(in srgb, var(--topoviewer-danger) 12%,
+        var(--topoviewer-panel-bg))"
+      borderColor: "var(--topoviewer-border-strong)"
   - selector: node[labels.object = "output"]
     style:
       icon: map
-      backgroundColor: "rgba(69, 90, 100, 0.14)"
-      borderColor: "#90a4ae"
+      backgroundColor: "color-mix(in srgb, var(--topoviewer-info) 12%,
+        var(--topoviewer-panel-bg))"
+      borderColor: "var(--topoviewer-info)"
       width: 152
   - selector: link
     style:
       curveStyle: bezier
-      lineColor: "#42a5f5"
+      lineColor: "var(--topoviewer-edge-default)"
       lineWidth: 3
       targetArrowShape: triangle
-      targetArrowColor: "#42a5f5"
+      targetArrowColor: "var(--topoviewer-accent)"
       labelColor: var(--topoviewer-fg-strong)
-      labelFontSize: 11
-      labelFontWeight: 800
+      labelFontSize: 12
+      labelFontWeight: 600
       textBackgroundColor: var(--topoviewer-edge-label-bg)
       textBackgroundOpacity: 0.94
   - selector: link[labels.link = "collect"]
     style:
       label: collect
-      lineColor: "#1976d2"
-      targetArrowColor: "#1976d2"
+      lineColor: "var(--topoviewer-accent)"
+      targetArrowColor: "var(--topoviewer-accent)"
   - selector: link[labels.link = "snapshot"]
     style:
       label: snapshot
-      lineColor: "#00838f"
-      targetArrowColor: "#00838f"
+      lineColor: "var(--topoviewer-info)"
+      targetArrowColor: "var(--topoviewer-info)"
   - selector: link[labels.link = "convert"]
     style:
       label: convert
-      lineColor: "#7b1fa2"
-      targetArrowColor: "#7b1fa2"
+      lineColor: "#8b78b8"
+      targetArrowColor: "#8b78b8"
   - selector: link[labels.link = "derive"]
     style:
       label: derive model
-      lineColor: "#00695c"
-      targetArrowColor: "#00695c"
+      lineColor: "var(--topoviewer-info)"
+      targetArrowColor: "var(--topoviewer-info)"
   - selector: link[labels.link = "write"]
     style:
       label: write topology
-      lineColor: "#2e7d32"
-      targetArrowColor: "#2e7d32"
+      lineColor: "var(--topoviewer-info)"
+      targetArrowColor: "var(--topoviewer-info)"
   - selector: link[labels.link = "input"]
     style:
       label: input
-      lineColor: "#ff9800"
-      targetArrowColor: "#ff9800"
+      lineColor: "var(--topoviewer-warning)"
+      targetArrowColor: "var(--topoviewer-warning)"
   - selector: link[labels.link = "interaction"]
     style:
       label: layer/attention
-      lineColor: "#5d4037"
-      targetArrowColor: "#5d4037"
+      lineColor: "var(--topoviewer-danger)"
+      targetArrowColor: "var(--topoviewer-danger)"
   - selector: link[labels.link = "render"]
     style:
       label: render
-      lineColor: "#455a64"
-      targetArrowColor: "#455a64"
+      lineColor: "var(--topoviewer-info)"
+      targetArrowColor: "var(--topoviewer-info)"
   - selector: link[labels.link = "refine"]
     style:
       label: refine view
-      lineColor: "#5d4037"
-      targetArrowColor: "#5d4037"
+      lineColor: "var(--topoviewer-danger)"
+      targetArrowColor: "var(--topoviewer-danger)"
       lineStyle: dashed
   - selector: region[id = "source-systems"]
     style:

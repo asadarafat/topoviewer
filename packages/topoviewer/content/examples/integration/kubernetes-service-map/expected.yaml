@@ -1,12 +1,13 @@
 renderable: true
 visualSnapshot: false
 dom:
-  graphNodes: 59
-  minVisibleEdges: 52
-  minRegions: 6
+  graphNodes: 6
+  minVisibleEdges: 1
 assertions:
   controls: true
   nodeStatusesMin: 3
+  expandClickNode: aggregate:region-api-surface
+  expandedGraphNodes: 18
 semantic:
   errors: []
   warnings: []

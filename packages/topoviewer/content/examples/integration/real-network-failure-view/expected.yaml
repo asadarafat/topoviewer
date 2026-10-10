@@ -6,7 +6,8 @@ dom:
   minRegions: 3
 assertions:
   controls: true
-  edgeMarkersMin: 10
+  edgeMarkersMin: 8
+  undirectedSessionLinkIds: bgp-fra-rr, bgp-lon-rr
   nodeBadgesMin: 5
   nodeOutlinesMin: 2
   nodeStatusesMin: 7

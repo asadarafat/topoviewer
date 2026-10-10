@@ -119,6 +119,10 @@ function aggregateViewportGroupIds(aggregate: EmbedAggregate | undefined): strin
   return [...(aggregate.viewport?.groupIds || aggregate.groups.map((group) => group.id))];
 }
 
+function documentationColorMode(): 'light' | 'dark' {
+  return document.body?.getAttribute('data-md-color-scheme') === 'default' ? 'light' : 'dark';
+}
+
 function EmbeddedTopoViewer({
   documentSpec,
   attention,
@@ -134,6 +138,12 @@ function EmbeddedTopoViewer({
   helperLines?: TopoViewerProps['helperLines'];
   initialSelectedLayerIds?: string[];
 }) {
+  const [colorMode, setColorMode] = useState(documentationColorMode);
+  useEffect(() => {
+    const observer = new MutationObserver(() => setColorMode(documentationColorMode()));
+    observer.observe(document.body, { attributes: true, attributeFilter: ['data-md-color-scheme'] });
+    return () => observer.disconnect();
+  }, []);
   const viewportRef = useRef<HTMLDivElement>(null);
   const [viewportReady, setViewportReady] = useState(false);
   useEffect(() => {
@@ -307,6 +317,7 @@ function EmbeddedTopoViewer({
         {/* Initial fit needs real dimensions. Keep the viewer mounted afterward
             so hiding and reopening a tab preserves the reader's viewport. */}
         {viewportReady ? <TopoViewer
+          colorMode={colorMode}
           document={viewerDocument}
           selectedLayerIds={selectedLayerIds}
           toggles={toggles}

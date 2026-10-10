@@ -1,0 +1,5 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Direct metro corridors</title></head><body><div id="root" style="height:700px"></div><script type="module">
+import React from 'react';import {createRoot} from 'react-dom/client';import {load} from 'js-yaml';import {TopoViewer} from '../../src/components/TopoViewer.tsx';import '@xyflow/react/dist/style.css';import '../../src/styles.css';
+const base='/content/examples/attention/dense-summary-drilldown/';const [topology,stylesheet]=await Promise.all(['topology.yaml','stylesheet.yaml'].map(async name=>load(await (await fetch(base+name)).text())));
+function Fixture(){const [expanded,setExpanded]=React.useState([]);const documentSpec={...topology,...stylesheet,attention:{...topology.attention,aggregate:{...topology.attention.aggregate,expandedGroupIds:expanded}}};return React.createElement(TopoViewer,{document:documentSpec,controls:false,helperLines:false,onRegionAggregateToggle:({groupId})=>setExpanded([groupId])});}createRoot(document.getElementById('root')).render(React.createElement(Fixture));
+</script></body></html>

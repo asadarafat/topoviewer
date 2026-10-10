@@ -20,7 +20,7 @@ export const galleryHash = (bytes) => crypto.createHash('sha256').update(bytes).
 // Fingerprint the committed renderer used by the published docs and the code
 // that frames its captures. This remains usable before any package is built.
 export function galleryCaptureProvenance() {
-  const generatorFiles = ['scripts/capture-docs-gallery.mjs', 'scripts/lib/docs-gallery.mjs', 'scripts/lib/docs-static-server.mjs'];
+  const generatorFiles = ['scripts/capture-docs-gallery.mjs', 'scripts/lib/docs-gallery.mjs', 'scripts/lib/docs-static-server.mjs', 'docs/assets/topoviewer/diagrams.css'];
   return {
     rendererSha256: galleryHash(fs.readFileSync(path.join(galleryRoot, galleryRendererAssets.javascript))),
     rendererCssSha256: galleryHash(fs.readFileSync(path.join(galleryRoot, galleryRendererAssets.stylesheet))),

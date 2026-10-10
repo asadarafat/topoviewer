@@ -51,7 +51,7 @@ Learn one visual technique, then bring it into your own diagram.
 
 <div class="tv-gallery-grid tv-gallery-patterns">
 <a class="tv-gallery-card" href="nodes/card-node-layout/">
-  <img src="../../assets/gallery/cards.png" alt="" width="1120" height="500" loading="lazy">
+  <img src="../../assets/gallery/cards.png" alt="" width="1120" height="300" loading="lazy">
   <div class="tv-gallery-card-body">
 
     <h3>Service cards</h3>
@@ -60,7 +60,7 @@ Learn one visual technique, then bring it into your own diagram.
   </div>
 </a>
 <a class="tv-gallery-card" href="edges/directional-link-strokes/">
-  <img src="../../assets/gallery/directions.png" alt="" width="1120" height="500" loading="lazy">
+  <img src="../../assets/gallery/directions.png" alt="" width="1120" height="280" loading="lazy">
   <div class="tv-gallery-card-body">
 
     <h3>Two traffic directions</h3>
@@ -69,7 +69,7 @@ Learn one visual technique, then bring it into your own diagram.
   </div>
 </a>
 <a class="tv-gallery-card" href="regions/nested-regions/">
-  <img src="../../assets/gallery/regions.png" alt="" width="1120" height="500" loading="lazy">
+  <img src="../../assets/gallery/regions.png" alt="" width="1120" height="360" loading="lazy">
   <div class="tv-gallery-card-body">
 
     <h3>Regions within regions</h3>
@@ -78,7 +78,7 @@ Learn one visual technique, then bring it into your own diagram.
   </div>
 </a>
 <a class="tv-gallery-card" href="attention/object-focus/">
-  <img src="../../assets/gallery/focus.png" alt="" width="1120" height="500" loading="lazy">
+  <img src="../../assets/gallery/focus.png" alt="" width="1120" height="360" loading="lazy">
   <div class="tv-gallery-card-body">
 
     <h3>Focus and context</h3>
@@ -87,7 +87,7 @@ Learn one visual technique, then bring it into your own diagram.
   </div>
 </a>
 <a class="tv-gallery-card" href="callouts/pins-and-leaders/">
-  <img src="../../assets/gallery/callouts.png" alt="" width="1120" height="500" loading="lazy">
+  <img src="../../assets/gallery/callouts.png" alt="" width="1120" height="360" loading="lazy">
   <div class="tv-gallery-card-body">
 
     <h3>Anchored explanations</h3>
@@ -96,7 +96,7 @@ Learn one visual technique, then bring it into your own diagram.
   </div>
 </a>
 <a class="tv-gallery-card" href="layout/clos/">
-  <img src="../../assets/gallery/layout.png" alt="" width="1120" height="500" loading="lazy">
+  <img src="../../assets/gallery/layout.png" alt="" width="1120" height="460" loading="lazy">
   <div class="tv-gallery-card-body">
 
     <h3>An orderly fabric</h3>

@@ -19,7 +19,7 @@ icons:
         fill="none"
       >
         <style type="text/css">
-          .st0 { fill: #001135; }
+          .st0 { fill: #26313c; }
           .st1 { fill: none; stroke: #FFFFFF; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 10; }
         </style>
         <rect height="120" width="120" class="st0" />
@@ -61,7 +61,7 @@ icons:
         fill="none"
       >
         <style type="text/css">
-          .st0 { fill: #001135; }
+          .st0 { fill: #26313c; }
           .st1 { fill: none; stroke: #FFFFFF; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 10; }
         </style>
         <rect height="120" width="120" class="st0" />
@@ -92,7 +92,7 @@ icons:
         fill="none"
       >
         <style type="text/css">
-          .st0 { fill: #001135; }
+          .st0 { fill: #26313c; }
           .st1 { fill: none; stroke: #FFFFFF; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 10; }
         </style>
         <rect height="120" width="120" class="st0" />
@@ -113,11 +113,11 @@ stylesheet:
       shape: square
       width: 48
       height: 48
-      borderWidth: 3
-      borderColor: "#90caf9"
+      borderWidth: 2
+      borderColor: "var(--topoviewer-edge-default)"
       iconFit: contain
       iconPadding: 0
-      labelFontWeight: 800
+      labelFontWeight: 600
       labelColor: var(--topoviewer-fg-strong)
       labelBackgroundColor: var(--topoviewer-panel-bg)
       labelBackgroundOpacity: 0.92
@@ -127,22 +127,24 @@ stylesheet:
       labelYOffset: 8
       labelPadding: 4
       metaColor: "transparent"
+      labelFontSize: 14
+      backgroundColor: var(--topoviewer-panel-bg)
   - selector: node[labels.role = "router"]
     style:
       icon: router.pe
       shape: square
-      backgroundColor: "#1976d2"
-      borderColor: "#1976d2"
-      underlayColor: "#42a5f5"
+      backgroundColor: "color-mix(in srgb, var(--topoviewer-accent) 12%, var(--topoviewer-panel-bg))"
+      borderColor: "var(--topoviewer-accent)"
+      underlayColor: "color-mix(in srgb, var(--topoviewer-accent) 18%, var(--topoviewer-panel-bg))"
       underlayOpacity: 0.2
       underlayPadding: 9
   - selector: node[labels.role = "firewall"]
     style:
       icon: firewall
       shape: square
-      backgroundColor: "#d32f2f"
-      borderColor: "#d32f2f"
-      outlineColor: "#ef5350"
+      backgroundColor: "color-mix(in srgb, var(--topoviewer-danger) 12%, var(--topoviewer-panel-bg))"
+      borderColor: "var(--topoviewer-danger)"
+      outlineColor: "var(--topoviewer-danger)"
       outlineWidth: 4
       outlineOpacity: 0.72
   - selector: node[labels.role = "service"]
@@ -151,16 +153,18 @@ stylesheet:
   - selector: link
     style:
       curveStyle: smoothTaxi
-      lineColor: "#90a4ae"
+      lineColor: "var(--topoviewer-edge-default)"
       lineWidth: 3
       targetArrowShape: triangle
-      targetArrowColor: "#90a4ae"
+      targetArrowColor: "var(--topoviewer-info)"
       labelColor: var(--topoviewer-fg-strong)
       textBackgroundColor: var(--topoviewer-edge-label-bg)
+      labelFontSize: 12
+      labelFontWeight: 600
   - selector: link[labels.layer = "security"]
     style:
-      lineColor: "#d32f2f"
-      targetArrowColor: "#d32f2f"
+      lineColor: "var(--topoviewer-danger)"
+      targetArrowColor: "var(--topoviewer-danger)"
   - selector: callout[id = "inspector-note"]
     style:
       width: 178

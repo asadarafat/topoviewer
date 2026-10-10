@@ -16,8 +16,8 @@ graph:
         name: CORE-1
       data:
         severity: normal
-      layers: [physical, service]
-      position: [650, 190]
+      layers: [ physical, service ]
+      position: [ 650, 190 ]
     - id: PE-1
       labels:
         node: router
@@ -25,8 +25,8 @@ graph:
         name: PE-1
       data:
         severity: major
-      layers: [physical, service]
-      position: [380, 190]
+      layers: [ physical, service ]
+      position: [ 380, 190 ]
     - id: SVC-A
       parent: PE-1
       labels:
@@ -36,8 +36,10 @@ graph:
         name: VPN-A
       data:
         severity: critical
-      layers: [service]
-      position: [280, 120]
+      layers: [ service ]
+      position:
+        - 280
+        - 0
     - id: SVC-B
       parent: PE-1
       labels:
@@ -47,8 +49,10 @@ graph:
         name: VPN-B
       data:
         severity: minor
-      layers: [service]
-      position: [280, 260]
+      layers: [ service ]
+      position:
+        - 280
+        - 80
     - id: ACC-1
       labels:
         node: router
@@ -56,8 +60,8 @@ graph:
         name: ACC-1
       data:
         severity: normal
-      layers: [physical]
-      position: [90, 120]
+      layers: [ physical ]
+      position: [ 90, 120 ]
     - id: ACC-2
       labels:
         node: router
@@ -65,8 +69,8 @@ graph:
         name: ACC-2
       data:
         severity: major
-      layers: [physical]
-      position: [90, 260]
+      layers: [ physical ]
+      position: [ 90, 260 ]
   links:
     - id: svc-a-core
       source: SVC-A
@@ -74,35 +78,35 @@ graph:
       labels:
         link: service
         name: VPN-A to CORE-1
-      layers: [service]
+      layers: [ service ]
     - id: svc-b-core
       source: SVC-B
       target: CORE-1
       labels:
         link: service
         name: VPN-B to CORE-1
-      layers: [service]
+      layers: [ service ]
     - id: acc-1-pe
       source: ACC-1
       target: PE-1
       labels:
         link: access
         name: ACC-1 to PE-1
-      layers: [physical]
+      layers: [ physical ]
     - id: acc-2-pe
       source: ACC-2
       target: PE-1
       labels:
         link: access
         name: ACC-2 to PE-1
-      layers: [physical]
+      layers: [ physical ]
     - id: pe-core
       source: PE-1
       target: CORE-1
       labels:
         link: uplink
         name: PE-1 to CORE-1
-      layers: [physical]
+      layers: [ physical ]
 attention:
   aggregate:
     groups:

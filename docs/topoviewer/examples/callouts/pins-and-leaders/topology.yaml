@@ -19,10 +19,10 @@ graph:
         - 320
         - 210
       pins:
-        - id: east
+        - id: west
           position:
-            - 92
-            - 34
+            - 0
+            - 30
 diagram:
   shapes:
     - id: sap-left
@@ -44,17 +44,17 @@ diagram:
       source: sap-left
       sourcePin: service
       target: PE1
-      targetPin: east
+      targetPin: west
       labels:
         callout: access-line
         name: Access attachment
       layers:
         - diagram
     - id: pin-callout
-      title: Pin Target
+      title: Service attachment
       position:
-        - 430
-        - 244
+        - 100
+        - 80
       markdown: The leader lands on the SAP `service` pin.
       target: sap-left
       targetPin: service

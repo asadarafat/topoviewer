@@ -19,7 +19,7 @@ icons:
         fill="none"
       >
         <style type="text/css">
-          .st0 { fill: #001135; }
+          .st0 { fill: #26313c; }
           .st1 { fill: none; stroke: #FFFFFF; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 10; }
         </style>
         <rect height="120" width="120" class="st0" />
@@ -61,7 +61,7 @@ icons:
         fill="none"
       >
         <style type="text/css">
-          .st0 { fill: #001135; }
+          .st0 { fill: #26313c; }
           .st1 { fill: none; stroke: #FFFFFF; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 10; }
         </style>
         <rect height="120" width="120" class="st0" />
@@ -92,7 +92,7 @@ icons:
         fill="none"
       >
         <style type="text/css">
-          .st0 { fill: #001135; }
+          .st0 { fill: #26313c; }
           .st1 { fill: none; stroke: #FFFFFF; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 10; }
         </style>
         <rect height="120" width="120" class="st0" />
@@ -124,7 +124,7 @@ icons:
         fill="none"
       >
         <style type="text/css">
-          .st0 { fill: #001135; }
+          .st0 { fill: #26313c; }
           .st1 { fill: none; stroke: #FFFFFF; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-miterlimit: 10; }
         </style>
         <rect height="120" width="120" class="st0" />
@@ -154,11 +154,11 @@ stylesheet:
       shape: square
       width: 48
       height: 48
-      borderWidth: 3
-      borderColor: "#90caf9"
+      borderWidth: 2
+      borderColor: "var(--topoviewer-edge-default)"
       iconFit: contain
       iconPadding: 0
-      labelFontWeight: 800
+      labelFontWeight: 600
       labelColor: var(--topoviewer-fg-strong)
       labelBackgroundColor: var(--topoviewer-panel-bg)
       labelBackgroundOpacity: 0.92
@@ -168,13 +168,15 @@ stylesheet:
       labelYOffset: 8
       labelPadding: 4
       metaColor: "transparent"
+      labelFontSize: 14
+      backgroundColor: var(--topoviewer-panel-bg)
   - selector: node[labels.role = "router"]
     style:
       icon: router.pe
       shape: square
-      backgroundColor: "#1976d2"
-      borderColor: "#1976d2"
-      underlayColor: "#42a5f5"
+      backgroundColor: "color-mix(in srgb, var(--topoviewer-accent) 12%, var(--topoviewer-panel-bg))"
+      borderColor: "var(--topoviewer-accent)"
+      underlayColor: "color-mix(in srgb, var(--topoviewer-accent) 18%, var(--topoviewer-panel-bg))"
       underlayOpacity: 0.2
       underlayPadding: 9
   - selector: node[labels.role = "service"]
@@ -186,33 +188,38 @@ stylesheet:
   - selector: link
     style:
       curveStyle: smoothTaxi
-      lineColor: "#90a4ae"
+      lineColor: "var(--topoviewer-edge-default)"
       lineWidth: 3
       targetArrowShape: triangle
-      targetArrowColor: "#90a4ae"
+      targetArrowColor: "var(--topoviewer-info)"
       labelColor: var(--topoviewer-fg-strong)
       textBackgroundColor: var(--topoviewer-edge-label-bg)
+      labelFontSize: 12
+      labelFontWeight: 600
   - selector: link[labels.layer = "service"]
     style:
-      lineColor: "#ff9800"
-      targetArrowColor: "#ff9800"
+      lineColor: "var(--topoviewer-warning)"
+      targetArrowColor: "var(--topoviewer-warning)"
   - selector: link[labels.layer = "operations"]
     style:
-      lineColor: "#d32f2f"
+      lineColor: "var(--topoviewer-danger)"
       lineStyle: dashed
       lineDashPattern: 8 5
-      targetArrowColor: "#d32f2f"
+      targetArrowColor: "var(--topoviewer-danger)"
   - selector: region
     style:
-      backgroundColor: "rgba(25, 118, 210, 0.12)"
-      borderColor: "rgba(66, 165, 245, 0.58)"
+      backgroundColor: "var(--topoviewer-region-fill)"
+      borderColor: "var(--topoviewer-region-stroke)"
       borderWidth: 2
       labelPosition: topCenter
       labelMargin: 12
       labelColor: var(--topoviewer-region-label-fg)
+      labelFontSize: 14
+      labelFontWeight: 600
+      headerPadding: 48
   - selector: region[id = "access-region"]
     style:
-      headerPadding: 34
+      headerPadding: 48
       paddingX: 34
       paddingY: 30
   - selector: callout[id = "insert-note"]

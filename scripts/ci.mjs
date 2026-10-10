@@ -151,6 +151,7 @@ const laneDefinitions = {
     step('lint documentation contract', 'npm', ['run', 'docs:lint']),
     step('test documentation fence extraction', 'node', ['--test', 'scripts/tests/docs-code-blocks.test.mjs']),
     step('validate runnable documentation snippets', 'node', ['scripts/check-docs-examples.mjs']),
+    step('verify diagram facts and inventory relationships', 'node', ['--test', 'scripts/tests/kubernetes-inventory.test.mjs', 'scripts/tests/diagram-models.test.mjs']),
     step('verify gallery previews and source bundles', 'npm', ['run', 'docs:gallery:check']),
     step('test gallery archive reproducibility', 'node', ['--test', 'scripts/tests/gallery.test.mjs'], { env: { TOPOVIEWER_GALLERY_RUNTIME_TESTS: '1' } }),
     step('validate showcase runtime models', 'node', ['scripts/check-docs-gallery.mjs', '--runtime']),

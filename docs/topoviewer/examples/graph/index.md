@@ -13,7 +13,7 @@ A minimal graph with two nodes and one named link.
 ### Try It
 
 1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `node[labels.vendor = "cisco"]`.
-2. Change its `borderColor` from `"#cffafe"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+2. Change its `borderColor` from `"var(--topoviewer-info)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
 3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
@@ -50,7 +50,7 @@ Classification lives in `labels`; operational values live in `data`.
 ### Try It
 
 1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link[labels.protocol = "isis"]`.
-2. Change its `lineColor` from `"#22c55e"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+2. Change its `lineColor` from `"var(--topoviewer-info)"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
 3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"
@@ -87,7 +87,7 @@ Logical nodes can be nested inside physical parent nodes.
 ### Try It
 
 1. Copy the two YAML tabs into your own project. In stylesheet.yaml, find selector `link[labels.link = "service"]`.
-2. Change its `lineColor` from `"#c084fc"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
+2. Change its `lineColor` from `"#8b78b8"` to `"#e11d48"`, then reload your page. Compare the color of objects matching that selector; their IDs and relationships should stay unchanged.
 3. If another rule masks the edit, check its specificity in the [stylesheet guide](../../reference/topoviewer-stylesheet.md). Restore the original value to compare the two views.
 
 === "Live Viewport"

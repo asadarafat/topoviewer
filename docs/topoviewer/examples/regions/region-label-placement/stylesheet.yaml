@@ -2,8 +2,11 @@ version: "0.2"
 icons:
   router:
     glyph: R
-    fill: "#1976d2"
-    stroke: "#bbdefb"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
+    svg: |
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#f2f5f8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="48" height="48" rx="6" fill="#26313c" stroke="none"/><path d="M8 24h32M24 8v32M8 24l6-6m-6 6 6 6m26-6-6-6m6 6-6 6M24 8l-6 6m6-6 6 6M24 40l-6-6m6 6 6-6"/></svg>
+    alt: Router
 labelFields:
   - labels.name
 stylesheet:
@@ -12,43 +15,51 @@ stylesheet:
       icon: router
       width: 92
       height: 68
-      borderWidth: 3
-      borderColor: "#1565c0"
+      borderWidth: 2
+      borderColor: "var(--topoviewer-edge-default)"
       labelColor: var(--topoviewer-fg-strong)
-      labelFontWeight: 800
+      labelFontWeight: 600
+      labelFontSize: 14
+      metaColor: transparent
+      backgroundColor: var(--topoviewer-panel-bg)
   - selector: link
     style:
-      lineColor: "#42a5f5"
+      lineColor: "var(--topoviewer-edge-default)"
       lineWidth: 2
       targetArrowShape: none
       labelColor: var(--topoviewer-fg-strong)
       textBackgroundColor: var(--topoviewer-edge-label-bg)
+      labelFontSize: 12
+      labelFontWeight: 600
   - selector: region
     style:
-      backgroundColor: rgba(25, 118, 210, 0.10)
-      borderColor: rgba(66, 165, 245, 0.68)
+      backgroundColor: var(--topoviewer-region-fill)
+      borderColor: var(--topoviewer-region-stroke)
       borderWidth: 1
       labelColor: var(--topoviewer-region-label-fg)
       labelBackgroundColor: var(--topoviewer-region-label-bg)
       draggable: true
       selectable: true
       zIndex: -20
+      labelFontSize: 14
+      labelFontWeight: 600
+      headerPadding: 48
   - selector: region[labels.placement = "top"]
     style:
       labelPosition: topCenter
       labelMargin: 14
       paddingX: 54
       paddingY: 34
-      headerPadding: 34
+      headerPadding: 48
       minWidth: 220
       minHeight: 170
   - selector: region[labels.placement = "side"]
     style:
       labelPosition: rightCenter
       labelMargin: 14
-      backgroundColor: rgba(46, 125, 50, 0.10)
-      borderColor: rgba(76, 175, 80, 0.72)
-      paddingX: 66
+      backgroundColor: color-mix(in srgb, var(--topoviewer-info) 5%, var(--topoviewer-panel-bg))
+      borderColor: var(--topoviewer-region-stroke)
+      paddingX: 180
       paddingY: 34
       minWidth: 220
       minHeight: 170

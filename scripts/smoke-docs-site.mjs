@@ -55,9 +55,11 @@ async function assertTutorialRendered(page, styled) {
   await expect(viewport.locator('.topoviewer-edge-label-center')).toHaveText('R01 to R02 Ethernet');
   if (styled) {
     await expect(cisco.locator('.topoviewer-node-geometry').first()).toHaveAttribute('data-node-shape', 'roundRectangle');
-    await expect(cisco.locator('.topoviewer-node-geometry').first().locator(':scope > :last-child')).toHaveCSS('fill', 'rgb(124, 58, 237)');
+    const ciscoFill = cisco.locator('.topoviewer-node-geometry').first().locator(':scope > :last-child');
+    await expect(ciscoFill).toHaveAttribute('fill', 'color-mix(in srgb, #8b78b8 12%, var(--topoviewer-panel-bg))');
+    await expect(ciscoFill).not.toHaveCSS('fill', 'none');
     const edge = viewport.locator('.topoviewer-edge-visible-path');
-    await expect(edge).toHaveCSS('stroke', 'rgb(156, 39, 176)');
+    await expect(edge).toHaveCSS('stroke', 'rgb(139, 120, 184)');
     await expect(edge).toHaveCSS('stroke-dasharray', '7px, 7px');
   }
 }

@@ -22,6 +22,7 @@ const curatedExamples = [
 ];
 
 const colorKeyPattern = /(?:color|fill|stroke)$/i;
+const themeColorMixPattern = /^color-mix\(in\s+srgb,\s*(?:#[0-9a-f]{3,8}|var\(--[\w-]+\))\s+(?:100|[0-9]{1,2}(?:\.[0-9]+)?)%,\s*(?:#[0-9a-f]{3,8}|var\(--[\w-]+\)|transparent)\)$/i;
 const safeColorPattern = /^(#[0-9a-f]{3,8}|rgba?\([^)]+\)|hsla?\([^)]+\)|var\(--[\w-]+(?:\s*,\s*[^()<>]+)?\)|transparent|currentColor)$/i;
 
 function readYaml(filePath) {
@@ -75,7 +76,7 @@ function checkStyle(pathLabel, style) {
   Object.entries(style).forEach(([key, value]) => {
     if (!colorKeyPattern.test(key)) return;
     if (typeof value !== 'string') return;
-    if (!safeColorPattern.test(value.trim())) {
+    if (!safeColorPattern.test(value.trim()) && !themeColorMixPattern.test(value.trim())) {
       fail(`${pathLabel}.${key}: color-like value must be an explicit color or CSS variable, got ${JSON.stringify(value)}.`);
     }
   });

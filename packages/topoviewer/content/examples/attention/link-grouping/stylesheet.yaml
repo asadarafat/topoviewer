@@ -2,8 +2,8 @@ version: "0.2"
 icons:
   router:
     glyph: PE
-    fill: "#2563eb"
-    stroke: "#bfdbfe"
+    fill: "#26313c"
+    stroke: "#a3b0bd"
 labelFields:
   - labels.name
 stylesheet:
@@ -12,38 +12,45 @@ stylesheet:
       icon: router
       width: 86
       height: 62
-      borderWidth: 3
+      borderWidth: 2
       labelColor: var(--topoviewer-fg-strong)
-      labelFontWeight: 800
+      labelFontWeight: 600
+      labelFontSize: 14
+      metaColor: transparent
+      backgroundColor: var(--topoviewer-panel-bg)
+      borderColor: var(--topoviewer-edge-default)
+      iconColor: var(--topoviewer-fg-strong)
   - selector: link
     style:
       curveStyle: bezier
       controlPointStepSize: 34
-      lineColor: "#64748b"
+      lineColor: "var(--topoviewer-edge-default)"
       lineWidth: 2.2
       targetArrowShape: none
-      labelColor: "#1e293b"
-      textBackgroundColor: "#f8fafc"
+      labelColor: "var(--topoviewer-fg-strong)"
+      textBackgroundColor: "var(--topoviewer-edge-label-bg)"
       textBackgroundOpacity: 0.95
+      labelFontSize: 12
+      labelFontWeight: 600
   - selector: link[id = "pe-1-pe-2-a"]
     style:
-      lineColor: "#0f766e"
+      lineColor: "var(--topoviewer-info)"
       lineWidth: 3
   - selector: link[id = "pe-1-pe-2-b"]
     style:
-      lineColor: "#2563eb"
+      lineColor: "var(--topoviewer-accent)"
       lineWidth: 3
   - selector: link[id = "pe-1-pe-2-c"]
     style:
-      lineColor: "#dc2626"
+      lineColor: "var(--topoviewer-danger)"
       lineWidth: 3
   - selector: link[isLinkAggregate = "true"]
     style:
-      lineColor: "#8b5cf6"
+      lineColor: "#8b78b8"
       lineWidth: 4
       lineDashPattern: "10 5"
-      labelColor: "#312e81"
-      textBackgroundColor: "#ede9fe"
+      labelColor: "var(--topoviewer-fg-strong)"
+      textBackgroundColor: "var(--topoviewer-edge-label-bg)"
       textBackgroundOpacity: 0.96
 layout:
   mode: manual
